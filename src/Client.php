@@ -1,6 +1,12 @@
 <?php namespace Maclof\Kubernetes;
 
 use GuzzleHttp\Client as GuzzleClient;
+use Maclof\Kubernetes\Collections\PodCollection;
+use Maclof\Kubernetes\Collections\ReplicationControllerCollection;
+use Maclof\Kubernetes\Collections\ServiceCollection;
+use Maclof\Kubernetes\Models\Pod;
+use Maclof\Kubernetes\Models\ReplicationController;
+use Maclof\Kubernetes\Models\Service;
 
 class Client
 {
@@ -90,14 +96,15 @@ class Client
 	 * 
 	 * @param  string $method
 	 * @param  string $uri
+	 * @param  mixed  $body
 	 * @return array
 	 */
-	protected function sendRequest($method, $uri)
+	protected function sendRequest($method, $uri, $body = [])
 	{
 		$client = $this->getHttpClient();
 
-		$request = $this->getHttpClient()->createRequest($method, '/api/v1beta3/namespaces/' . $this->namespace . $uri, [
-
+		$request = $client->createRequest($method, '/api/v1beta3/namespaces/' . $this->namespace . $uri, [
+			'body' => $body,
 		]);
 
 		$response = $client->send($request);
@@ -108,32 +115,70 @@ class Client
 	/**
 	 * Get the pods.
 	 * 
-	 * @return array
+	 * @return \Maclof\Kubernetes\Collections\PodCollection
 	 */
 	public function getPods()
 	{
-		return $this->sendRequest('GET', '/pods');
+		$response = $this->sendRequest('GET', '/pods');
+
+		return new PodCollection($response);
+	}
+
+	/**
+	 * Create a pod.
+	 * 
+	 * @param  \Maclof\Kubernetes\Models\Pod $pod
+	 * @return void
+	 */
+	public function createPod(Pod $pod)
+	{
+		$this->sendRequest('POST', '/pods', $pod->getSchema());
 	}
 
 	/**
 	 * Get the replication controllers.
 	 * 
-	 * @return array
+	 * @return \Maclof\Kubernetes\Collections\ReplicationControllerCollection
 	 */
 	public function getReplicationControllers()
 	{
-		return $this->sendRequest('GET', '/replicationcontrollers');
+		$response = $this->sendRequest('GET', '/replicationcontrollers');
+
+		return new ReplicationControllerCollection($response);
+	}
+
+	/**
+	 * Create a replication controller.
+	 * 
+	 * @param  \Maclof\Kubernetes\Models\ReplicationController $replicationController
+	 * @return void
+	 */
+	public function createReplicationController(ReplicationController $replicationController)
+	{
+		$this->sendRequest('POST', '/replicationcontrollers', $replicationController->getSchema());
 	}
 
 	/**
 	 * Get the services.
 	 * 
-	 * @return array
+	 * @return \Maclof\Kubernetes\Collections\ServiceCollection
 	 */
 	public function getServices()
 	{
-		return $this->sendRequest('GET', '/services');
+		$response = $this->sendRequest('GET', '/services');
+
+		return new ServiceCollection($response);
 	}
 
+	/**
+	 * Create a service.
+	 * 
+	 * @param  \Maclof\Kubernetes\Models\Service $service
+	 * @return void
+	 */
+	public function createService(Service $service)
+	{
+		$this->sendRequest('POST', '/services', $service->getSchema());
+	}
 
 }
