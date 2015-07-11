@@ -1,14 +1,6 @@
 <?php namespace Maclof\Kubernetes\Models;
 
-class ReplicationController extends BaseModel
+class ReplicationController extends Model
 {
-	/**
-	 * Get the schema.
-	 * 
-	 * @return array
-	 */
-	public function getSchema()
-	{
-		return [];
-	}
+
 }

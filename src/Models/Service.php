@@ -1,14 +1,6 @@
 <?php namespace Maclof\Kubernetes\Models;
 
-class Service extends BaseModel
+class Service extends Model
 {
-	/**
-	 * Get the schema.
-	 * 
-	 * @return array
-	 */
-	public function getSchema()
-	{
-		return [];
-	}
+
 }
