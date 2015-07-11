@@ -10,7 +10,7 @@
 	],
 	"license" : "MIT",
 	"require": {
-		"cartalyst/collections": "~1.1",
+		"php": ">=5.5",
 		"guzzlehttp/guzzle": "~5.0"
 	},
 	"require-dev": {
