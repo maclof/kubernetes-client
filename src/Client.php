@@ -13,6 +13,13 @@ use Maclof\Kubernetes\Exceptions\BadRequest;
 class Client
 {
 	/**
+	 * The api version.
+	 * 
+	 * @var string
+	 */
+	protected $apiVersion = 'v1beta3';
+
+	/**
 	 * The address of the master server.
 	 * 
 	 * @var string|null
@@ -41,6 +48,13 @@ class Client
 	protected $clientKey;
 
 	/**
+	 * The namespace.
+	 * 
+	 * @var string
+	 */
+	protected $namespace = 'default';
+
+	/**
 	 * The http client.
 	 * 
 	 * @var \GuzzleHttp\Client|null
@@ -66,11 +80,23 @@ class Client
 	 */
 	public function setOptions(array $options)
 	{
-		$this->master     = $options['master'];
-		$this->caCert     = $options['ca_cert'];
-		$this->clientCert = $options['client_cert'];
-		$this->clientKey  = $options['client_key'];
-		$this->namespace  = $options['namespace'];
+		if (!isset($options['master'])) {
+			throw new MissingOptionException('You must provide a "master" parameter.');
+		}
+		$this->master = $options['master'];
+
+		if (isset($options['ca_cert'])) {
+			$this->caCert     = $options['ca_cert'];
+		}
+		if (isset($options['client_cert'])) {
+			$this->clientCert = $options['client_cert'];
+		}
+		if (isset($options['client_key'])) {
+			$this->clientKey  = $options['client_key'];
+		}
+		if (isset($options['namespace'])) {
+			$this->namespace  = $options['namespace'];
+		}
 	}
 
 	/**
@@ -115,7 +141,7 @@ class Client
 	 */
 	protected function sendRequest($method, $uri, $body = null)
 	{
-		$request = $this->guzzleClient->createRequest($method, '/api/v1beta3/namespaces/' . $this->namespace . $uri, [
+		$request = $this->guzzleClient->createRequest($method, '/api/' . $this->apiVersion . '/namespaces/' . $this->namespace . $uri, [
 			'body' => $body,
 		]);
 
@@ -160,7 +186,7 @@ class Client
 	 */
 	public function deletePod(Pod $pod)
 	{
-		$this->sendRequest('DELETE', '/pods/' . $pod->getMetaData('name'));
+		$this->sendRequest('DELETE', '/pods/' . $pod->getMetadata('name'));
 	}
 
 	/**
@@ -194,7 +220,7 @@ class Client
 	 */
 	public function deleteReplicationController(ReplicationController $replicationController)
 	{
-		$this->sendRequest('DELETE', '/replicationcontrollers/' . $replicationController->getMetaData('name'));
+		$this->sendRequest('DELETE', '/replicationcontrollers/' . $replicationController->getMetadata('name'));
 	}
 
 	/**
@@ -228,7 +254,7 @@ class Client
 	 */
 	public function deleteService(Service $service)
 	{
-		$this->sendRequest('DELETE', '/services/' . $service->getMetaData('name'));
+		$this->sendRequest('DELETE', '/services/' . $service->getMetadata('name'));
 	}
 
 }

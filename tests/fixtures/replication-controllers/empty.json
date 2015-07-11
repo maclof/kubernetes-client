@@ -1,0 +1,4 @@
+{
+    "kind": "ReplicationController",
+    "apiVersion": "v1beta3"
+}

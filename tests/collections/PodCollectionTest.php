@@ -1,6 +1,30 @@
 <?php
 
+use Maclof\Kubernetes\Collections\PodCollection;
+
 class PodCollectionTest extends TestCase
 {
+	protected $items = [
+		[],
+		[],
+		[],
+	];
 
+	protected function getPodCollection()
+	{
+		$podCollection = new PodCollection([
+			'items' => $this->items,
+		]);
+
+		return $podCollection;
+	}
+
+	public function test_get_items()
+	{
+		$podCollection = $this->getPodCollection();
+		$items = $podCollection->getItems();
+
+		$this->assertTrue(is_array($items));
+		$this->assertEquals(3, count($items));
+	}
 }

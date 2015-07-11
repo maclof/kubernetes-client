@@ -2,7 +2,7 @@
 
 use Exception;
 
-class BadRequest extends Exception
+class MissingOptionException extends Exception
 {
 	
 }

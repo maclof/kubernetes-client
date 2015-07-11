@@ -59,12 +59,12 @@ abstract class Model
 	}
 
 	/**
-	 * Get some meta data.
+	 * Get some metadata.
 	 *
 	 * @param  string $key
 	 * @return string
 	 */
-	public function getMetaData($key)
+	public function getMetadata($key)
 	{
 		return $this->attributes['metadata'][$key];
 	}
