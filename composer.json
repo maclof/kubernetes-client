@@ -1,5 +1,14 @@
 {
 	"name": "maclof/kubernetes-client",
+	"description": "An simple yet elegant client for accessing and controlling a Kubernetes cluster.",
+	"keywords": ["kubernetes", "docker", "container", "cluster", "guzzle", "guzzlehttp"],
+	"authors": [
+		{
+			"name": "Marc Lough",
+			"homepage": "http://maclof.com"
+		}
+	],
+	"license" : "MIT",
 	"require": {
 		"cartalyst/collections": "1.1.0",
 		"guzzlehttp/guzzle": "5.3.0"
