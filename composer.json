@@ -1,6 +1,6 @@
 {
 	"name": "maclof/kubernetes-client",
-	"description": "An simple yet elegant client for accessing and controlling a Kubernetes cluster.",
+	"description": "A simple yet elegant client for accessing and controlling a Kubernetes cluster.",
 	"keywords": ["kubernetes", "docker", "container", "cluster", "guzzle", "guzzlehttp"],
 	"authors": [
 		{
@@ -10,8 +10,8 @@
 	],
 	"license" : "MIT",
 	"require": {
-		"cartalyst/collections": "1.1.0",
-		"guzzlehttp/guzzle": "5.3.0"
+		"cartalyst/collections": "~1.1",
+		"guzzlehttp/guzzle": "~5.0"
 	},
 	"require-dev": {
 		"phpunit/phpunit" : "~4.0",
@@ -21,6 +21,11 @@
 		"psr-4": {
 			"Maclof\\Kubernetes\\": "src/"
 		}
+	},
+	"autoload-dev": {
+		"classmap": [
+			"tests/TestCase.php"
+		]
 	},
 	"minimum-stability": "dev",
 	"prefer-stable": true

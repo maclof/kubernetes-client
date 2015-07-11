@@ -45,16 +45,18 @@ class Client
 	 * 
 	 * @var \GuzzleHttp\Client|null
 	 */
-	protected $client;
+	protected $guzzleClient;
 
 	/**
 	 * The constructor.
 	 * 
 	 * @param array $options
+	 * @param \GuzzleHttp\Client $guzzleClient
 	 */
-	public function __construct(array $options = array())
+	public function __construct(array $options = array(), GuzzleClient $guzzleClient = null)
 	{
 		$this->setOptions($options);
+		$this->guzzleClient = $guzzleClient ? $guzzleClient : $this->createGuzzleClient();
 	}
 
 	/**
@@ -72,16 +74,12 @@ class Client
 	}
 
 	/**
-	 * Get the http client.
+	 * Create the guzzle client.
 	 * 
 	 * @return \GuzzleHttp\Client
 	 */
-	protected function getHttpClient()
+	protected function createGuzzleClient()
 	{
-		if ($this->client) {
-			return $this->client;
-		}
-
 		return new GuzzleClient([
 			'base_url' => $this->master,
 
@@ -98,6 +96,16 @@ class Client
 	}
 
 	/**
+	 * Get the guzzle client.
+	 * 
+	 * @return \GuzzleHttp\Client|null
+	 */
+	public function getGuzzleClient()
+	{
+		return $this->guzzleClient;
+	}
+
+	/**
 	 * Send a request.
 	 * 
 	 * @param  string $method
@@ -107,14 +115,12 @@ class Client
 	 */
 	protected function sendRequest($method, $uri, $body = null)
 	{
-		$client = $this->getHttpClient();
-
-		$request = $client->createRequest($method, '/api/v1beta3/namespaces/' . $this->namespace . $uri, [
+		$request = $this->guzzleClient->createRequest($method, '/api/v1beta3/namespaces/' . $this->namespace . $uri, [
 			'body' => $body,
 		]);
 
 		try {
-			$response = $client->send($request);
+			$response = $this->guzzleClient->send($request);
 		}
 		catch (ClientException $e) {
 			throw new BadRequest($e->getMessage());
