@@ -8,62 +8,63 @@ use Maclof\Kubernetes\Collections\ServiceCollection;
 use Maclof\Kubernetes\Models\Pod;
 use Maclof\Kubernetes\Models\ReplicationController;
 use Maclof\Kubernetes\Models\Service;
-use Maclof\Kubernetes\Exceptions\BadRequest;
+use Maclof\Kubernetes\Exceptions\BadRequestException;
+use Maclof\Kubernetes\Exceptions\MissingOptionException;
 
 class Client
 {
 	/**
 	 * The api version.
-	 * 
+	 *
 	 * @var string
 	 */
-	protected $apiVersion = 'v1beta3';
+	protected $apiVersion = 'v1';
 
 	/**
 	 * The address of the master server.
-	 * 
+	 *
 	 * @var string|null
 	 */
 	protected $master;
 
 	/**
 	 * The ca certificate.
-	 * 
+	 *
 	 * @var string|null
 	 */
 	protected $caCert;
 
 	/**
 	 * The client certificate.
-	 * 
+	 *
 	 * @var string|null
 	 */
 	protected $clientCert;
 
 	/**
 	 * The client key.
-	 * 
+	 *
 	 * @var string|null
 	 */
 	protected $clientKey;
 
 	/**
 	 * The namespace.
-	 * 
+	 *
 	 * @var string
 	 */
 	protected $namespace = 'default';
 
 	/**
 	 * The http client.
-	 * 
+	 *
 	 * @var \GuzzleHttp\Client|null
 	 */
 	protected $guzzleClient;
 
 	/**
 	 * The constructor.
-	 * 
+	 *
 	 * @param array $options
 	 * @param \GuzzleHttp\Client $guzzleClient
 	 */
@@ -75,7 +76,7 @@ class Client
 
 	/**
 	 * Set the options.
-	 * 
+	 *
 	 * @param array $options
 	 */
 	public function setOptions(array $options)
@@ -101,7 +102,7 @@ class Client
 
 	/**
 	 * Create the guzzle client.
-	 * 
+	 *
 	 * @return \GuzzleHttp\Client
 	 */
 	protected function createGuzzleClient()
@@ -123,7 +124,7 @@ class Client
 
 	/**
 	 * Get the guzzle client.
-	 * 
+	 *
 	 * @return \GuzzleHttp\Client|null
 	 */
 	public function getGuzzleClient()
@@ -133,7 +134,7 @@ class Client
 
 	/**
 	 * Send a request.
-	 * 
+	 *
 	 * @param  string $method
 	 * @param  string $uri
 	 * @param  mixed  $body
@@ -147,9 +148,8 @@ class Client
 
 		try {
 			$response = $this->guzzleClient->send($request);
-		}
-		catch (ClientException $e) {
-			throw new BadRequest($e->getMessage());
+		} catch (ClientException $e) {
+			throw new BadRequestException($e->getMessage());
 		}
 
 		return $response->json();
@@ -157,7 +157,7 @@ class Client
 
 	/**
 	 * Get the pods.
-	 * 
+	 *
 	 * @return \Maclof\Kubernetes\Collections\PodCollection
 	 */
 	public function getPods()
@@ -168,8 +168,20 @@ class Client
 	}
 
 	/**
+	 * Get a pod.
+	 *
+	 * @return \Maclof\Kubernetes\Models\Pod
+	 */
+	public function getPod($name)
+	{
+		$response = $this->sendRequest('GET', '/pods/' . $name);
+
+		return new Pod($response);
+	}
+
+	/**
 	 * Create a pod.
-	 * 
+	 *
 	 * @param  \Maclof\Kubernetes\Models\Pod $pod
 	 * @return void
 	 */
@@ -180,7 +192,7 @@ class Client
 
 	/**
 	 * Delete a pod.
-	 * 
+	 *
 	 * @param  \Maclof\Kubernetes\Models\Pod $pod
 	 * @return void
 	 */
@@ -191,7 +203,7 @@ class Client
 
 	/**
 	 * Get the replication controllers.
-	 * 
+	 *
 	 * @return \Maclof\Kubernetes\Collections\ReplicationControllerCollection
 	 */
 	public function getReplicationControllers()
@@ -202,8 +214,20 @@ class Client
 	}
 
 	/**
+	 * Get a replication controller.
+	 *
+	 * @return \Maclof\Kubernetes\Models\ReplicationController
+	 */
+	public function getReplicationController($name)
+	{
+		$response = $this->sendRequest('GET', '/replicationcontrollers/' . $name);
+
+		return new ReplicationController($response);
+	}
+
+	/**
 	 * Create a replication controller.
-	 * 
+	 *
 	 * @param  \Maclof\Kubernetes\Models\ReplicationController $replicationController
 	 * @return void
 	 */
@@ -214,7 +238,7 @@ class Client
 
 	/**
 	 * Delete a replication controller.
-	 * 
+	 *
 	 * @param  \Maclof\Kubernetes\Models\ReplicationController $replicationController
 	 * @return void
 	 */
@@ -225,7 +249,7 @@ class Client
 
 	/**
 	 * Get the services.
-	 * 
+	 *
 	 * @return \Maclof\Kubernetes\Collections\ServiceCollection
 	 */
 	public function getServices()
@@ -236,8 +260,20 @@ class Client
 	}
 
 	/**
+	 * Get a service.
+	 *
+	 * @return \Maclof\Kubernetes\Models\Service
+	 */
+	public function getService($name)
+	{
+		$response = $this->sendRequest('GET', '/services/' . $name);
+
+		return new Service($response);
+	}
+
+	/**
 	 * Create a service.
-	 * 
+	 *
 	 * @param  \Maclof\Kubernetes\Models\Service $service
 	 * @return void
 	 */
@@ -248,7 +284,7 @@ class Client
 
 	/**
 	 * Delete a service.
-	 * 
+	 *
 	 * @param  \Maclof\Kubernetes\Models\Service $service
 	 * @return void
 	 */
@@ -256,5 +292,4 @@ class Client
 	{
 		$this->sendRequest('DELETE', '/services/' . $service->getMetadata('name'));
 	}
-
 }

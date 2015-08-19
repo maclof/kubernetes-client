@@ -4,21 +4,21 @@ class TestCase extends PHPUnit_Framework_TestCase
 {
 	/**
 	 * The api version.
-	 * 
+	 *
 	 * @var string
 	 */
-	protected $apiVersion = 'v1beta3';
+	protected $apiVersion = 'v1';
 
 	/**
 	 * The namespace.
-	 * 
+	 *
 	 * @var string
 	 */
 	protected $namespace = 'default';
 
 	/**
 	 * Get the contents of a fixture.
-	 * 
+	 *
 	 * @param  string $path
 	 * @return string|null
 	 */
