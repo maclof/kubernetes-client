@@ -2,6 +2,7 @@
 
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ParseException;
 use Maclof\Kubernetes\Collections\PodCollection;
 use Maclof\Kubernetes\Collections\ReplicationControllerCollection;
 use Maclof\Kubernetes\Collections\ServiceCollection;
@@ -152,7 +153,11 @@ class Client
 			throw new BadRequestException($e->getMessage());
 		}
 
-		return $response->json();
+		try {
+			return $response->json();
+		} catch (ParseException $e) {
+			return (string) $response->getBody();
+		}
 	}
 
 	/**
@@ -170,6 +175,7 @@ class Client
 	/**
 	 * Get a pod.
 	 *
+	 * @param  string $name
 	 * @return \Maclof\Kubernetes\Models\Pod
 	 */
 	public function getPod($name)
@@ -177,6 +183,19 @@ class Client
 		$response = $this->sendRequest('GET', '/pods/' . $name);
 
 		return new Pod($response);
+	}
+
+	/**
+	 * Get a pod's logs.
+	 *
+	 * @param  \Maclof\Kubernetes\Models\Pod $pod
+	 * @return \Maclof\Kubernetes\Models\Pod
+	 */
+	public function getPodLogs(Pod $pod)
+	{
+		$response = $this->sendRequest('GET', '/pods/' . $pod->getMetadata('name') . '/log');
+
+		return $response;
 	}
 
 	/**
@@ -216,6 +235,7 @@ class Client
 	/**
 	 * Get a replication controller.
 	 *
+	 * @param  string $name
 	 * @return \Maclof\Kubernetes\Models\ReplicationController
 	 */
 	public function getReplicationController($name)
@@ -262,6 +282,7 @@ class Client
 	/**
 	 * Get a service.
 	 *
+	 * @param  string $name
 	 * @return \Maclof\Kubernetes\Models\Service
 	 */
 	public function getService($name)

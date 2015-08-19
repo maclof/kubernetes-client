@@ -66,6 +66,6 @@ abstract class Model
 	 */
 	public function getMetadata($key)
 	{
-		return $this->attributes['metadata'][$key];
+		return isset($this->attributes['metadata'][$key]) ? $this->attributes['metadata'][$key] : null;
 	}
 }
