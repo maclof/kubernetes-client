@@ -3,9 +3,11 @@
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ParseException;
+use Maclof\Kubernetes\Collections\NodeCollection;
 use Maclof\Kubernetes\Collections\PodCollection;
 use Maclof\Kubernetes\Collections\ReplicationControllerCollection;
 use Maclof\Kubernetes\Collections\ServiceCollection;
+use Maclof\Kubernetes\Models\Node;
 use Maclof\Kubernetes\Models\Pod;
 use Maclof\Kubernetes\Models\ReplicationController;
 use Maclof\Kubernetes\Models\Service;
@@ -136,14 +138,21 @@ class Client
 	/**
 	 * Send a request.
 	 *
-	 * @param  string $method
-	 * @param  string $uri
-	 * @param  mixed  $body
+	 * @param  string  $method
+	 * @param  string  $uri
+	 * @param  mixed   $body
+	 * @param  boolean $namespace
 	 * @return array
 	 */
-	protected function sendRequest($method, $uri, $body = null)
+	protected function sendRequest($method, $uri, $body = null, $namespace = true)
 	{
-		$request = $this->guzzleClient->createRequest($method, '/api/' . $this->apiVersion . '/namespaces/' . $this->namespace . $uri, [
+		$baseUri = '/api/' . $this->apiVersion;
+
+		if ($namespace) {
+			$baseUri .= '/namespaces/' . $this->namespace;
+		}
+
+		$request = $this->guzzleClient->createRequest($method, $baseUri . $uri, [
 			'body' => $body,
 		]);
 
@@ -158,6 +167,53 @@ class Client
 		} catch (ParseException $e) {
 			return (string) $response->getBody();
 		}
+	}
+
+	/**
+	 * Get the nodes.
+	 *
+	 * @return \Maclof\Kubernetes\Collections\NodeCollection
+	 */
+	public function getNodes()
+	{
+		$response = $this->sendRequest('GET', '/nodes', null, false);
+
+		return new NodeCollection($response);
+	}
+
+	/**
+	 * Get a node.
+	 *
+	 * @param  string $name
+	 * @return \Maclof\Kubernetes\Models\Node
+	 */
+	public function getNode($name)
+	{
+		$response = $this->sendRequest('GET', '/nodes/' . $name, null, false);
+
+		return new Node($response);
+	}
+
+	/**
+	 * Create a node.
+	 *
+	 * @param  \Maclof\Kubernetes\Models\Node $node
+	 * @return void
+	 */
+	public function createNode(Node $node)
+	{
+		$this->sendRequest('POST', '/nodes', $node->getSchema(), false);
+	}
+
+	/**
+	 * Delete a node.
+	 *
+	 * @param  \Maclof\Kubernetes\Models\Node $node
+	 * @return void
+	 */
+	public function deleteNode(Node $node)
+	{
+		$this->sendRequest('DELETE', '/nodes/' . $node->getMetadata('name'), null, false);
 	}
 
 	/**
