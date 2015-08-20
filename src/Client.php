@@ -7,10 +7,12 @@ use Maclof\Kubernetes\Collections\NodeCollection;
 use Maclof\Kubernetes\Collections\PodCollection;
 use Maclof\Kubernetes\Collections\ReplicationControllerCollection;
 use Maclof\Kubernetes\Collections\ServiceCollection;
+use Maclof\Kubernetes\Collections\SecretCollection;
 use Maclof\Kubernetes\Models\Node;
 use Maclof\Kubernetes\Models\Pod;
 use Maclof\Kubernetes\Models\ReplicationController;
 use Maclof\Kubernetes\Models\Service;
+use Maclof\Kubernetes\Models\Secret;
 use Maclof\Kubernetes\Exceptions\BadRequestException;
 use Maclof\Kubernetes\Exceptions\MissingOptionException;
 
@@ -368,5 +370,52 @@ class Client
 	public function deleteService(Service $service)
 	{
 		$this->sendRequest('DELETE', '/services/' . $service->getMetadata('name'));
+	}
+
+	/**
+	 * Get the secrets.
+	 *
+	 * @return \Maclof\Kubernetes\Collections\SecretCollection
+	 */
+	public function getSecrets()
+	{
+		$response = $this->sendRequest('GET', '/secrets');
+
+		return new SecretCollection($response);
+	}
+
+	/**
+	 * Get a secret.
+	 *
+	 * @param  string $name
+	 * @return \Maclof\Kubernetes\Models\Secret
+	 */
+	public function getSecret($name)
+	{
+		$response = $this->sendRequest('GET', '/secrets/' . $name);
+
+		return new Secret($response);
+	}
+
+	/**
+	 * Create a secret.
+	 *
+	 * @param  \Maclof\Kubernetes\Models\Secret $secret
+	 * @return void
+	 */
+	public function createSecret(Secret $secret)
+	{
+		$this->sendRequest('POST', '/secrets', $secret->getSchema());
+	}
+
+	/**
+	 * Delete a secret.
+	 *
+	 * @param  \Maclof\Kubernetes\Models\Secret $secret
+	 * @return void
+	 */
+	public function deleteSecret(Secret $secret)
+	{
+		$this->sendRequest('DELETE', '/secrets/' . $secret->getMetadata('name'));
 	}
 }
