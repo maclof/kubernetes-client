@@ -112,19 +112,23 @@ class Client
 	 */
 	protected function createGuzzleClient()
 	{
-		return new GuzzleClient([
+		$options = [
 			'base_url' => $this->master,
 
 			'defaults' => [
-				'verify'  => $this->caCert,
-				'cert'    => $this->clientCert,
-				'ssl_key' => $this->clientKey,
-
 				'headers' => [
 					'Content-Type' => 'application/json',
 				],
 			],
-		]);
+		];
+
+		if ($this->caCert && $this->clientCert && $this->clientKey) {
+			$options['defaults']['verify']  = $this->caCert;
+			$options['defaults']['cert']    = $this->clientCert;
+			$options['defaults']['ssl_key'] = $this->clientKey;
+		}
+
+		return new GuzzleClient($options);
 	}
 
 	/**
