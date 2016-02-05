@@ -54,6 +54,13 @@ class Client
 	protected $clientKey;
 
 	/**
+	 * The token.
+	 *
+	 * @var string
+	 */
+	protected $token;
+
+	/**
 	 * The namespace.
 	 *
 	 * @var string
@@ -92,16 +99,19 @@ class Client
 		$this->master = $options['master'];
 
 		if (isset($options['ca_cert'])) {
-			$this->caCert     = $options['ca_cert'];
+			$this->caCert = $options['ca_cert'];
 		}
 		if (isset($options['client_cert'])) {
 			$this->clientCert = $options['client_cert'];
 		}
 		if (isset($options['client_key'])) {
-			$this->clientKey  = $options['client_key'];
+			$this->clientKey = $options['client_key'];
+		}
+		if (isset($options['token'])) {
+			$this->token = $options['token'];
 		}
 		if (isset($options['namespace'])) {
-			$this->namespace  = $options['namespace'];
+			$this->namespace = $options['namespace'];
 		}
 	}
 
@@ -122,10 +132,17 @@ class Client
 			],
 		];
 
-		if ($this->caCert && $this->clientCert && $this->clientKey) {
+		if ($this->caCert) {
 			$options['defaults']['verify']  = $this->caCert;
+		}
+		if ($this->clientCert) {
 			$options['defaults']['cert']    = $this->clientCert;
+		}
+		if ($this->clientKey) {
 			$options['defaults']['ssl_key'] = $this->clientKey;
+		}
+		if ($this->token) {
+			$options['defaults']['headers']['Authorization'] = 'Bearer ' . file_get_contents($this->token);
 		}
 
 		return new GuzzleClient($options);
