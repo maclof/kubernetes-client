@@ -141,7 +141,7 @@ class Client
 		if ($this->clientKey) {
 			$options['defaults']['ssl_key'] = $this->clientKey;
 		}
-		if ($this->token) {
+		if ($this->token && file_exists($this->token)) {
 			$options['defaults']['headers']['Authorization'] = 'Bearer ' . file_get_contents($this->token);
 		}
 
