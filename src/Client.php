@@ -312,6 +312,17 @@ class Client
 	}
 
 	/**
+	 * Update a pod.
+	 *
+	 * @param  \Maclof\Kubernetes\Models\Pod $pod
+	 * @return void
+	 */
+	public function updatePod(Pod $pod)
+	{
+		$this->sendRequest('PUT', '/pods/' . $pod->getMetadata('name'), $pod->getSchema());
+	}
+
+	/**
 	 * Delete a pod.
 	 *
 	 * @param  \Maclof\Kubernetes\Models\Pod $pod
@@ -356,6 +367,17 @@ class Client
 	public function createReplicationController(ReplicationController $replicationController)
 	{
 		$this->sendRequest('POST', '/replicationcontrollers', $replicationController->getSchema());
+	}
+
+	/**
+	 * Update a replication controller.
+	 *
+	 * @param  \Maclof\Kubernetes\Models\ReplicationController $replicationController
+	 * @return void
+	 */
+	public function updateReplicationController(ReplicationController $replicationController)
+	{
+		$this->sendRequest('PUT', '/replicationcontrollers/' . $replicationController->getMetadata('name'), $replicationController->getSchema());
 	}
 
 	/**
@@ -406,6 +428,17 @@ class Client
 	}
 
 	/**
+	 * Update a service.
+	 *
+	 * @param  \Maclof\Kubernetes\Models\Service $service
+	 * @return void
+	 */
+	public function updateService(Service $service)
+	{
+		$this->sendRequest('PUT', '/services/' . $service->getMetadata('name'), $service->getSchema());
+	}
+
+	/**
 	 * Delete a service.
 	 *
 	 * @param  \Maclof\Kubernetes\Models\Service $service
@@ -450,6 +483,18 @@ class Client
 	public function createSecret(Secret $secret)
 	{
 		$this->sendRequest('POST', '/secrets', $secret->getSchema());
+	}
+
+
+	/**
+	 * Update a secret.
+	 *
+	 * @param  \Maclof\Kubernetes\Models\Secret $secret
+	 * @return void
+	 */
+	public function updateSecret(Secret $secret)
+	{
+		$this->sendRequest('PUT', '/secrets/' . $secret->getMetadata('name'), $secret->getSchema());
 	}
 
 	/**
@@ -497,6 +542,17 @@ class Client
 	public function createDeployment(Deployment $deployment)
 	{
 		$this->sendBetaRequest('POST', '/deployments', $deployment->getSchema());
+	}
+
+	/**
+	 * Update a deployment.
+	 *
+	 * @param  \Maclof\Kubernetes\Models\Deployment $deployment
+	 * @return void
+	 */
+	public function updateDeployment(Deployment $deployment)
+	{
+		$this->sendBetaRequest('PUT', '/deployments/' . $deployment->getMetadata('name'), $deployment->getSchema());
 	}
 
 	/**
