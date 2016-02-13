@@ -13,6 +13,7 @@ use Maclof\Kubernetes\Models\Pod;
 use Maclof\Kubernetes\Models\ReplicationController;
 use Maclof\Kubernetes\Models\Service;
 use Maclof\Kubernetes\Models\Secret;
+use Maclof\Kubernetes\Models\Deployment;
 use Maclof\Kubernetes\Exceptions\BadRequestException;
 use Maclof\Kubernetes\Exceptions\MissingOptionException;
 
@@ -24,6 +25,13 @@ class Client
 	 * @var string
 	 */
 	protected $apiVersion = 'v1';
+
+	/**
+	 * The beta api version.
+	 *
+	 * @var string
+	 */
+	protected $betaApiVersion = 'extensions/v1beta1';
 
 	/**
 	 * The address of the master server.
@@ -165,11 +173,12 @@ class Client
 	 * @param  string  $uri
 	 * @param  mixed   $body
 	 * @param  boolean $namespace
+	 * @param  string  $apiVersion
 	 * @return array
 	 */
-	protected function sendRequest($method, $uri, $body = null, $namespace = true)
+	protected function sendRequest($method, $uri, $body = null, $namespace = true, $apiVersion = null)
 	{
-		$baseUri = '/api/' . $this->apiVersion;
+		$baseUri = $apiVersion ? '/apis/' . $apiVersion : '/api/' . $this->apiVersion;
 
 		if ($namespace) {
 			$baseUri .= '/namespaces/' . $this->namespace;
@@ -190,6 +199,20 @@ class Client
 		} catch (ParseException $e) {
 			return (string) $response->getBody();
 		}
+	}
+
+	/**
+	 * Send a beta request.
+	 *
+	 * @param  string  $method
+	 * @param  string  $uri
+	 * @param  mixed   $body
+	 * @param  boolean $namespace
+	 * @return array
+	 */
+	protected function sendBetaRequest($method, $uri, $body = null, $namespace = true)
+	{
+		return $this->sendRequest($method, $uri, $body, $namespace, $this->betaApiVersion);
 	}
 
 	/**
@@ -438,5 +461,52 @@ class Client
 	public function deleteSecret(Secret $secret)
 	{
 		$this->sendRequest('DELETE', '/secrets/' . $secret->getMetadata('name'));
+	}
+
+	/**
+	 * Get the deployments.
+	 *
+	 * @return \Maclof\Kubernetes\Collections\DeploymentCollection
+	 */
+	public function getDeployments()
+	{
+		$response = $this->sendBetaRequest('GET', '/deployments');
+
+		return new DeploymentCollection($response);
+	}
+
+	/**
+	 * Get a deployment.
+	 *
+	 * @param  string $name
+	 * @return \Maclof\Kubernetes\Models\Deployment
+	 */
+	public function getDeployment($name)
+	{
+		$response = $this->sendBetaRequest('GET', '/deployments/' . $name);
+
+		return new Deployment($response);
+	}
+
+	/**
+	 * Create a deployment.
+	 *
+	 * @param  \Maclof\Kubernetes\Models\Deployment $deployment
+	 * @return void
+	 */
+	public function createDeployment(Deployment $deployment)
+	{
+		$this->sendBetaRequest('POST', '/deployments', $deployment->getSchema());
+	}
+
+	/**
+	 * Delete a deployment.
+	 *
+	 * @param  \Maclof\Kubernetes\Models\Deployment $deployment
+	 * @return void
+	 */
+	public function deleteDeployment(Deployment $deployment)
+	{
+		$this->sendBetaRequest('DELETE', '/deployments/' . $deployment->getMetadata('name'));
 	}
 }
