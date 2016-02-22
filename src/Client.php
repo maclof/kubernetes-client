@@ -14,6 +14,7 @@ use Maclof\Kubernetes\Models\ReplicationController;
 use Maclof\Kubernetes\Models\Service;
 use Maclof\Kubernetes\Models\Secret;
 use Maclof\Kubernetes\Models\Deployment;
+use Maclof\Kubernetes\Models\Job;
 use Maclof\Kubernetes\Exceptions\BadRequestException;
 use Maclof\Kubernetes\Exceptions\MissingOptionException;
 
@@ -564,5 +565,63 @@ class Client
 	public function deleteDeployment(Deployment $deployment)
 	{
 		$this->sendBetaRequest('DELETE', '/deployments/' . $deployment->getMetadata('name'));
+	}
+
+	/**
+	 * Get the jobs.
+	 *
+	 * @return \Maclof\Kubernetes\Collections\JobCollection
+	 */
+	public function getJobs()
+	{
+		$response = $this->sendBetaRequest('GET', '/jobs');
+
+		return new JobCollection($response);
+	}
+
+	/**
+	 * Get a job.
+	 *
+	 * @param  string $name
+	 * @return \Maclof\Kubernetes\Models\Job
+	 */
+	public function getJob($name)
+	{
+		$response = $this->sendBetaRequest('GET', '/jobs/' . $name);
+
+		return new Job($response);
+	}
+
+	/**
+	 * Create a job.
+	 *
+	 * @param  \Maclof\Kubernetes\Models\Job $job
+	 * @return void
+	 */
+	public function createJob(Job $job)
+	{
+		$this->sendBetaRequest('POST', '/jobs', $job->getSchema());
+	}
+
+	/**
+	 * Update a job.
+	 *
+	 * @param  \Maclof\Kubernetes\Models\Job $job
+	 * @return void
+	 */
+	public function updateJob(Job $job)
+	{
+		$this->sendBetaRequest('PUT', '/jobs/' . $job->getMetadata('name'), $job->getSchema());
+	}
+
+	/**
+	 * Delete a job.
+	 *
+	 * @param  \Maclof\Kubernetes\Models\Job $job
+	 * @return void
+	 */
+	public function deleteJob(Job $job)
+	{
+		$this->sendBetaRequest('DELETE', '/jobs/' . $job->getMetadata('name'));
 	}
 }
