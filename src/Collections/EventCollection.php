@@ -1,8 +1,8 @@
 <?php namespace Maclof\Kubernetes\Collections;
 
-use Maclof\Kubernetes\Models\Deployment;
+use Maclof\Kubernetes\Models\Event;
 
-class DeploymentCollection extends Collection
+class EventCollection extends Collection
 {
 	/**
 	 * The constructor.
@@ -11,19 +11,19 @@ class DeploymentCollection extends Collection
 	 */
 	public function __construct(array $data)
 	{
-		parent::__construct($this->getDeployments($data['items']));
+		parent::__construct($this->getEvents($data['items']));
 	}
 
 	/**
-	 * Get an array of deployments.
+	 * Get an array of nodes.
 	 *
 	 * @param  array  $items
 	 * @return array
 	 */
-	protected function getDeployments(array $items)
+	protected function getEvents(array $items)
 	{
 		foreach ($items as &$item) {
-			$item = new Deployment($item);
+			$item = new Event($item);
 		}
 
 		return $items;

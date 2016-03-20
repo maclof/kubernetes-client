@@ -1,5 +1,6 @@
 <?php namespace Maclof\Kubernetes;
 
+use BadMethodCallException;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ParseException;
@@ -172,21 +173,24 @@ class Client
 	 *
 	 * @param  string  $method
 	 * @param  string  $uri
+	 * @param  mixed   $query
 	 * @param  mixed   $body
 	 * @param  boolean $namespace
 	 * @param  string  $apiVersion
 	 * @return array
 	 */
-	protected function sendRequest($method, $uri, $body = null, $namespace = true, $apiVersion = null)
+	public function sendRequest($method, $uri, $query = null, $body = null, $namespace = true, $apiVersion = null)
 	{
 		$baseUri = $apiVersion ? '/apis/' . $apiVersion : '/api/' . $this->apiVersion;
-
 		if ($namespace) {
 			$baseUri .= '/namespaces/' . $this->namespace;
 		}
 
-		$request = $this->guzzleClient->createRequest($method, $baseUri . $uri, [
-			'body' => $body,
+		$requestUrl = $baseUri . $uri;
+
+		$request = $this->guzzleClient->createRequest($method, $requestUrl, [
+			'query' => is_array($query) ? $query : [],
+			'body'  => $body,
 		]);
 
 		try {
@@ -207,13 +211,14 @@ class Client
 	 *
 	 * @param  string  $method
 	 * @param  string  $uri
+	 * @param  mixed   $query
 	 * @param  mixed   $body
 	 * @param  boolean $namespace
 	 * @return array
 	 */
-	protected function sendBetaRequest($method, $uri, $body = null, $namespace = true)
+	public function sendBetaRequest($method, $uri, $query = null, $body = null, $namespace = true)
 	{
-		return $this->sendRequest($method, $uri, $body, $namespace, $this->betaApiVersion);
+		return $this->sendRequest($method, $uri, $query, $body, $namespace, $this->betaApiVersion);
 	}
 
 	/**
@@ -223,7 +228,7 @@ class Client
 	 */
 	public function getNodes()
 	{
-		$response = $this->sendRequest('GET', '/nodes', null, false);
+		$response = $this->sendRequest('GET', '/nodes', null, null, false);
 
 		return new NodeCollection($response);
 	}
@@ -236,7 +241,7 @@ class Client
 	 */
 	public function getNode($name)
 	{
-		$response = $this->sendRequest('GET', '/nodes/' . $name, null, false);
+		$response = $this->sendRequest('GET', '/nodes/' . $name, null, null, false);
 
 		return new Node($response);
 	}
@@ -249,7 +254,7 @@ class Client
 	 */
 	public function createNode(Node $node)
 	{
-		$this->sendRequest('POST', '/nodes', $node->getSchema(), false);
+		$this->sendRequest('POST', '/nodes', null, $node->getSchema(), false);
 	}
 
 	/**
@@ -260,7 +265,7 @@ class Client
 	 */
 	public function deleteNode(Node $node)
 	{
-		$this->sendRequest('DELETE', '/nodes/' . $node->getMetadata('name'), null, false);
+		$this->sendRequest('DELETE', '/nodes/' . $node->getMetadata('name'), null, null, false);
 	}
 
 	/**
@@ -309,7 +314,7 @@ class Client
 	 */
 	public function createPod(Pod $pod)
 	{
-		$this->sendRequest('POST', '/pods', $pod->getSchema());
+		$this->sendRequest('POST', '/pods', null, $pod->getSchema());
 	}
 
 	/**
@@ -320,7 +325,7 @@ class Client
 	 */
 	public function updatePod(Pod $pod)
 	{
-		$this->sendRequest('PUT', '/pods/' . $pod->getMetadata('name'), $pod->getSchema());
+		$this->sendRequest('PUT', '/pods/' . $pod->getMetadata('name'), null, $pod->getSchema());
 	}
 
 	/**
@@ -367,7 +372,7 @@ class Client
 	 */
 	public function createReplicationController(ReplicationController $replicationController)
 	{
-		$this->sendRequest('POST', '/replicationcontrollers', $replicationController->getSchema());
+		$this->sendRequest('POST', '/replicationcontrollers', null, $replicationController->getSchema());
 	}
 
 	/**
@@ -378,7 +383,7 @@ class Client
 	 */
 	public function updateReplicationController(ReplicationController $replicationController)
 	{
-		$this->sendRequest('PUT', '/replicationcontrollers/' . $replicationController->getMetadata('name'), $replicationController->getSchema());
+		$this->sendRequest('PUT', '/replicationcontrollers/' . $replicationController->getMetadata('name'), null, $replicationController->getSchema());
 	}
 
 	/**
@@ -425,7 +430,7 @@ class Client
 	 */
 	public function createService(Service $service)
 	{
-		$this->sendRequest('POST', '/services', $service->getSchema());
+		$this->sendRequest('POST', '/services', null, $service->getSchema());
 	}
 
 	/**
@@ -436,7 +441,7 @@ class Client
 	 */
 	public function updateService(Service $service)
 	{
-		$this->sendRequest('PUT', '/services/' . $service->getMetadata('name'), $service->getSchema());
+		$this->sendRequest('PUT', '/services/' . $service->getMetadata('name'), null, $service->getSchema());
 	}
 
 	/**
@@ -483,7 +488,7 @@ class Client
 	 */
 	public function createSecret(Secret $secret)
 	{
-		$this->sendRequest('POST', '/secrets', $secret->getSchema());
+		$this->sendRequest('POST', '/secrets', null, $secret->getSchema());
 	}
 
 
@@ -495,7 +500,7 @@ class Client
 	 */
 	public function updateSecret(Secret $secret)
 	{
-		$this->sendRequest('PUT', '/secrets/' . $secret->getMetadata('name'), $secret->getSchema());
+		$this->sendRequest('PUT', '/secrets/' . $secret->getMetadata('name'), null, $secret->getSchema());
 	}
 
 	/**
@@ -542,7 +547,7 @@ class Client
 	 */
 	public function createDeployment(Deployment $deployment)
 	{
-		$this->sendBetaRequest('POST', '/deployments', $deployment->getSchema());
+		$this->sendBetaRequest('POST', '/deployments', null, $deployment->getSchema());
 	}
 
 	/**
@@ -553,7 +558,7 @@ class Client
 	 */
 	public function updateDeployment(Deployment $deployment)
 	{
-		$this->sendBetaRequest('PUT', '/deployments/' . $deployment->getMetadata('name'), $deployment->getSchema());
+		$this->sendBetaRequest('PUT', '/deployments/' . $deployment->getMetadata('name'), null, $deployment->getSchema());
 	}
 
 	/**
@@ -600,7 +605,7 @@ class Client
 	 */
 	public function createJob(Job $job)
 	{
-		$this->sendBetaRequest('POST', '/jobs', $job->getSchema());
+		$this->sendBetaRequest('POST', '/jobs', null, $job->getSchema());
 	}
 
 	/**
@@ -611,7 +616,7 @@ class Client
 	 */
 	public function updateJob(Job $job)
 	{
-		$this->sendBetaRequest('PUT', '/jobs/' . $job->getMetadata('name'), $job->getSchema());
+		$this->sendBetaRequest('PUT', '/jobs/' . $job->getMetadata('name'), null, $job->getSchema());
 	}
 
 	/**
@@ -623,5 +628,32 @@ class Client
 	public function deleteJob(Job $job)
 	{
 		$this->sendBetaRequest('DELETE', '/jobs/' . $job->getMetadata('name'));
+	}
+
+	public function __call($name, $args)
+	{
+		$map = [
+			// v1
+			'nodes'                  => 'Repositories\NodeRepository',
+			'pods'                   => 'Repositories\PodRepository',
+			'replicationControllers' => 'Repositories\ReplicationControllerRepository',
+			'services'               => 'Repositories\ServiceRepository',
+			'secrets'                => 'Repositories\SecretRepository',
+			'events'                 => 'Repositories\EventRepository',
+			
+			// extensions/v1beta1
+			'deployments'            => 'Repositories\DeploymentRepository',
+			'jobs'                   => 'Repositories\JobRepository',
+		];
+
+		$instances = [];
+
+		if (isset($map[$name])) {
+			$class = 'Maclof\Kubernetes\\' . $map[$name];
+
+			return isset($instances[$name]) ? $instances[$name] : new $class($this);
+		}
+
+		throw new BadMethodCallException('No client methods exist with the name: ' . $name);
 	}
 }

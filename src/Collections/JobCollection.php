@@ -1,8 +1,8 @@
 <?php namespace Maclof\Kubernetes\Collections;
 
-use Maclof\Kubernetes\Models\Deployment;
+use Maclof\Kubernetes\Models\Job;
 
-class DeploymentCollection extends Collection
+class JobCollection extends Collection
 {
 	/**
 	 * The constructor.
@@ -11,19 +11,19 @@ class DeploymentCollection extends Collection
 	 */
 	public function __construct(array $data)
 	{
-		parent::__construct($this->getDeployments($data['items']));
+		parent::__construct($this->getJobs($data['items']));
 	}
 
 	/**
-	 * Get an array of deployments.
+	 * Get an array of jobs.
 	 *
 	 * @param  array  $items
 	 * @return array
 	 */
-	protected function getDeployments(array $items)
+	protected function getJobs(array $items)
 	{
 		foreach ($items as &$item) {
-			$item = new Deployment($item);
+			$item = new Job($item);
 		}
 
 		return $items;
