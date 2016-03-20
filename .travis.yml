@@ -7,4 +7,9 @@ php:
 
 install: travis_retry composer install --no-interaction --prefer-source
 
-script: phpunit
+script:
+  - mkdir -p build/logs
+  - php vendor/bin/phpunit
+
+after_success:
+  - travis_retry php vendor/bin/coveralls -v

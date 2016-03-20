@@ -20,10 +20,12 @@ class ClientTest extends TestCase
 {
 	protected function getClient(GuzzleClient $guzzleClient = null)
 	{
-		return new Client([
+		return new Client(
+			[
 			'master' => '',
-		],
-		$guzzleClient);
+			],
+			$guzzleClient
+		);
 	}
 
 	protected function getMockGuzzleCLient(RequestInterface $guzzleRequest = null, ResponseInterface $guzzleResponse = null)
@@ -71,7 +73,7 @@ class ClientTest extends TestCase
 		]);
 		$mockGuzzleClient = $this->getMockGuzzleCLient($request, $response);
 		$mockGuzzleClient->shouldReceive('createRequest')
-			->with('GET', '/api/' . $this->apiVersion . '/namespaces/' . $this->namespace . '/pods', ['body' => null])
+			->with('GET', '/api/' . $this->apiVersion . '/namespaces/' . $this->namespace . '/pods', ['query' => [], 'body' => null])
 			->andReturn($request);
 
 		$client = $this->getClient($mockGuzzleClient);
