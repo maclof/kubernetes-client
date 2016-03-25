@@ -22,7 +22,7 @@ class PodCollectionTest extends TestCase
 	public function test_get_items()
 	{
 		$podCollection = $this->getPodCollection();
-		$items = $podCollection->getItems();
+		$items = $podCollection->toArray();
 
 		$this->assertTrue(is_array($items));
 		$this->assertEquals(3, count($items));

@@ -11,11 +11,6 @@ use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Message\RequestInterface;
 use GuzzleHttp\Message\ResponseInterface;
 
-function dd()
-{
-	die(var_dump(func_get_args()));
-}
-
 class ClientTest extends TestCase
 {
 	protected function getClient(GuzzleClient $guzzleClient = null)

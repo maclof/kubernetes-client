@@ -22,7 +22,7 @@ class NodeCollectionTest extends TestCase
 	public function test_get_items()
 	{
 		$nodeCollection = $this->getNodeCollection();
-		$items = $nodeCollection->getItems();
+		$items = $nodeCollection->toArray();
 
 		$this->assertTrue(is_array($items));
 		$this->assertEquals(3, count($items));
