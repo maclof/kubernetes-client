@@ -93,6 +93,7 @@ class Client
 		// v1
 		'nodes'                  => 'Repositories\NodeRepository',
 		'pods'                   => 'Repositories\PodRepository',
+		'replicaSets'            => 'Repositories\ReplicaSetRepository',
 		'replicationControllers' => 'Repositories\ReplicationControllerRepository',
 		'services'               => 'Repositories\ServiceRepository',
 		'secrets'                => 'Repositories\SecretRepository',
