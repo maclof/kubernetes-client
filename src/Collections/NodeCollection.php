@@ -11,7 +11,7 @@ class NodeCollection extends Collection
 	 */
 	public function __construct(array $data)
 	{
-		parent::__construct($this->getNodes($data['items']));
+		parent::__construct($this->getNodes(isset($data['items']) ? $data['items'] : []));
 	}
 
 	/**

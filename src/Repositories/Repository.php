@@ -188,5 +188,17 @@ abstract class Repository
 		return $this->find()->first();
 	}
 
+	/**
+	 * Check if an item exists by name.
+	 *
+	 * @param  string $name
+	 * @return boolean
+	 */
+	public function exists($name)
+	{
+		$this->resetParameters();
+		return !is_null($this->setFieldSelector(['metadata.name' => $name])->first());
+	}
+
 	abstract protected function createCollection($response);
 }

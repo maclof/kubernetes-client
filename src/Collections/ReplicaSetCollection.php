@@ -11,7 +11,7 @@ class ReplicaSetCollection extends Collection
 	 */
 	public function __construct(array $data)
 	{
-		parent::__construct($this->getReplicaSets($data['items']));
+		parent::__construct($this->getReplicaSets(isset($data['items']) ? $data['items'] : []));
 	}
 
 	/**

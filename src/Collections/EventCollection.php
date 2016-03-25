@@ -11,7 +11,7 @@ class EventCollection extends Collection
 	 */
 	public function __construct(array $data)
 	{
-		parent::__construct($this->getEvents($data['items']));
+		parent::__construct($this->getEvents(isset($data['items']) ? $data['items'] : []));
 	}
 
 	/**

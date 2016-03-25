@@ -6,17 +6,17 @@ class PodCollection extends Collection
 {
 	/**
 	 * The constructor.
-	 * 
+	 *
 	 * @param array $data
 	 */
 	public function __construct(array $data)
 	{
-		parent::__construct($this->getPods($data['items']));
+		parent::__construct($this->getPods(isset($data['items']) ? $data['items'] : []));
 	}
 
 	/**
 	 * Get an array of pods.
-	 * 
+	 *
 	 * @param  array  $items
 	 * @return array
 	 */

@@ -6,17 +6,17 @@ class ReplicationControllerCollection extends Collection
 {
 	/**
 	 * The constructor.
-	 * 
+	 *
 	 * @param array $data
 	 */
 	public function __construct(array $data)
 	{
-		parent::__construct($this->getReplicationControllers($data['items']));
+		parent::__construct($this->getReplicationControllers(isset($data['items']) ? $data['items'] : []));
 	}
 
 	/**
 	 * Get an array of replication controllers.
-	 * 
+	 *
 	 * @param  array  $items
 	 * @return array
 	 */

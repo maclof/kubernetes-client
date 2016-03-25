@@ -6,17 +6,17 @@ class ServiceCollection extends Collection
 {
 	/**
 	 * The constructor.
-	 * 
+	 *
 	 * @param array $data
 	 */
 	public function __construct(array $data)
 	{
-		parent::__construct($this->getServices($data['items']));
+		parent::__construct($this->getServices(isset($data['items']) ? $data['items'] : []));
 	}
 
 	/**
 	 * Get an array of services.
-	 * 
+	 *
 	 * @param  array  $items
 	 * @return array
 	 */

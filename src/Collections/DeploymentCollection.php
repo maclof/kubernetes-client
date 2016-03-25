@@ -11,7 +11,7 @@ class DeploymentCollection extends Collection
 	 */
 	public function __construct(array $data)
 	{
-		parent::__construct($this->getDeployments($data['items']));
+		parent::__construct($this->getDeployments(isset($data['items']) ? $data['items'] : []));
 	}
 
 	/**

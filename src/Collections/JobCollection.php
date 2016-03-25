@@ -11,7 +11,7 @@ class JobCollection extends Collection
 	 */
 	public function __construct(array $data)
 	{
-		parent::__construct($this->getJobs($data['items']));
+		parent::__construct($this->getJobs(isset($data['items']) ? $data['items'] : []));
 	}
 
 	/**

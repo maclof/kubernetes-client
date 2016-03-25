@@ -11,7 +11,7 @@ class SecretCollection extends Collection
 	 */
 	public function __construct(array $data)
 	{
-		parent::__construct($this->getSecrets($data['items']));
+		parent::__construct($this->getSecrets(isset($data['items']) ? $data['items'] : []));
 	}
 
 	/**
