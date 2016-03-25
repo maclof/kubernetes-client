@@ -66,6 +66,22 @@ abstract class Repository
 	}
 
 	/**
+	 * Update a model.
+	 *
+	 * @param  \Maclof\Kubernetes\Models\Model $model
+	 * @return boolean
+	 */
+	public function update(Model $model)
+	{
+		if ($this->beta) {
+			$this->client->sendBetaRequest('PUT', '/' . $this->uri . '/' . $model->getMetadata('name'), null, $model->getSchema());
+		} else {
+			$this->client->sendRequest('PUT', '/' . $this->uri . '/' . $model->getMetadata('name'), null, $model->getSchema());
+		}
+		return true;
+	}
+
+	/**
 	 * Delete a model.
 	 *
 	 * @param  \Maclof\Kubernetes\Models\Model $model
