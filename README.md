@@ -33,7 +33,7 @@ $pods = $client->pods()->setLabelSelector([
 // Find pods by field selector
 $pods = $client->pods()->setFieldSelector([
 	'metadata.name' => 'test',
-]);
+])->find();
 
 // Find first pod with label selector (same for field selector)
 $pod = $client->pods()->setLabelSelector([

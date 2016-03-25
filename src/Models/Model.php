@@ -44,6 +44,17 @@ abstract class Model
 	}
 
 	/**
+	 * Get some metadata.
+	 *
+	 * @param  string $key
+	 * @return string
+	 */
+	public function getMetadata($key)
+	{
+		return isset($this->attributes['metadata'][$key]) ? $this->attributes['metadata'][$key] : null;
+	}
+
+	/**
 	 * Get the schema.
 	 *
 	 * @return string
@@ -59,13 +70,12 @@ abstract class Model
 	}
 
 	/**
-	 * Get some metadata.
+	 * Get the model as a string.
 	 *
-	 * @param  string $key
 	 * @return string
 	 */
-	public function getMetadata($key)
+	public function __toString()
 	{
-		return isset($this->attributes['metadata'][$key]) ? $this->attributes['metadata'][$key] : null;
+		return $this->getSchema();
 	}
 }

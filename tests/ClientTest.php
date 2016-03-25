@@ -77,13 +77,8 @@ class ClientTest extends TestCase
 			->andReturn($request);
 
 		$client = $this->getClient($mockGuzzleClient);
-		$pods = $client->getPods();
+		$pods = $client->pods()->find();
 
 		$this->assertInstanceOf(PodCollection::class, $pods);
-	}
-
-	public function test_create_pod()
-	{
-		$this->assertTrue(true);
 	}
 }

@@ -1,5 +1,7 @@
 <?php namespace Maclof\Kubernetes\Repositories;
 
+use Maclof\Kubernetes\Models\Model;
+
 abstract class Repository
 {
 	/**
@@ -45,6 +47,49 @@ abstract class Repository
 	public function __construct($client)
 	{
 		$this->client = $client;
+	}
+
+	/**
+	 * Create a new model.
+	 *
+	 * @param  \Maclof\Kubernetes\Models\Model $model
+	 * @return boolean
+	 */
+	public function create(Model $model)
+	{
+		if ($this->beta) {
+			$this->client->sendBetaRequest('POST', '/' . $this->uri, null, $model->getSchema());
+		} else {
+			$this->client->sendRequest('POST', '/' . $this->uri, null, $model->getSchema());
+		}
+		return true;
+	}
+
+	/**
+	 * Delete a model.
+	 *
+	 * @param  \Maclof\Kubernetes\Models\Model $model
+	 * @return boolean
+	 */
+	public function delete(Model $model)
+	{
+		return $this->deleteByName($model->getMetadata('name'));
+	}
+
+	/**
+	 * Delete a model by name.
+	 *
+	 * @param  string $name
+	 * @return boolean
+	 */
+	public function deleteByName($name)
+	{
+		if ($this->beta) {
+			$this->client->sendBetaRequest('DELETE', '/' . $this->uri . '/' . $name);
+		} else {
+			$this->client->sendRequest('DELETE', '/' . $this->uri . '/' . $name);
+		}
+		return true;
 	}
 
 	/**
