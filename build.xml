@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="client" default="quick-build">
+	<property name="phpunit" value="${basedir}/vendor/bin/phpunit"/>
+
+	<target name="quick-build"
+		depends="prepare,composer,lint,phpunit-no-coverage"
+		description="Performs a lint check and runs the tests (without generating code coverage reports)"/>
+
+	<target name="clean" unless="clean.done" description="Cleanup build artifacts">
+		<delete dir="${basedir}/build/coverage"/>
+		<delete dir="${basedir}/build/logs"/>
+		<property name="clean.done" value="true"/>
+	</target>
+
+	<target name="prepare" unless="prepare.done" depends="clean" description="Prepare for build">
+		<mkdir dir="${basedir}/build/coverage"/>
+		<mkdir dir="${basedir}/build/logs"/>
+		<property name="prepare.done" value="true"/>
+	</target>
+
+	<target name="composer" description="Install composer dependencies">
+		<exec executable="composer" failonerror="true">
+			<arg value="install" />
+			<arg value="--dev" />
+			<arg value="--prefer-dist" />
+			<arg value="--no-progress" />
+		</exec>
+	</target>
+
+	<target name="lint" unless="lint.done" description="Perform syntax check of sourcecode files">
+		<apply executable="php" taskname="lint">
+			<arg value="-l" />
+
+			<fileset dir="${basedir}/src">
+				<include name="**/*.php" />
+				<modified />
+			</fileset>
+
+			<fileset dir="${basedir}/tests">
+				<include name="**/*.php" />
+				<modified />
+			</fileset>
+		</apply>
+
+		<property name="lint.done" value="true"/>
+	</target>
+
+	<target name="phpunit" unless="phpunit.done" depends="prepare" description="Run unit tests with PHPUnit">
+		<exec executable="${phpunit}" resultproperty="result.phpunit" taskname="phpunit">
+			<arg value="--configuration"/>
+			<arg path="${basedir}/phpunit.xml"/>
+		</exec>
+
+		<property name="phpunit.done" value="true"/>
+	</target>
+
+	<target name="phpunit-no-coverage" unless="phpunit.done" depends="prepare"
+		description="Run unit tests with PHPUnit (without generating code coverage reports)">
+		<exec executable="${phpunit}" failonerror="true" taskname="phpunit">
+			<arg value="--configuration"/>
+			<arg path="${basedir}/phpunit.xml"/>
+			<arg value="--no-coverage"/>
+		</exec>
+
+		<property name="phpunit.done" value="true"/>
+	</target>
+
+	<target name="-check-failure">
+		<fail message="PHPUnit did not finish successfully">
+			<condition>
+				<not>
+					<equals arg1="${result.phpunit}" arg2="0"/>
+				</not>
+			</condition>
+		</fail>
+	</target>
+</project>
