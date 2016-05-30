@@ -1,0 +1,4 @@
+{
+    "kind": "Ingress",
+    "apiVersion": "extensions\/v1beta1"
+}

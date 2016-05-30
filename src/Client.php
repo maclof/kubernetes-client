@@ -103,6 +103,7 @@ class Client
 		// extensions/v1beta1
 		'deployments'            => 'Repositories\DeploymentRepository',
 		'jobs'                   => 'Repositories\JobRepository',
+		'ingresses'              => 'Repositories\IngressRepository',
 	];
 
 	/**
