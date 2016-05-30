@@ -1,4 +1,5 @@
 # Kubernetes Client
+[![Build Status](http://46.101.83.122:9090/buildStatus/icon?job=kubernetes-client)](http://46.101.83.122:9090/job/kubernetes-client)
 
 A PHP client for managing a Kubernetes cluster.
 
