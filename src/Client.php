@@ -2,8 +2,9 @@
 
 use BadMethodCallException;
 use GuzzleHttp\Client as GuzzleClient;
-use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ParseException;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Psr7\Request as GuzzleRequest;
 use Maclof\Kubernetes\Collections\NodeCollection;
 use Maclof\Kubernetes\Collections\PodCollection;
 use Maclof\Kubernetes\Collections\ReplicationControllerCollection;
@@ -155,6 +156,26 @@ class Client
 	}
 
 	/**
+	 * Check if we're using guzzle 6.
+	 * 
+	 * @return boolean
+	 */
+	protected function isGuzzle6()
+	{
+		$composer = json_decode(file_get_contents(base_path('composer.lock')), true);
+		
+		foreach ($composer['packages'] as $package) {
+			if ($package['name'] != 'guzzlehttp/guzzle') {
+				continue;
+			}
+
+			return preg_match('/6.+/', $package['version']) === 1;
+		}
+
+		return false;
+	}
+
+	/**
 	 * Create the guzzle client.
 	 *
 	 * @return \GuzzleHttp\Client
@@ -162,27 +183,32 @@ class Client
 	protected function createGuzzleClient()
 	{
 		$options = [
-			'base_url' => $this->master,
-
-			'defaults' => [
-				'headers' => [
-					'Content-Type' => 'application/json',
-				],
+			'headers' => [
+				'Content-Type' => 'application/json',
 			],
 		];
 
 		if ($this->caCert) {
-			$options['defaults']['verify']  = $this->caCert;
+			$options['verify']  = $this->caCert;
 		}
 		if ($this->clientCert) {
-			$options['defaults']['cert']    = $this->clientCert;
+			$options['cert']    = $this->clientCert;
 		}
 		if ($this->clientKey) {
-			$options['defaults']['ssl_key'] = $this->clientKey;
+			$options['ssl_key'] = $this->clientKey;
 		}
 		if ($this->token && file_exists($this->token)) {
-			$options['defaults']['headers']['Authorization'] = 'Bearer ' . file_get_contents($this->token);
+			$options['headers']['Authorization'] = 'Bearer ' . file_get_contents($this->token);
 		}
+
+		if (!$this->isGuzzle6()){
+			return new GuzzleClient([
+				'base_url' => $this->master,
+				'defaults' => $options,
+			]);
+		}
+
+		$options['base_uri'] = $this->master;
 
 		return new GuzzleClient($options);
 	}
@@ -202,37 +228,43 @@ class Client
 	 *
 	 * @param  string  $method
 	 * @param  string  $uri
-	 * @param  mixed   $query
-	 * @param  mixed   $body
+	 * @param  array   $query
+	 * @param  array   $body
 	 * @param  boolean $namespace
 	 * @param  string  $apiVersion
 	 * @return array
 	 */
-	public function sendRequest($method, $uri, $query = null, $body = null, $namespace = true, $apiVersion = null)
+	public function sendRequest($method, $uri, $query = [], $body = [], $namespace = true, $apiVersion = null)
 	{
 		$baseUri = $apiVersion ? '/apis/' . $apiVersion : '/api/' . $this->apiVersion;
 		if ($namespace) {
 			$baseUri .= '/namespaces/' . $this->namespace;
 		}
 
-		$requestUrl = $baseUri . $uri;
-
-		$request = $this->guzzleClient->createRequest($method, $requestUrl, [
+		$requestUri = $baseUri . $uri;
+		$requestOptions = [
 			'query' => is_array($query) ? $query : [],
 			'body'  => $body,
-		]);
+		];
 
-		try {
-			$response = $this->guzzleClient->send($request);
-		} catch (ClientException $e) {
-			throw new BadRequestException($e->getMessage());
+		if (!$this->isGuzzle6()) {
+			try {
+				$request = $this->guzzleClient->createRequest($method, $requestUri, $requestOptions);
+				$response = $this->guzzleClient->send($request);
+			} catch (ClientException $e) {
+				throw new BadRequestException($e->getMessage());
+			}
+
+			try {
+				return $response->json();
+			} catch (ParseException $e) {
+				return (string) $response->getBody();
+			}
 		}
 
-		try {
-			return $response->json();
-		} catch (ParseException $e) {
-			return (string) $response->getBody();
-		}
+		$response = $this->guzzleClient->request($method, $requestUri, $requestOptions);
+
+		return json_decode((string) $response->getBody(), true);
 	}
 
 	/**
@@ -245,7 +277,7 @@ class Client
 	 * @param  boolean $namespace
 	 * @return array
 	 */
-	public function sendBetaRequest($method, $uri, $query = null, $body = null, $namespace = true)
+	public function sendBetaRequest($method, $uri, $query = [], $body = [], $namespace = true)
 	{
 		return $this->sendRequest($method, $uri, $query, $body, $namespace, $this->betaApiVersion);
 	}
