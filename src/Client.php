@@ -264,7 +264,10 @@ class Client
 
 		$response = $this->guzzleClient->request($method, $requestUri, $requestOptions);
 
-		return json_decode((string) $response->getBody(), true);
+		$bodyResponse = (string) $response->getBody();
+		$jsonResponse = json_decode($bodyResponse, true);
+
+		return is_array($jsonResponse) ? $jsonResponse : $bodyResponse;
 	}
 
 	/**
