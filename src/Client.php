@@ -244,7 +244,7 @@ class Client
 		$requestUri = $baseUri . $uri;
 		$requestOptions = [
 			'query' => is_array($query) ? $query : [],
-			'body'  => $body,
+			'body'  => is_array($body) ? json_encode($body) : null,
 		];
 
 		if (!$this->isGuzzle6()) {
