@@ -229,7 +229,7 @@ class Client
 	 * @param  string  $method
 	 * @param  string  $uri
 	 * @param  array   $query
-	 * @param  array   $body
+	 * @param  mixed   $body
 	 * @param  boolean $namespace
 	 * @param  string  $apiVersion
 	 * @return array
@@ -244,7 +244,7 @@ class Client
 		$requestUri = $baseUri . $uri;
 		$requestOptions = [
 			'query' => is_array($query) ? $query : [],
-			'body'  => is_array($body) ? json_encode($body) : null,
+			'body'  => is_array($body) ? json_encode($body) : $body,
 		];
 
 		if (!$this->isGuzzle6()) {
