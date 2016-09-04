@@ -65,11 +65,25 @@ class Client
 	protected $clientKey;
 
 	/**
-	 * The token.
+	 * The servide account token.
 	 *
 	 * @var string
 	 */
 	protected $token;
+
+	/**
+	 * The username for basic auth.
+	 * 
+	 * @var string
+	 */
+	protected $username;
+
+	/**
+	 * The password for basic auth.
+	 * 
+	 * @var string
+	 */
+	protected $password;
 
 	/**
 	 * The namespace.
@@ -150,6 +164,12 @@ class Client
 		if (isset($options['token'])) {
 			$this->token = $options['token'];
 		}
+		if (isset($options['username'])) {
+			$this->username = $options['username'];
+		}
+		if (isset($options['password'])) {
+			$this->password = $options['password'];
+		}
 		if (isset($options['namespace'])) {
 			$this->namespace = $options['namespace'];
 		}
@@ -189,16 +209,22 @@ class Client
 		];
 
 		if ($this->caCert) {
-			$options['verify']  = $this->caCert;
+			$options['verify'] = $this->caCert;
 		}
 		if ($this->clientCert) {
-			$options['cert']    = $this->clientCert;
+			$options['cert'] = $this->clientCert;
 		}
 		if ($this->clientKey) {
 			$options['ssl_key'] = $this->clientKey;
 		}
-		if ($this->token && file_exists($this->token)) {
-			$options['headers']['Authorization'] = 'Bearer ' . file_get_contents($this->token);
+		if ($this->token) {
+			$options['headers']['Authorization'] = 'Bearer ' . $this->token;
+		}
+		if ($this->username && $this->password) {
+			$options['auth'] = [
+				$this->username,
+				$this->password,
+			];
 		}
 
 		if (!$this->isGuzzle6()){
