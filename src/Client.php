@@ -175,25 +175,6 @@ class Client
 		}
 	}
 
-	/**
-	 * Check if we're using guzzle 6.
-	 * 
-	 * @return boolean
-	 */
-	protected function isGuzzle6()
-	{
-		$composer = json_decode(file_get_contents(base_path('composer.lock')), true);
-		
-		foreach ($composer['packages'] as $package) {
-			if ($package['name'] != 'guzzlehttp/guzzle') {
-				continue;
-			}
-
-			return preg_match('/6.+/', $package['version']) === 1;
-		}
-
-		return false;
-	}
 
 	/**
 	 * Create the guzzle client.
@@ -227,12 +208,6 @@ class Client
 			];
 		}
 
-		if (!$this->isGuzzle6()){
-			return new GuzzleClient([
-				'base_url' => $this->master,
-				'defaults' => $options,
-			]);
-		}
 
 		$options['base_uri'] = $this->master;
 
@@ -272,21 +247,6 @@ class Client
 			'query' => is_array($query) ? $query : [],
 			'body'  => is_array($body) ? json_encode($body) : $body,
 		];
-
-		if (!$this->isGuzzle6()) {
-			try {
-				$request = $this->guzzleClient->createRequest($method, $requestUri, $requestOptions);
-				$response = $this->guzzleClient->send($request);
-			} catch (ClientException $e) {
-				throw new BadRequestException($e->getMessage());
-			}
-
-			try {
-				return $response->json();
-			} catch (ParseException $e) {
-				return (string) $response->getBody();
-			}
-		}
 
 		$response = $this->guzzleClient->request($method, $requestUri, $requestOptions);
 
