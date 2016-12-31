@@ -20,6 +20,7 @@ $ composer require maclof/kubernetes-client
 * Secrets
 * Events
 * Config Maps
+* Endpoints
 
 ### extensions/v1beta1
 * Deployments
