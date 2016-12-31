@@ -120,12 +120,14 @@ $replicationController = new ReplicationController([
 			],
 			'spec' => [
 				'containers' => [
-					'name'  => 'nginx',
-					'image' => 'nginx',
-					'ports' => [
-						[
-							'containerPort' => 80,
-							'protocol'      => 'TCP',
+					[
+						'name'  => 'nginx',
+						'image' => 'nginx',
+						'ports' => [
+							[
+								'containerPort' => 80,
+								'protocol'      => 'TCP',
+							],
 						],
 					],
 				],
