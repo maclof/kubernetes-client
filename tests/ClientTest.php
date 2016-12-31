@@ -1,12 +1,6 @@
 <?php
 
 use Maclof\Kubernetes\Client;
-use Maclof\Kubernetes\Collections\PodCollection;
-use Maclof\Kubernetes\Collections\ReplicationControllerCollection;
-use Maclof\Kubernetes\Collections\ServiceCollection;
-use Maclof\Kubernetes\Models\Pod;
-use Maclof\Kubernetes\Models\ReplicationController;
-use Maclof\Kubernetes\Models\Service;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Message\RequestInterface;
 use GuzzleHttp\Message\ResponseInterface;
@@ -17,7 +11,7 @@ class ClientTest extends TestCase
 	{
 		return new Client(
 			[
-			'master' => '',
+				'master' => '',
 			],
 			$guzzleClient
 		);
@@ -25,7 +19,7 @@ class ClientTest extends TestCase
 
 	protected function getMockGuzzleCLient(RequestInterface $guzzleRequest = null, ResponseInterface $guzzleResponse = null)
 	{
-		$mockGuzzleClient = Mockery::mock(GuzzleClient::class);
+		$mockGuzzleClient = Mockery::mock('GuzzleHttp\Client');
 
 		if ($guzzleRequest && $guzzleResponse) {
 			$mockGuzzleClient->shouldReceive('send')->with($guzzleRequest)->andReturn($guzzleResponse);
@@ -36,14 +30,14 @@ class ClientTest extends TestCase
 
 	protected function getMockGuzzleRequest()
 	{
-		$mockGuzzleRequest = Mockery::mock(RequestInterface::class);
+		$mockGuzzleRequest = Mockery::mock('GuzzleHttp\Message\RequestInterface');
 
 		return $mockGuzzleRequest;
 	}
 
 	protected function getMockGuzzleResponse(array $response = array())
 	{
-		$mockGuzzleResponse = Mockery::mock(ResponseInterface::class);
+		$mockGuzzleResponse = Mockery::mock('GuzzleHttp\Message\ResponseInterface');
 		$mockGuzzleResponse->shouldReceive('json')->with()->andReturn($response);
 
 		return $mockGuzzleResponse;
@@ -53,7 +47,7 @@ class ClientTest extends TestCase
 	{
 		$client = $this->getClient();
 
-		$this->assertInstanceOf(GuzzleClient::class, $client->getGuzzleClient());
+		$this->assertInstanceOf('GuzzleHttp\Client', $client->getGuzzleClient());
 	}
 
 	// public function test_get_pods()
@@ -74,6 +68,6 @@ class ClientTest extends TestCase
 	// 	$client = $this->getClient($mockGuzzleClient);
 	// 	$pods = $client->pods()->find();
 
-	// 	$this->assertInstanceOf(PodCollection::class, $pods);
+	// 	$this->assertInstanceOf('Maclof\Kubernetes\Collections\PodCollection', $pods);
 	// }
 }
