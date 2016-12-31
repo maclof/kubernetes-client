@@ -17,6 +17,13 @@ abstract class Model
 	protected $apiVersion = 'v1';
 
 	/**
+	 * Whether or not the kind is plural.
+	 * 
+	 * @var boolean
+	 */
+	protected $pluralKind = false;
+
+	/**
 	 * The attributes.
 	 *
 	 * @var array
@@ -62,6 +69,10 @@ abstract class Model
 	public function getSchema()
 	{
 		$this->schema['kind'] = basename(str_replace('\\', '/', get_class($this)));
+		if ($this->pluralKind) {
+			$this->schema['kind'] .= 's';
+		}
+
 		$this->schema['apiVersion'] = $this->apiVersion;
 
 		$schema = array_merge($this->schema, $this->toArray());

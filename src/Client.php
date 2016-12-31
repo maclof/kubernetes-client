@@ -115,6 +115,7 @@ class Client
 		'secrets'                => 'Repositories\SecretRepository',
 		'events'                 => 'Repositories\EventRepository',
 		'configMaps'             => 'Repositories\ConfigMapRepository',
+		'endpoints'              => 'Repositories\EndpointRepository',
 		
 		// extensions/v1beta1
 		'deployments'            => 'Repositories\DeploymentRepository',
@@ -181,7 +182,7 @@ class Client
 	 * 
 	 * @return boolean
 	 */
-	protected function isGuzzle6()
+	protected function isUsingGuzzle6()
 	{
 		return version_compare(GuzzleClientInterface::VERSION, '6') === 1;
 	}
@@ -218,7 +219,7 @@ class Client
 			];
 		}
 
-		if (!$this->isGuzzle6()){
+		if (!$this->isUsingGuzzle6()){
 			return new GuzzleClient([
 				'base_url' => $this->master,
 				'defaults' => $options,
@@ -264,7 +265,7 @@ class Client
 			'body'  => is_array($body) ? json_encode($body) : $body,
 		];
 
-		if (!$this->isGuzzle6()) {
+		if (!$this->isUsingGuzzle6()) {
 			try {
 				$request = $this->guzzleClient->createRequest($method, $requestUri, $requestOptions);
 				$response = $this->guzzleClient->send($request);
