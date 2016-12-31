@@ -3,6 +3,8 @@
 
 A PHP client for managing a Kubernetes cluster.
 
+Last tested with 1.4.6 on Google Container Engine and 1.5.1 on Custom CoreOS Cluster.
+
 
 ## Installation using [Composer](http://getcomposer.org/)
 
@@ -10,7 +12,7 @@ A PHP client for managing a Kubernetes cluster.
 $ composer require maclof/kubernetes-client
 ```
 
-## Supported api features
+## Supported API Features
 ### v1
 * Nodes
 * Pods
@@ -28,7 +30,7 @@ $ composer require maclof/kubernetes-client
 * Ingresses
 
 
-## Basic usage
+## Basic Usage
 
 ```php
 <?php
@@ -56,13 +58,93 @@ $pods = $client->pods()->setFieldSelector([
 $pod = $client->pods()->setLabelSelector([
 	'name' => 'test',
 ])->first();
-
-// Find various resources (most support label / field selectors)
-$nodes = $client->nodes()->find();
-$replicationControllers = $client->replicationControllers()->find();
-$services = $client->services()->find();
-$secrets = $client->secrets()->find();
-$jobs = $client->jobs()->find();
-$deployments = $client->deployments()->find();
 ```
 
+## Authentication Examples
+
+### Insecure HTTP
+```php
+$client = new Client([
+	'master' => 'http://master.mycluster.com',
+]);
+```
+
+### Using TLS Certificates (Client Certificate Validation)
+```php
+$client = new Client([
+	'master'      => 'https://master.mycluster.com',
+    'ca_cert'     => '/etc/kubernetes/ssl/ca.crt',
+    'client_cert' => '/etc/kubernetes/ssl/client.crt',
+    'client_key'  => '/etc/kubernetes/ssl/client.key',
+]);
+```
+
+### Using Basic Auth
+```php
+$client = new Client([
+	'master'   => 'https://master.mycluster.com',
+    'username' => 'admin',
+    'password' => 'abc123',
+]);
+```
+
+### Using a Service Account
+```php
+$client = new Client([
+	'master'  => 'https://master.mycluster.com',
+	'ca_cert' => '/var/run/secrets/kubernetes.io/serviceaccount/ca.crt',
+	'token'   => '/var/run/secrets/kubernetes.io/serviceaccount/token',
+]);
+```
+
+## Usage Examples
+
+### Create/Update a Replication Controller
+```php
+use Maclof\Kubernetes\Models\ReplicationController;
+
+$replicationController = new ReplicationController([
+	'metadata' => [
+		'name' => 'nginx-test',
+		'labels' => [
+			'name' => 'nginx-test',
+		],
+	],
+	'spec' => [
+		'replicas' => 1,
+		'template' => [
+			'metadata' => [
+				'labels' => [
+					'name' => 'nginx-test',
+				],
+			],
+			'spec' => [
+				'containers' => [
+					'name'  => 'nginx',
+					'image' => 'nginx',
+					'ports' => [
+						[
+							'containerPort' => 80,
+							'protocol'      => 'TCP',
+						],
+					],
+				],
+			],
+		],
+	],
+]);
+
+if ($client->replicationControllers()->exists($replicationController->getMetadata('name'))) {
+	$client->replicationControllers()->update($replicationController);
+} else {
+	$client->replicationControllers()->create($replicationController);
+}
+```
+
+### Delete a Replication Controller
+```php
+$replicationController = $client->replicationControllers()->setLabelSelector([
+	'name' => 'nginx-test',
+])->first();
+$client->replicationControllers()->delete($replicationController);
+```
