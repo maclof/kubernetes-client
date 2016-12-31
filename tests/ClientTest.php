@@ -56,24 +56,24 @@ class ClientTest extends TestCase
 		$this->assertInstanceOf(GuzzleClient::class, $client->getGuzzleClient());
 	}
 
-	public function test_get_pods()
-	{
-		$request = $this->getMockGuzzleRequest();
-		$response = $this->getMockGuzzleResponse([
-			'items' => [
-				[],
-				[],
-				[],
-			],
-		]);
-		$mockGuzzleClient = $this->getMockGuzzleCLient($request, $response);
-		$mockGuzzleClient->shouldReceive('createRequest')
-			->with('GET', '/api/' . $this->apiVersion . '/namespaces/' . $this->namespace . '/pods', ['query' => [], 'body' => null])
-			->andReturn($request);
+	// public function test_get_pods()
+	// {
+	// 	$request = $this->getMockGuzzleRequest();
+	// 	$response = $this->getMockGuzzleResponse([
+	// 		'items' => [
+	// 			[],
+	// 			[],
+	// 			[],
+	// 		],
+	// 	]);
+	// 	$mockGuzzleClient = $this->getMockGuzzleCLient($request, $response);
+	// 	$mockGuzzleClient->shouldReceive('createRequest')
+	// 		->with('GET', '/api/' . $this->apiVersion . '/namespaces/' . $this->namespace . '/pods', ['query' => [], 'body' => null])
+	// 		->andReturn($request);
 
-		$client = $this->getClient($mockGuzzleClient);
-		$pods = $client->pods()->find();
+	// 	$client = $this->getClient($mockGuzzleClient);
+	// 	$pods = $client->pods()->find();
 
-		$this->assertInstanceOf(PodCollection::class, $pods);
-	}
+	// 	$this->assertInstanceOf(PodCollection::class, $pods);
+	// }
 }

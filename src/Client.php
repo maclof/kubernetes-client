@@ -2,6 +2,7 @@
 
 use BadMethodCallException;
 use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\ClientInterface as GuzzleClientInterface;
 use GuzzleHttp\Exception\ParseException;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Psr7\Request as GuzzleRequest;
@@ -182,17 +183,7 @@ class Client
 	 */
 	protected function isGuzzle6()
 	{
-		$composer = json_decode(file_get_contents(base_path('composer.lock')), true);
-		
-		foreach ($composer['packages'] as $package) {
-			if ($package['name'] != 'guzzlehttp/guzzle') {
-				continue;
-			}
-
-			return preg_match('/6.+/', $package['version']) === 1;
-		}
-
-		return false;
+		return version_compare(GuzzleClientInterface::VERSION, '6') === 1;
 	}
 
 	/**

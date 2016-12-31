@@ -1,5 +1,5 @@
 # Kubernetes Client
-[![Build Status](http://46.101.83.122:9090/buildStatus/icon?job=kubernetes-client)](http://46.101.83.122:9090/job/kubernetes-client)
+[![Build Status](https://api.travis-ci.org/maclof/kubernetes-client.svg?branch=master)](https://travis-ci.org/maclof/kubernetes-client)
 
 A PHP client for managing a Kubernetes cluster.
 
@@ -10,7 +10,24 @@ A PHP client for managing a Kubernetes cluster.
 $ composer require maclof/kubernetes-client
 ```
 
-## Usage
+## Supported api features
+### v1
+* Nodes
+* Pods
+* Replica Sets
+* Replication Controllers
+* Services
+* Secrets
+* Events
+* Config Maps
+
+### extensions/v1beta1
+* Deployments
+* Jobs
+* Ingresses
+
+
+## Basic usage
 
 ```php
 <?php
@@ -47,3 +64,4 @@ $secrets = $client->secrets()->find();
 $jobs = $client->jobs()->find();
 $deployments = $client->deployments()->find();
 ```
+
