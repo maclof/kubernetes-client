@@ -260,10 +260,13 @@ class Client
 		}
 
 		$requestUri = $baseUri . $uri;
-		$requestOptions = [
-			'query' => is_array($query) ? $query : [],
-			'body'  => is_array($body) ? json_encode($body) : $body,
-		];
+		$requestOptions = [];
+		if ($method != 'DELETE') {
+			$requestOptions = [
+				'query' => is_array($query) ? $query : [],
+				'body'  => is_array($body) ? json_encode($body) : $body,
+			];
+		}
 
 		if (!$this->isUsingGuzzle6()) {
 			try {
