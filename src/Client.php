@@ -116,6 +116,7 @@ class Client
 		'events'                 => 'Repositories\EventRepository',
 		'configMaps'             => 'Repositories\ConfigMapRepository',
 		'endpoints'              => 'Repositories\EndpointRepository',
+		'persistentVolumeClaims' => 'Repositories\PersistentVolumeClaimRepository',
 		
 		// extensions/v1beta1
 		'deployments'            => 'Repositories\DeploymentRepository',
