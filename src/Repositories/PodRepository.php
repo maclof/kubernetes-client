@@ -35,7 +35,7 @@ class PodRepository extends Repository
 	 */
 	public function exec(Pod $pod, array $options = [])
 	{
-		$response = $this->client->sendRequest('GET', '/' . $this->uri . '/' . $pod->getMetadata('name') . '/exec', $options);
+		$response = $this->client->sendRequest('POST', '/' . $this->uri . '/' . $pod->getMetadata('name') . '/exec', $options);
 
 		return $response;
 	}
