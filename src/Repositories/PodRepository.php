@@ -25,4 +25,18 @@ class PodRepository extends Repository
 
 		return $response;
 	}
+	
+	/**
+	 * Execute a command on a pod.
+	 *
+	 * @param  \Maclof\Kubernetes\Models\Pod $pod
+	 * @param  array $options
+	 * @return string
+	 */
+	public function exec(Pod $pod, array $options = [])
+	{
+		$response = $this->client->sendRequest('GET', '/' . $this->uri . '/' . $pod->getMetadata('name') . '/exec', $options);
+
+		return $response;
+	}
 }
