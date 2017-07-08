@@ -212,8 +212,8 @@ class Client
 		}
 		if ($this->token) {
 			$token = $this->token;
-			if (file_exists($this->token)) {
-				$token = file_get_contents($this->token);
+			if (file_exists($token)) {
+				$token = file_get_contents($token);
 			}
 
 			$options['headers']['Authorization'] = 'Bearer ' . $token;
