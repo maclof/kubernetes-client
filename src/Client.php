@@ -267,11 +267,11 @@ class Client
 
 		$requestUri = $baseUri . $uri;
 		$requestOptions = [];
-		if ($method != 'DELETE') {
-			$requestOptions = [
-				'query' => is_array($query) ? $query : [],
-				'body'  => is_array($body) ? json_encode($body) : $body,
-			];
+		if (is_array($query) && !empty($query)) {
+			$requestOptions['query'] = $query;
+		}
+		if ($body !== null) {
+			$requestOptions['body'] = is_array($body) ? json_encode($body) : $body;
 		}
 
 		if (!$this->isUsingGuzzle6()) {
