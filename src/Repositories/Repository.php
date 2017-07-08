@@ -1,5 +1,6 @@
 <?php namespace Maclof\Kubernetes\Repositories;
 
+use Maclof\Kubernetes\Models\DeleteOptions;
 use Maclof\Kubernetes\Models\Model;
 
 abstract class Repository
@@ -84,26 +85,29 @@ abstract class Repository
 	/**
 	 * Delete a model.
 	 *
-	 * @param  \Maclof\Kubernetes\Models\Model $model
+	 * @param  \Maclof\Kubernetes\Models\Model         $model
+	 * @param  \Maclof\Kubernetes\Models\DeleteOptions $options
 	 * @return boolean
 	 */
-	public function delete(Model $model)
+	public function delete(Model $model, DeleteOptions $options=null)
 	{
-		return $this->deleteByName($model->getMetadata('name'));
+		return $this->deleteByName($model->getMetadata('name'), $options);
 	}
 
 	/**
 	 * Delete a model by name.
 	 *
-	 * @param  string $name
+	 * @param  string                                  $name
+	 * @param  \Maclof\Kubernetes\Models\DeleteOptions $options
 	 * @return boolean
 	 */
-	public function deleteByName($name)
+	public function deleteByName($name, DeleteOptions $options=null)
 	{
+		$body = $options ? $options->getSchema() : null;
 		if ($this->beta) {
-			$this->client->sendBetaRequest('DELETE', '/' . $this->uri . '/' . $name);
+			$this->client->sendBetaRequest('DELETE', '/' . $this->uri . '/' . $name, null, $body);
 		} else {
-			$this->client->sendRequest('DELETE', '/' . $this->uri . '/' . $name);
+			$this->client->sendRequest('DELETE', '/' . $this->uri . '/' . $name, null, $body);
 		}
 		return true;
 	}

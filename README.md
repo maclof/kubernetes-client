@@ -150,3 +150,16 @@ $replicationController = $client->replicationControllers()->setLabelSelector([
 ])->first();
 $client->replicationControllers()->delete($replicationController);
 ```
+
+You can also specify options when performing a deletion, eg. to perform [cascading delete]( https://kubernetes.io/docs/concepts/workloads/controllers/garbage-collection/#setting-the-cascading-deletion-policy)
+
+```php
+use Maclof\Kubernetes\Models\DeleteOptions;
+
+$client->replicationControllers()->delete($replicationController,
+   new DeleteOptions(['propagationPolicy' => 'Background']));
+```
+
+See the API documentation for an explanation of the options:
+
+https://kubernetes.io/docs/api-reference/v1.6/#deleteoptions-v1-meta
