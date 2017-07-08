@@ -211,7 +211,12 @@ class Client
 			$options['ssl_key'] = $this->clientKey;
 		}
 		if ($this->token) {
-			$options['headers']['Authorization'] = 'Bearer ' . $this->token;
+			$token = $this->token;
+			if (file_exists($this->token)) {
+				$token = file_get_contents($this->token);
+			}
+
+			$options['headers']['Authorization'] = 'Bearer ' . $token;
 		}
 		if ($this->username && $this->password) {
 			$options['auth'] = [
