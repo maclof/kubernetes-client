@@ -5,7 +5,8 @@ use Maclof\Kubernetes\Collections\ReplicaSetCollection;
 class ReplicaSetRepository extends Repository
 {
 	protected $uri = 'replicasets';
-	protected $beta = true;
+
+	protected $groupVersion = 'extensions/v1beta1';
 
 	protected function createCollection($response)
 	{

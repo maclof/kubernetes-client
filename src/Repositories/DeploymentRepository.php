@@ -5,7 +5,8 @@ use Maclof\Kubernetes\Collections\DeploymentCollection;
 class DeploymentRepository extends Repository
 {
 	protected $uri = 'deployments';
-	protected $beta = true;
+	
+	protected $groupVersion = 'extensions/v1beta1';
 
 	protected function createCollection($response)
 	{

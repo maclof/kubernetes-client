@@ -28,14 +28,7 @@ class Client
 	 *
 	 * @var string
 	 */
-	protected $apiVersion = 'v1';
-
-	/**
-	 * The beta api version.
-	 *
-	 * @var string
-	 */
-	protected $betaApiVersion = 'extensions/v1beta1';
+	protected $groupVersion = 'v1';
 
 	/**
 	 * The address of the master server.
@@ -74,14 +67,14 @@ class Client
 
 	/**
 	 * The username for basic auth.
-	 * 
+	 *
 	 * @var string
 	 */
 	protected $username;
 
 	/**
 	 * The password for basic auth.
-	 * 
+	 *
 	 * @var string
 	 */
 	protected $password;
@@ -118,9 +111,14 @@ class Client
 		'endpoints'              => 'Repositories\EndpointRepository',
 		'persistentVolumeClaims' => 'Repositories\PersistentVolumeClaimRepository',
 		
+		// batch/v1
+		'jobs'                   => 'Repositories\JobRepository',
+
+		// batch/v2alpha1
+		'cronJobs'               => 'Repositories\CronJobRepository',
+
 		// extensions/v1beta1
 		'deployments'            => 'Repositories\DeploymentRepository',
-		'jobs'                   => 'Repositories\JobRepository',
 		'ingresses'              => 'Repositories\IngressRepository',
 	];
 
@@ -180,7 +178,7 @@ class Client
 
 	/**
 	 * Check if we're using guzzle 6.
-	 * 
+	 *
 	 * @return boolean
 	 */
 	protected function isUsingGuzzle6()
@@ -225,7 +223,7 @@ class Client
 			];
 		}
 
-		if (!$this->isUsingGuzzle6()){
+		if (!$this->isUsingGuzzle6()) {
 			return new GuzzleClient([
 				'base_url' => $this->master,
 				'defaults' => $options,
@@ -255,12 +253,12 @@ class Client
 	 * @param  array   $query
 	 * @param  mixed   $body
 	 * @param  boolean $namespace
-	 * @param  string  $apiVersion
+	 * @param  string  $groupVersion
 	 * @return array
 	 */
-	public function sendRequest($method, $uri, $query = [], $body = [], $namespace = true, $apiVersion = null)
+	public function sendRequest($method, $uri, $query = [], $body = [], $namespace = true, $groupVersion = null)
 	{
-		$baseUri = $apiVersion ? '/apis/' . $apiVersion : '/api/' . $this->apiVersion;
+		$baseUri = $groupVersion ? '/apis/' . $groupVersion : '/api/' . $this->groupVersion;
 		if ($namespace) {
 			$baseUri .= '/namespaces/' . $this->namespace;
 		}
@@ -295,21 +293,6 @@ class Client
 		$jsonResponse = json_decode($bodyResponse, true);
 
 		return is_array($jsonResponse) ? $jsonResponse : $bodyResponse;
-	}
-
-	/**
-	 * Send a beta request.
-	 *
-	 * @param  string  $method
-	 * @param  string  $uri
-	 * @param  mixed   $query
-	 * @param  mixed   $body
-	 * @param  boolean $namespace
-	 * @return array
-	 */
-	public function sendBetaRequest($method, $uri, $query = [], $body = [], $namespace = true)
-	{
-		return $this->sendRequest($method, $uri, $query, $body, $namespace, $this->betaApiVersion);
 	}
 
 	public function __call($name, $args)

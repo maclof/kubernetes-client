@@ -20,11 +20,11 @@ abstract class Repository
 	protected $namespace = true;
 
 	/**
-	 * Send the request to the beta endpoint.
+	 * The group version to use for requests.
 	 *
-	 * @var boolean
+	 * @var null
 	 */
-	protected $beta = false;
+	protected $groupVersion = false;
 
 	/**
 	 * The label selector.
@@ -51,6 +51,21 @@ abstract class Repository
 	}
 
 	/**
+	 * Send a request.
+	 *
+	 * @param  string  $method
+	 * @param  string  $uri
+	 * @param  array   $query
+	 * @param  mixed   $body
+	 * @param  boolean $namespace
+	 * @return array
+	 */
+	public function sendRequest($method, $uri, $query = [], $body = [], $namespace = true)
+	{
+		return $this->client->sendRequest($method, $uri, $query, $body, $namespace, $this->groupVersion);
+	}
+
+	/**
 	 * Create a new model.
 	 *
 	 * @param  \Maclof\Kubernetes\Models\Model $model
@@ -58,11 +73,7 @@ abstract class Repository
 	 */
 	public function create(Model $model)
 	{
-		if ($this->beta) {
-			$this->client->sendBetaRequest('POST', '/' . $this->uri, null, $model->getSchema());
-		} else {
-			$this->client->sendRequest('POST', '/' . $this->uri, null, $model->getSchema());
-		}
+		$this->sendRequest('POST', '/' . $this->uri, null, $model->getSchema());
 		return true;
 	}
 
@@ -74,11 +85,7 @@ abstract class Repository
 	 */
 	public function update(Model $model)
 	{
-		if ($this->beta) {
-			$this->client->sendBetaRequest('PUT', '/' . $this->uri . '/' . $model->getMetadata('name'), null, $model->getSchema());
-		} else {
-			$this->client->sendRequest('PUT', '/' . $this->uri . '/' . $model->getMetadata('name'), null, $model->getSchema());
-		}
+		$this->sendRequest('PUT', '/' . $this->uri . '/' . $model->getMetadata('name'), null, $model->getSchema());
 		return true;
 	}
 
@@ -89,7 +96,7 @@ abstract class Repository
 	 * @param  \Maclof\Kubernetes\Models\DeleteOptions $options
 	 * @return boolean
 	 */
-	public function delete(Model $model, DeleteOptions $options=null)
+	public function delete(Model $model, DeleteOptions $options = null)
 	{
 		return $this->deleteByName($model->getMetadata('name'), $options);
 	}
@@ -101,14 +108,10 @@ abstract class Repository
 	 * @param  \Maclof\Kubernetes\Models\DeleteOptions $options
 	 * @return boolean
 	 */
-	public function deleteByName($name, DeleteOptions $options=null)
+	public function deleteByName($name, DeleteOptions $options = null)
 	{
 		$body = $options ? $options->getSchema() : null;
-		if ($this->beta) {
-			$this->client->sendBetaRequest('DELETE', '/' . $this->uri . '/' . $name, null, $body);
-		} else {
-			$this->client->sendRequest('DELETE', '/' . $this->uri . '/' . $name, null, $body);
-		}
+		$this->sendRequest('DELETE', '/' . $this->uri . '/' . $name, null, $body);
 		return true;
 	}
 
@@ -187,11 +190,7 @@ abstract class Repository
 			'fieldSelector' => $this->getFieldSelectorQuery(),
 		]);
 
-		if ($this->beta) {
-			$response = $this->client->sendBetaRequest('GET', '/' . $this->uri, $query, null, $this->namespace);
-		} else {
-			$response = $this->client->sendRequest('GET', '/' . $this->uri, $query, null, $this->namespace);
-		}
+		$response = $this->sendRequest('GET', '/' . $this->uri, $query, null, $this->namespace);
 
 		$this->resetParameters();
 

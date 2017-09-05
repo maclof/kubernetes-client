@@ -3,7 +3,7 @@
 
 A PHP client for managing a Kubernetes cluster.
 
-Last tested with 1.4.6 on Google Container Engine and 1.5.1 on Custom CoreOS Cluster.
+Last tested with 1.7.4 on Production Baremetal Cluster.
 
 
 ## Installation using [Composer](http://getcomposer.org/)
@@ -23,10 +23,16 @@ $ composer require maclof/kubernetes-client
 * Events
 * Config Maps
 * Endpoints
+* Persistent Volume Claims
+
+### batch/v1
+* Jobs
+
+### batch/v2alpha1
+* Cron Jobs
 
 ### extensions/v1beta1
 * Deployments
-* Jobs
 * Ingresses
 
 
