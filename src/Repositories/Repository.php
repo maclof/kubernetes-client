@@ -1,7 +1,7 @@
 <?php namespace Maclof\Kubernetes\Repositories;
 
-use Maclof\Kubernetes\Models\DeleteOptions;
 use Maclof\Kubernetes\Models\Model;
+use Maclof\Kubernetes\Models\DeleteOptions;
 
 abstract class Repository
 {
@@ -20,11 +20,11 @@ abstract class Repository
 	protected $namespace = true;
 
 	/**
-	 * The group version to use for requests.
+	 * The api version to use for requests.
 	 *
 	 * @var null
 	 */
-	protected $groupVersion = false;
+	protected $apiVersion;
 
 	/**
 	 * The label selector.
@@ -60,9 +60,37 @@ abstract class Repository
 	 * @param  boolean $namespace
 	 * @return array
 	 */
-	public function sendRequest($method, $uri, $query = [], $body = [], $namespace = true)
+	protected function sendRequest($method, $uri, $query = [], $body = [], $namespace = true)
 	{
-		return $this->client->sendRequest($method, $uri, $query, $body, $namespace, $this->groupVersion);
+		$apiVersion = $this->getApiVersion();
+		if ($apiVersion == 'v1') {
+			$apiVersion = null;
+		}
+
+		return $this->client->sendRequest($method, $uri, $query, $body, $namespace, $apiVersion);
+	}
+
+	/**
+	 * Get the api version from the model.
+	 *
+	 * @return string
+	 */
+	protected function getApiVersion()
+	{
+		if ($this->apiVersion) {
+			return $this->apiVersion;
+		}
+
+		$className = str_replace('Repository', '', class_basename($this));
+		$classPath = 'Maclof\Kubernetes\Models\\' . $className;
+
+		if (!class_exists($classPath)) {
+			return;
+		}
+
+		$this->apiVersion = (new $classPath)->getApiVersion();
+
+		return $this->apiVersion;
 	}
 
 	/**

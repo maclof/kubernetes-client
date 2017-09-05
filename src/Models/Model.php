@@ -18,7 +18,7 @@ abstract class Model
 
 	/**
 	 * Whether or not the kind is plural.
-	 * 
+	 *
 	 * @var boolean
 	 */
 	protected $pluralKind = false;
@@ -78,6 +78,16 @@ abstract class Model
 		$schema = array_merge($this->schema, $this->toArray());
 
 		return json_encode($schema, JSON_PRETTY_PRINT);
+	}
+
+	/**
+	 * Get the api version.
+	 *
+	 * @return string
+	 */
+	public function getApiVersion()
+	{
+		return $this->apiVersion;
 	}
 
 	/**

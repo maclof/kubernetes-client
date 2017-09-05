@@ -32,6 +32,7 @@ $ composer require maclof/kubernetes-client
 * Cron Jobs
 
 ### extensions/v1beta1
+* Daemon Sets
 * Deployments
 * Ingresses
 

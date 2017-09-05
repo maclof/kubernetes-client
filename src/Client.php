@@ -28,7 +28,7 @@ class Client
 	 *
 	 * @var string
 	 */
-	protected $groupVersion = 'v1';
+	protected $apiVersion = 'v1';
 
 	/**
 	 * The address of the master server.
@@ -118,6 +118,7 @@ class Client
 		'cronJobs'               => 'Repositories\CronJobRepository',
 
 		// extensions/v1beta1
+		'daemonSets'             => 'Repositories\DaemonSetRepository',
 		'deployments'            => 'Repositories\DeploymentRepository',
 		'ingresses'              => 'Repositories\IngressRepository',
 	];
@@ -253,12 +254,12 @@ class Client
 	 * @param  array   $query
 	 * @param  mixed   $body
 	 * @param  boolean $namespace
-	 * @param  string  $groupVersion
+	 * @param  string  $apiVersion
 	 * @return array
 	 */
-	public function sendRequest($method, $uri, $query = [], $body = [], $namespace = true, $groupVersion = null)
+	public function sendRequest($method, $uri, $query = [], $body = [], $namespace = true, $apiVersion = null)
 	{
-		$baseUri = $groupVersion ? '/apis/' . $groupVersion : '/api/' . $this->groupVersion;
+		$baseUri = $apiVersion ? '/apis/' . $apiVersion : '/api/' . $this->apiVersion;
 		if ($namespace) {
 			$baseUri .= '/namespaces/' . $this->namespace;
 		}
