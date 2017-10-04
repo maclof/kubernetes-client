@@ -215,7 +215,7 @@ class Client
 				$token = file_get_contents($token);
 			}
 
-			$options['headers']['Authorization'] = 'Bearer ' . $token;
+			$options['headers']['Authorization'] = 'Bearer ' . trim($token);
 		}
 		if ($this->username && $this->password) {
 			$options['auth'] = [
