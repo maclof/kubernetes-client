@@ -3,24 +3,43 @@
 use BadMethodCallException;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\ClientInterface as GuzzleClientInterface;
-use GuzzleHttp\Exception\ParseException;
 use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Psr7\Request as GuzzleRequest;
-use Maclof\Kubernetes\Collections\NodeCollection;
-use Maclof\Kubernetes\Collections\PodCollection;
-use Maclof\Kubernetes\Collections\ReplicationControllerCollection;
-use Maclof\Kubernetes\Collections\ServiceCollection;
-use Maclof\Kubernetes\Collections\SecretCollection;
-use Maclof\Kubernetes\Models\Node;
-use Maclof\Kubernetes\Models\Pod;
-use Maclof\Kubernetes\Models\ReplicationController;
-use Maclof\Kubernetes\Models\Service;
-use Maclof\Kubernetes\Models\Secret;
-use Maclof\Kubernetes\Models\Deployment;
-use Maclof\Kubernetes\Models\Job;
+use GuzzleHttp\Exception\ParseException;
 use Maclof\Kubernetes\Exceptions\BadRequestException;
 use Maclof\Kubernetes\Exceptions\MissingOptionException;
+use Maclof\Kubernetes\Repositories\ConfigMapRepository;
+use Maclof\Kubernetes\Repositories\CronJobRepository;
+use Maclof\Kubernetes\Repositories\DaemonSetRepository;
+use Maclof\Kubernetes\Repositories\DeploymentRepository;
+use Maclof\Kubernetes\Repositories\EndpointRepository;
+use Maclof\Kubernetes\Repositories\EventRepository;
+use Maclof\Kubernetes\Repositories\IngressRepository;
+use Maclof\Kubernetes\Repositories\JobRepository;
+use Maclof\Kubernetes\Repositories\NodeRepository;
+use Maclof\Kubernetes\Repositories\PersistentVolumeClaimRepository;
+use Maclof\Kubernetes\Repositories\PodRepository;
+use Maclof\Kubernetes\Repositories\ReplicaSetRepository;
+use Maclof\Kubernetes\Repositories\ReplicationControllerRepository;
+use Maclof\Kubernetes\Repositories\SecretRepository;
+use Maclof\Kubernetes\Repositories\ServiceRepository;
 
+/**
+ * @method NodeRepository nodes()
+ * @method PodRepository pods()
+ * @method ReplicaSetRepository replicaSets()
+ * @method ReplicationControllerRepository replicationControllers()
+ * @method ServiceRepository services()
+ * @method SecretRepository secrets()
+ * @method EventRepository events()
+ * @method ConfigMapRepository configMaps()
+ * @method EndpointRepository endpoints()
+ * @method PersistentVolumeClaimRepository persistentVolumeClaims()
+ * @method JobRepository jobs()
+ * @method CronJobRepository cronJobs()
+ * @method DaemonSetRepository daemonSets()
+ * @method DeploymentRepository deployments()
+ * @method IngressRepository ingresses()
+ */
 class Client
 {
 	/**
