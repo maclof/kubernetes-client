@@ -68,16 +68,16 @@ abstract class Model
 	 */
 	public function getSchema()
 	{
-	    if (!isset($this->schema['kind'])) {
-            $this->schema['kind'] = basename(str_replace('\\', '/', get_class($this)));
-            if ($this->pluralKind) {
-                $this->schema['kind'] .= 's';
-            }
-        }
+		if (!isset($this->schema['kind'])) {
+			$this->schema['kind'] = basename(str_replace('\\', '/', get_class($this)));
+			if ($this->pluralKind) {
+				$this->schema['kind'] .= 's';
+			}
+		}
 
-        if (!isset($this->schema['apiVersion'])) {
-		    $this->schema['apiVersion'] = $this->apiVersion;
-        }
+		if (!isset($this->schema['apiVersion'])) {
+			$this->schema['apiVersion'] = $this->apiVersion;
+		}
 
 		$schema = array_merge($this->schema, $this->toArray());
 
