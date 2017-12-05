@@ -22,6 +22,7 @@ use Maclof\Kubernetes\Repositories\ReplicaSetRepository;
 use Maclof\Kubernetes\Repositories\ReplicationControllerRepository;
 use Maclof\Kubernetes\Repositories\SecretRepository;
 use Maclof\Kubernetes\Repositories\ServiceRepository;
+use Maclof\Kubernetes\Repositories\NamespaceRepository;
 
 /**
  * @method NodeRepository nodes()
@@ -39,6 +40,7 @@ use Maclof\Kubernetes\Repositories\ServiceRepository;
  * @method DaemonSetRepository daemonSets()
  * @method DeploymentRepository deployments()
  * @method IngressRepository ingresses()
+ * @method NamespaceRepository namespaces()
  */
 class Client
 {
@@ -129,7 +131,8 @@ class Client
 		'configMaps'             => 'Repositories\ConfigMapRepository',
 		'endpoints'              => 'Repositories\EndpointRepository',
 		'persistentVolumeClaims' => 'Repositories\PersistentVolumeClaimRepository',
-		
+        'namespaces'              => 'Repositories\NamespaceRepository',
+
 		// batch/v1
 		'jobs'                   => 'Repositories\JobRepository',
 
