@@ -15,6 +15,7 @@ $ composer require maclof/kubernetes-client
 ## Supported API Features
 ### v1
 * Nodes
+* Namespaces
 * Pods
 * Replica Sets
 * Replication Controllers
