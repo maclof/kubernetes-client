@@ -131,7 +131,7 @@ class Client
 		'configMaps'             => 'Repositories\ConfigMapRepository',
 		'endpoints'              => 'Repositories\EndpointRepository',
 		'persistentVolumeClaims' => 'Repositories\PersistentVolumeClaimRepository',
-        'namespaces'              => 'Repositories\NamespaceRepository',
+		'namespaces'              => 'Repositories\NamespaceRepository',
 
 		// batch/v1
 		'jobs'                   => 'Repositories\JobRepository',
