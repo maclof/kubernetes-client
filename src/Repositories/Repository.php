@@ -101,7 +101,7 @@ abstract class Repository
 	 */
 	public function create(Model $model)
 	{
-		$this->sendRequest('POST', '/' . $this->uri, null, $model->getSchema());
+		$this->sendRequest('POST', '/' . $this->uri, null, $model->getSchema(), $this->namespace);
 		return true;
 	}
 
@@ -113,7 +113,7 @@ abstract class Repository
 	 */
 	public function update(Model $model)
 	{
-		$this->sendRequest('PUT', '/' . $this->uri . '/' . $model->getMetadata('name'), null, $model->getSchema());
+		$this->sendRequest('PUT', '/' . $this->uri . '/' . $model->getMetadata('name'), null, $model->getSchema(), $this->namespace);
 		return true;
 	}
 
@@ -139,7 +139,7 @@ abstract class Repository
 	public function deleteByName($name, DeleteOptions $options = null)
 	{
 		$body = $options ? $options->getSchema() : null;
-		$this->sendRequest('DELETE', '/' . $this->uri . '/' . $name, null, $body);
+		$this->sendRequest('DELETE', '/' . $this->uri . '/' . $name, null, $body, $this->namespace);
 		return true;
 	}
 
