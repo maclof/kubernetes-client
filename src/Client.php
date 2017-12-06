@@ -168,6 +168,7 @@ class Client
 	 * Set the options.
 	 *
 	 * @param array $options
+	 * @throws MissingOptionException
 	 */
 	public function setOptions(array $options)
 	{
@@ -277,7 +278,8 @@ class Client
 	 * @param  mixed   $body
 	 * @param  boolean $namespace
 	 * @param  string  $apiVersion
-	 * @return array
+	 * @return array|string
+	 * @throws \Exception
 	 */
 	public function sendRequest($method, $uri, $query = [], $body = [], $namespace = true, $apiVersion = null)
 	{
