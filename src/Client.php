@@ -201,6 +201,16 @@ class Client
 	}
 
 	/**
+	 * Set namespace.
+	 *
+	 * @param string $namespace
+	 */
+	public function setNamespace($namespace)
+	{
+		$this->namespace = $namespace;
+	}
+
+	/**
 	 * Check if we're using guzzle 6.
 	 *
 	 * @return boolean
