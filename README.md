@@ -81,9 +81,9 @@ $client = new Client([
 ```php
 $client = new Client([
 	'master'      => 'https://master.mycluster.com',
-    'ca_cert'     => '/etc/kubernetes/ssl/ca.crt',
-    'client_cert' => '/etc/kubernetes/ssl/client.crt',
-    'client_key'  => '/etc/kubernetes/ssl/client.key',
+    	'ca_cert'     => '/etc/kubernetes/ssl/ca.crt',
+    	'client_cert' => '/etc/kubernetes/ssl/client.crt',
+    	'client_key'  => '/etc/kubernetes/ssl/client.key',
 ]);
 ```
 
@@ -91,8 +91,8 @@ $client = new Client([
 ```php
 $client = new Client([
 	'master'   => 'https://master.mycluster.com',
-    'username' => 'admin',
-    'password' => 'abc123',
+    	'username' => 'admin',
+    	'password' => 'abc123',
 ]);
 ```
 
@@ -164,8 +164,10 @@ You can also specify options when performing a deletion, eg. to perform [cascadi
 ```php
 use Maclof\Kubernetes\Models\DeleteOptions;
 
-$client->replicationControllers()->delete($replicationController,
-   new DeleteOptions(['propagationPolicy' => 'Background']));
+$client->replicationControllers()->delete(
+	$replicationController,
+   	new DeleteOptions(['propagationPolicy' => 'Background'])
+);
 ```
 
 See the API documentation for an explanation of the options:
