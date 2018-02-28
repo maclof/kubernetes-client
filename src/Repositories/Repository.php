@@ -97,24 +97,22 @@ abstract class Repository
 	 * Create a new model.
 	 *
 	 * @param  \Maclof\Kubernetes\Models\Model $model
-	 * @return boolean
+	 * @return array
 	 */
 	public function create(Model $model)
 	{
-		$this->sendRequest('POST', '/' . $this->uri, null, $model->getSchema(), $this->namespace);
-		return true;
+		return $this->sendRequest('POST', '/' . $this->uri, null, $model->getSchema(), $this->namespace);
 	}
 
 	/**
 	 * Update a model.
 	 *
 	 * @param  \Maclof\Kubernetes\Models\Model $model
-	 * @return boolean
+	 * @return array
 	 */
 	public function update(Model $model)
 	{
-		$this->sendRequest('PUT', '/' . $this->uri . '/' . $model->getMetadata('name'), null, $model->getSchema(), $this->namespace);
-		return true;
+		return $this->sendRequest('PUT', '/' . $this->uri . '/' . $model->getMetadata('name'), null, $model->getSchema(), $this->namespace);
 	}
 
 	/**
