@@ -97,24 +97,22 @@ abstract class Repository
 	 * Create a new model.
 	 *
 	 * @param  \Maclof\Kubernetes\Models\Model $model
-	 * @return boolean
+	 * @return array
 	 */
 	public function create(Model $model)
 	{
-		$this->sendRequest('POST', '/' . $this->uri, null, $model->getSchema(), $this->namespace);
-		return true;
+		return $this->sendRequest('POST', '/' . $this->uri, null, $model->getSchema(), $this->namespace);
 	}
 
 	/**
 	 * Update a model.
 	 *
 	 * @param  \Maclof\Kubernetes\Models\Model $model
-	 * @return boolean
+	 * @return array
 	 */
 	public function update(Model $model)
 	{
-		$this->sendRequest('PUT', '/' . $this->uri . '/' . $model->getMetadata('name'), null, $model->getSchema(), $this->namespace);
-		return true;
+		return $this->sendRequest('PUT', '/' . $this->uri . '/' . $model->getMetadata('name'), null, $model->getSchema(), $this->namespace);
 	}
 
 	/**
@@ -122,7 +120,7 @@ abstract class Repository
 	 *
 	 * @param  \Maclof\Kubernetes\Models\Model         $model
 	 * @param  \Maclof\Kubernetes\Models\DeleteOptions $options
-	 * @return boolean
+	 * @return array
 	 */
 	public function delete(Model $model, DeleteOptions $options = null)
 	{
@@ -134,13 +132,13 @@ abstract class Repository
 	 *
 	 * @param  string                                  $name
 	 * @param  \Maclof\Kubernetes\Models\DeleteOptions $options
-	 * @return boolean
+	 * @return array
 	 */
 	public function deleteByName($name, DeleteOptions $options = null)
 	{
 		$body = $options ? $options->getSchema() : null;
-		$this->sendRequest('DELETE', '/' . $this->uri . '/' . $name, null, $body, $this->namespace);
-		return true;
+
+		return $this->sendRequest('DELETE', '/' . $this->uri . '/' . $name, null, $body, $this->namespace);
 	}
 
 	/**
