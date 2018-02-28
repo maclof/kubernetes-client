@@ -120,7 +120,7 @@ abstract class Repository
 	 *
 	 * @param  \Maclof\Kubernetes\Models\Model         $model
 	 * @param  \Maclof\Kubernetes\Models\DeleteOptions $options
-	 * @return boolean
+	 * @return array
 	 */
 	public function delete(Model $model, DeleteOptions $options = null)
 	{
@@ -132,13 +132,13 @@ abstract class Repository
 	 *
 	 * @param  string                                  $name
 	 * @param  \Maclof\Kubernetes\Models\DeleteOptions $options
-	 * @return boolean
+	 * @return array
 	 */
 	public function deleteByName($name, DeleteOptions $options = null)
 	{
 		$body = $options ? $options->getSchema() : null;
-		$this->sendRequest('DELETE', '/' . $this->uri . '/' . $name, null, $body, $this->namespace);
-		return true;
+
+		return $this->sendRequest('DELETE', '/' . $this->uri . '/' . $name, null, $body, $this->namespace);
 	}
 
 	/**
