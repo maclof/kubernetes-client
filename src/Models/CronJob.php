@@ -7,5 +7,5 @@ class CronJob extends Model
 	 *
 	 * @var string
 	 */
-	protected $apiVersion = 'batch/v2alpha1';
+	protected $apiVersion = 'batch/v1beta1';
 }
