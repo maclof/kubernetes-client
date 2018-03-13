@@ -24,6 +24,7 @@ $ composer require maclof/kubernetes-client
 * Events
 * Config Maps
 * Endpoints
+* Persistent Volume
 * Persistent Volume Claims
 
 ### batch/v1
