@@ -16,6 +16,7 @@ use Maclof\Kubernetes\Repositories\EventRepository;
 use Maclof\Kubernetes\Repositories\IngressRepository;
 use Maclof\Kubernetes\Repositories\JobRepository;
 use Maclof\Kubernetes\Repositories\NodeRepository;
+use Maclof\Kubernetes\Repositories\PersistentVolumeRepository;
 use Maclof\Kubernetes\Repositories\PersistentVolumeClaimRepository;
 use Maclof\Kubernetes\Repositories\PodRepository;
 use Maclof\Kubernetes\Repositories\ReplicaSetRepository;
@@ -23,6 +24,7 @@ use Maclof\Kubernetes\Repositories\ReplicationControllerRepository;
 use Maclof\Kubernetes\Repositories\SecretRepository;
 use Maclof\Kubernetes\Repositories\ServiceRepository;
 use Maclof\Kubernetes\Repositories\NamespaceRepository;
+use Maclof\Kubernetes\Models\PersistentVolume;
 
 /**
  * @method NodeRepository nodes()
@@ -35,6 +37,7 @@ use Maclof\Kubernetes\Repositories\NamespaceRepository;
  * @method ConfigMapRepository configMaps()
  * @method EndpointRepository endpoints()
  * @method PersistentVolumeClaimRepository persistentVolumeClaims()
+ * @method PersistentVolumeRepository persistentVolume()
  * @method JobRepository jobs()
  * @method CronJobRepository cronJobs()
  * @method DaemonSetRepository daemonSets()
@@ -130,6 +133,7 @@ class Client
 		'events'                 => 'Repositories\EventRepository',
 		'configMaps'             => 'Repositories\ConfigMapRepository',
 		'endpoints'              => 'Repositories\EndpointRepository',
+	    'persistentVolume'       => 'Repositories\PersistentVolumeRepository',
 		'persistentVolumeClaims' => 'Repositories\PersistentVolumeClaimRepository',
 		'namespaces'              => 'Repositories\NamespaceRepository',
 
