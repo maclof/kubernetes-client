@@ -3,3 +3,6 @@
 /clover.xml
 /composer.lock
 /.idea
+/.settings/
+/.buildpath
+/.project
