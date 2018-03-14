@@ -1,4 +1,4 @@
 {
     "kind": "CronJob",
-    "apiVersion": "batch\/v2alpha1"
+    "apiVersion": "batch\/v1beta1"
 }
