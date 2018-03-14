@@ -30,7 +30,7 @@ $ composer require maclof/kubernetes-client
 ### batch/v1
 * Jobs
 
-### batch/v2alpha1
+### batch/v1beta1
 * Cron Jobs
 
 ### extensions/v1beta1
