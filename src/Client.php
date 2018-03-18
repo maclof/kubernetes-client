@@ -62,6 +62,13 @@ class Client
 	protected $master;
 
 	/**
+	 * Whether to verify the ca certificate.
+	 *
+	 * @var boolean|null
+	 */
+	protected $verify;
+
+	/**
 	 * The ca certificate.
 	 *
 	 * @var string|null
@@ -181,7 +188,9 @@ class Client
 		}
 		$this->master = $options['master'];
 
-		if (isset($options['ca_cert'])) {
+		if (isset($options['verify'])) {
+			$this->verify = $options['verify'];
+		} elseif (isset($options['ca_cert'])) {
 			$this->caCert = $options['ca_cert'];
 		}
 		if (isset($options['client_cert'])) {
@@ -237,7 +246,9 @@ class Client
 			],
 		];
 
-		if ($this->caCert) {
+		if (!is_null($this->verify)) {
+			$options['verify'] = $this->verify;
+		} elseif ($this->caCert) {
 			$options['verify'] = $this->caCert;
 		}
 		if ($this->clientCert) {
