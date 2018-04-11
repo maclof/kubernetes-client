@@ -19,7 +19,6 @@ use Maclof\Kubernetes\Repositories\NodeRepository;
 use Maclof\Kubernetes\Repositories\PersistentVolumeRepository;
 use Maclof\Kubernetes\Repositories\PersistentVolumeClaimRepository;
 use Maclof\Kubernetes\Repositories\PodRepository;
-use Maclof\Kubernetes\Repositories\QuotaRepository;
 use Maclof\Kubernetes\Repositories\ReplicaSetRepository;
 use Maclof\Kubernetes\Repositories\ReplicationControllerRepository;
 use Maclof\Kubernetes\Repositories\SecretRepository;
@@ -29,7 +28,6 @@ use Maclof\Kubernetes\Models\PersistentVolume;
 
 /**
  * @method NodeRepository nodes()
- * @method QuotaRepository quotas()
  * @method PodRepository pods()
  * @method ReplicaSetRepository replicaSets()
  * @method ReplicationControllerRepository replicationControllers()
@@ -134,7 +132,6 @@ class Client
 	protected $classMap = [
 		// v1
 		'nodes'                  => 'Repositories\NodeRepository',
-		'quotas'                 => 'Repositories\QuotaRepository',
 		'pods'                   => 'Repositories\PodRepository',
 		'replicaSets'            => 'Repositories\ReplicaSetRepository',
 		'replicationControllers' => 'Repositories\ReplicationControllerRepository',
@@ -143,9 +140,9 @@ class Client
 		'events'                 => 'Repositories\EventRepository',
 		'configMaps'             => 'Repositories\ConfigMapRepository',
 		'endpoints'              => 'Repositories\EndpointRepository',
-	  'persistentVolume'       => 'Repositories\PersistentVolumeRepository',
+	    'persistentVolume'       => 'Repositories\PersistentVolumeRepository',
 		'persistentVolumeClaims' => 'Repositories\PersistentVolumeClaimRepository',
-		'namespaces'             => 'Repositories\NamespaceRepository',
+		'namespaces'              => 'Repositories\NamespaceRepository',
 
 		// batch/v1
 		'jobs'                   => 'Repositories\JobRepository',
