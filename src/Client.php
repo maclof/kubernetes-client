@@ -325,6 +325,10 @@ class Client
 			$requestOptions['body'] = is_array($body) ? json_encode($body) : $body;
 		}
 
+		if ($method === 'PATCH') {
+		    $requestOptions['headers'] = ['Content-Type' => 'application/strategic-merge-patch+json'];
+        }
+
 		if (!$this->isUsingGuzzle6()) {
 			try {
 				$request = $this->guzzleClient->createRequest($method, $requestUri, $requestOptions);

@@ -115,6 +115,17 @@ abstract class Repository
 		return $this->sendRequest('PUT', '/' . $this->uri . '/' . $model->getMetadata('name'), null, $model->getSchema(), $this->namespace);
 	}
 
+    /**
+     * Patch a model.
+     *
+     * @param \Maclof\Kubernetes\Models\Model $model
+     * @return array
+     */
+	public function patch(Model $model)
+    {
+        return $this->sendRequest('PATCH', '/' . $this->uri . '/' . $model->getMetadata('name'), null, $model->getSchema(), $this->namespace);
+    }
+
 	/**
 	 * Delete a model.
 	 *
