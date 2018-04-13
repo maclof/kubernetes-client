@@ -38,6 +38,8 @@ $ composer require maclof/kubernetes-client
 * Deployments
 * Ingresses
 
+### networking.k8s.io/v1
+* Network Policies
 
 ## Basic Usage
 

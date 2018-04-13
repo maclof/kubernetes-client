@@ -15,6 +15,7 @@ use Maclof\Kubernetes\Repositories\EndpointRepository;
 use Maclof\Kubernetes\Repositories\EventRepository;
 use Maclof\Kubernetes\Repositories\IngressRepository;
 use Maclof\Kubernetes\Repositories\JobRepository;
+use Maclof\Kubernetes\Repositories\NetworkPolicyRepository;
 use Maclof\Kubernetes\Repositories\NodeRepository;
 use Maclof\Kubernetes\Repositories\PersistentVolumeRepository;
 use Maclof\Kubernetes\Repositories\PersistentVolumeClaimRepository;
@@ -46,6 +47,7 @@ use Maclof\Kubernetes\Models\PersistentVolume;
  * @method DeploymentRepository deployments()
  * @method IngressRepository ingresses()
  * @method NamespaceRepository namespaces()
+ * @method NetworkPolicyRepository networkPolicies()
  */
 class Client
 {
@@ -157,6 +159,9 @@ class Client
 		'daemonSets'             => 'Repositories\DaemonSetRepository',
 		'deployments'            => 'Repositories\DeploymentRepository',
 		'ingresses'              => 'Repositories\IngressRepository',
+
+        // networking.k8s.io/v1
+        'networkPolicies'        => 'Repositories\NetworkPolicyRepository',
 	];
 
 	/**
