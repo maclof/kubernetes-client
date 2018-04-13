@@ -3,7 +3,7 @@
 
 A PHP client for managing a Kubernetes cluster.
 
-Last tested with 1.7.4 on Production Baremetal Cluster.
+Last tested with v1.9.6 on a production cloud hosted cluster.
 
 
 ## Installation using [Composer](http://getcomposer.org/)
