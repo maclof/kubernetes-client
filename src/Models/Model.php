@@ -1,6 +1,8 @@
 <?php namespace Maclof\Kubernetes\Models;
 
-abstract class Model
+use Illuminate\Contracts\Support\Arrayable;
+
+abstract class Model implements Arrayable
 {
 	/**
 	 * The schema.
