@@ -160,8 +160,8 @@ class Client
 		'deployments'            => 'Repositories\DeploymentRepository',
 		'ingresses'              => 'Repositories\IngressRepository',
 
-        // networking.k8s.io/v1
-        'networkPolicies'        => 'Repositories\NetworkPolicyRepository',
+		// networking.k8s.io/v1
+		'networkPolicies'        => 'Repositories\NetworkPolicyRepository',
 	];
 
 	/**
@@ -331,8 +331,8 @@ class Client
 		}
 
 		if ($method === 'PATCH') {
-		    $requestOptions['headers'] = ['Content-Type' => 'application/strategic-merge-patch+json'];
-        }
+			$requestOptions['headers'] = ['Content-Type' => 'application/strategic-merge-patch+json'];
+		}
 
 		if (!$this->isUsingGuzzle6()) {
 			try {

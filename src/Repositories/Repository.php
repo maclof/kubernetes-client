@@ -115,16 +115,16 @@ abstract class Repository
 		return $this->sendRequest('PUT', '/' . $this->uri . '/' . $model->getMetadata('name'), null, $model->getSchema(), $this->namespace);
 	}
 
-    /**
-     * Patch a model.
-     *
-     * @param \Maclof\Kubernetes\Models\Model $model
-     * @return array
-     */
+	/**
+	 * Patch a model.
+	 *
+	 * @param \Maclof\Kubernetes\Models\Model $model
+	 * @return array
+	 */
 	public function patch(Model $model)
-    {
-        return $this->sendRequest('PATCH', '/' . $this->uri . '/' . $model->getMetadata('name'), null, $model->getSchema(), $this->namespace);
-    }
+	{
+		return $this->sendRequest('PATCH', '/' . $this->uri . '/' . $model->getMetadata('name'), null, $model->getSchema(), $this->namespace);
+	}
 
 	/**
 	 * Delete a model.
@@ -256,5 +256,11 @@ abstract class Repository
 		return !is_null($this->setFieldSelector(['metadata.name' => $name])->first());
 	}
 
+	/**
+	 * Create a collection of models from the response.
+	 * 
+	 * @param  array $response
+	 * @return \Maclof\Kubernetes\Collections\Collection
+	 */
 	abstract protected function createCollection($response);
 }

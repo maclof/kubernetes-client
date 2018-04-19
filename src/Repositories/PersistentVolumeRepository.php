@@ -3,26 +3,19 @@ namespace Maclof\Kubernetes\Repositories;
 
 use Maclof\Kubernetes\Collections\PersistentVolumeCollection;
 
-/**
- *
- * @author avi
- *
- */
 class PersistentVolumeRepository extends Repository
 {
-    protected $uri = 'persistentvolumes';
-    /**
-     * (non-PHPdoc)
-     *
-     * @see \Maclof\Kubernetes\Repositories\Repository::createCollection()
-     *
-     */
-    protected function createCollection($response)
-    {
-        return new PersistentVolumeCollection($response);
-    }
+	protected $uri = 'persistentvolumes';
 
-/**
+	/**
+	 * @see \Maclof\Kubernetes\Repositories\Repository::createCollection()
+	 */
+	protected function createCollection($response)
+	{
+		return new PersistentVolumeCollection($response);
+	}
+
+	/**
 	 * Send a request.
 	 *
 	 * @param  string  $method
@@ -34,7 +27,7 @@ class PersistentVolumeRepository extends Repository
 	 */
 	protected function sendRequest($method, $uri, $query = [], $body = [], $namespace = false)
 	{
-	    $namespace = false;
+		$namespace = false;
 		$apiVersion = $this->getApiVersion();
 		if ($apiVersion == 'v1') {
 			$apiVersion = null;
