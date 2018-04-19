@@ -176,3 +176,29 @@ $client->replicationControllers()->delete(
 See the API documentation for an explanation of the options:
 
 https://kubernetes.io/docs/api-reference/v1.6/#deleteoptions-v1-meta
+
+
+## Troubleshooting
+There are times when you might be posting an incorrect configuration to the Kubernetes API. In this case, the exception errors aren't that helpful because they truncate the error message, for instance you might get,
+
+```
+Client error: `POST https://kubernetes.default/apis/extensions/v1beta1/namespaces/default/deployments` resulted in a `422 Unprocessable Entit
+y` response:
+{"kind":"Status","apiVersion":"v1","metadata":{},"status":"Failure","message":"Deployment.apps \"test_deploy\" is invali (truncated...)
+```
+
+In order to get more details about the error, you can catch this exception and extract the full message from the response body,
+```php
+try {
+    $client->deployments()->create($deployment);
+} catch (ClientException $e) {
+    $fullMessage = $e->getResponse()->getBody()->getContents();
+    echo $fullMessage;
+    throw $e;
+}
+```
+
+Now you'll get back,
+```
+"{"kind":"Status","apiVersion":"v1","metadata":{},"status":"Failure","message":"Deployment.apps \"test_deploy\" is invalid: [metadata.name: Invalid value: \"test_deploy\": a DNS-1123 subdomain must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character (e.g. 'example.com', regex used for validation is '[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*'), spec.template.spec.containers: Required value]","reason":"Invalid","details":{"name":"test_deploy","group":"apps","kind":"Deployment","causes":[{"reason":"FieldValueInvalid","message":"Invalid value: \"test_deploy\": a DNS-1123 subdomain must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character (e.g. 'example.com', regex used for validation is '[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*')","field":"metadata.name"},{"reason":"FieldValueRequired","message":"Required value","field":"spec.template.spec.containers"}]},"code":422}
+```
