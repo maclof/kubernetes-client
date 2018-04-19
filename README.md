@@ -190,7 +190,7 @@ y` response:
 In order to get more details about the error, you can catch this exception and extract the full message from the response body,
 ```php
 try {
-    $client->replicationControllers()->create($deployment);
+    $client->deployments()->create($deployment);
 } catch (ClientException $e) {
     $fullMessage = $e->getResponse()->getBody()->getContents();
     echo $fullMessage;
