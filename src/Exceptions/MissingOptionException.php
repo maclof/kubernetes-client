@@ -4,5 +4,5 @@ use Exception;
 
 class MissingOptionException extends Exception
 {
-	
+
 }
