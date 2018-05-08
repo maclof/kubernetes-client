@@ -48,6 +48,7 @@ use Maclof\Kubernetes\Models\PersistentVolume;
  * @method IngressRepository ingresses()
  * @method NamespaceRepository namespaces()
  * @method NetworkPolicyRepository networkPolicies()
+ * @method HorizontalPodAutoscalerRepository horizontalPodAutoscalers()
  */
 class Client
 {
@@ -159,6 +160,9 @@ class Client
 		'daemonSets'             => 'Repositories\DaemonSetRepository',
 		'deployments'            => 'Repositories\DeploymentRepository',
 		'ingresses'              => 'Repositories\IngressRepository',
+
+        // autoscaling/v2beta1
+        'horizontalPodAutoscalers'  => 'Repositories\HorizontalPodAutoscalerRepository',
 
 		// networking.k8s.io/v1
 		'networkPolicies'        => 'Repositories\NetworkPolicyRepository',
