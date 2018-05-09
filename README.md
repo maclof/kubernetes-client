@@ -33,9 +33,11 @@ $ composer require maclof/kubernetes-client
 ### batch/v1beta1
 * Cron Jobs
 
+### apps/v1
+* Deployments
+
 ### extensions/v1beta1
 * Daemon Sets
-* Deployments
 * Ingresses
 
 ### networking.k8s.io/v1
