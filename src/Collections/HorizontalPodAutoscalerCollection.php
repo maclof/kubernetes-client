@@ -7,22 +7,26 @@ class HorizontalPodAutoscalerCollection extends Collection
 	/**
 	 * The constructor.
 	 *
-	 * @param array $data
+	 * @param array $items
 	 */
-	public function __construct(array $data)
+	public function __construct(array $items)
 	{
-		parent::__construct($this->getHorizontalPodAutoscalers(isset($data['items']) ? $data['items'] : []));
+		parent::__construct($this->getHorizontalPodAutoscalers($items));
 	}
 
 	/**
 	 * Get an array of autoscalers.
 	 *
-	 * @param  array  $items
+	 * @param  array $items
 	 * @return array
 	 */
 	protected function getHorizontalPodAutoscalers(array $items)
 	{
 		foreach ($items as &$item) {
+			if ($item instanceof HorizontalPodAutoscaler) {
+				continue;
+			}
+			
 			$item = new HorizontalPodAutoscaler($item);
 		}
 

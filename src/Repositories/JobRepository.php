@@ -8,6 +8,6 @@ class JobRepository extends Repository
 
 	protected function createCollection($response)
 	{
-		return new JobCollection($response);
+		return new JobCollection($response['items']);
 	}
 }

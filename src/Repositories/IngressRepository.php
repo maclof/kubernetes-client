@@ -8,6 +8,6 @@ class IngressRepository extends Repository
 
 	protected function createCollection($response)
 	{
-		return new IngressCollection($response);
+		return new IngressCollection($response['items']);
 	}
 }

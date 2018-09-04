@@ -7,22 +7,26 @@ class JobCollection extends Collection
 	/**
 	 * The constructor.
 	 *
-	 * @param array $data
+	 * @param array $items
 	 */
-	public function __construct(array $data)
+	public function __construct(array $items)
 	{
-		parent::__construct($this->getJobs(isset($data['items']) ? $data['items'] : []));
+		parent::__construct($this->getJobs($items));
 	}
 
 	/**
 	 * Get an array of jobs.
 	 *
-	 * @param  array  $items
+	 * @param  array $items
 	 * @return array
 	 */
 	protected function getJobs(array $items)
 	{
 		foreach ($items as &$item) {
+			if ($item instanceof Job) {
+				continue;
+			}
+			
 			$item = new Job($item);
 		}
 

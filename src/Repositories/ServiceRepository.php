@@ -8,6 +8,6 @@ class ServiceRepository extends Repository
 
 	protected function createCollection($response)
 	{
-		return new ServiceCollection($response);
+		return new ServiceCollection($response['items']);
 	}
 }

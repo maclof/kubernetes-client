@@ -7,22 +7,26 @@ class DeploymentCollection extends Collection
 	/**
 	 * The constructor.
 	 *
-	 * @param array $data
+	 * @param array $items
 	 */
-	public function __construct(array $data)
+	public function __construct(array $items)
 	{
-		parent::__construct($this->getDeployments(isset($data['items']) ? $data['items'] : []));
+		parent::__construct($this->getDeployments($items));
 	}
 
 	/**
 	 * Get an array of deployments.
 	 *
-	 * @param  array  $items
+	 * @param  array $items
 	 * @return array
 	 */
 	protected function getDeployments(array $items)
 	{
 		foreach ($items as &$item) {
+			if ($item instanceof Deployment) {
+				continue;
+			}
+			
 			$item = new Deployment($item);
 		}
 

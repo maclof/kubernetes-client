@@ -7,22 +7,26 @@ class SecretCollection extends Collection
 	/**
 	 * The constructor.
 	 *
-	 * @param array $data
+	 * @param array $items
 	 */
-	public function __construct(array $data)
+	public function __construct(array $items)
 	{
-		parent::__construct($this->getSecrets(isset($data['items']) ? $data['items'] : []));
+		parent::__construct($this->getSecrets($items));
 	}
 
 	/**
 	 * Get an array of secrets.
 	 *
-	 * @param  array  $items
+	 * @param  array $items
 	 * @return array
 	 */
 	protected function getSecrets(array $items)
 	{
 		foreach ($items as &$item) {
+			if ($item instanceof Secret) {
+				continue;
+			}
+			
 			$item = new Secret($item);
 		}
 

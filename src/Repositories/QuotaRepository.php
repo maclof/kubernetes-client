@@ -9,6 +9,6 @@ class QuotaRepository extends Repository
 
 	protected function createCollection($response)
 	{
-		return new QuotaCollection($response);
+		return new QuotaCollection($response['items']);
 	}
 }

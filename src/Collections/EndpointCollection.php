@@ -7,22 +7,26 @@ class EndpointCollection extends Collection
 	/**
 	 * The constructor.
 	 *
-	 * @param array $data
+	 * @param array $items
 	 */
-	public function __construct(array $data)
+	public function __construct(array $items)
 	{
-		parent::__construct($this->getEndpoints(isset($data['items']) ? $data['items'] : []));
+		parent::__construct($this->getEndpoints($items));
 	}
 
 	/**
 	 * Get an array of nodes.
 	 *
-	 * @param  array  $items
+	 * @param  array $items
 	 * @return array
 	 */
 	protected function getEndpoints(array $items)
 	{
 		foreach ($items as &$item) {
+			if ($item instanceof Endpoint) {
+				continue;
+			}
+			
 			$item = new Endpoint($item);
 		}
 

@@ -8,6 +8,6 @@ class ConfigMapRepository extends Repository
 
 	protected function createCollection($response)
 	{
-		return new ConfigMapCollection($response);
+		return new ConfigMapCollection($response['items']);
 	}
 }

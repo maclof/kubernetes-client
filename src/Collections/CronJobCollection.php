@@ -7,11 +7,11 @@ class CronJobCollection extends Collection
 	/**
 	 * The constructor.
 	 *
-	 * @param array $data
+	 * @param array $items
 	 */
-	public function __construct(array $data)
+	public function __construct(array $items)
 	{
-		parent::__construct($this->getCronJobs(isset($data['items']) ? $data['items'] : []));
+		parent::__construct($this->getCronJobs($items));
 	}
 
 	/**
@@ -23,6 +23,10 @@ class CronJobCollection extends Collection
 	protected function getCronJobs(array $items)
 	{
 		foreach ($items as &$item) {
+			if ($item instanceof CronJob) {
+				continue;
+			}
+			
 			$item = new CronJob($item);
 		}
 

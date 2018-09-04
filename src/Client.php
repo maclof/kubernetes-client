@@ -161,8 +161,8 @@ class Client
 		'deployments'            => 'Repositories\DeploymentRepository',
 		'ingresses'              => 'Repositories\IngressRepository',
 
-        // autoscaling/v2beta1
-        'horizontalPodAutoscalers'  => 'Repositories\HorizontalPodAutoscalerRepository',
+		// autoscaling/v2beta1
+		'horizontalPodAutoscalers'  => 'Repositories\HorizontalPodAutoscalerRepository',
 
 		// networking.k8s.io/v1
 		'networkPolicies'        => 'Repositories\NetworkPolicyRepository',
@@ -368,7 +368,7 @@ class Client
 
 	/**
 	 * Magic call method to grab a class instance.
-	 * 
+	 *
 	 * @param  string $name
 	 * @param  array  $args
 	 * @return \stdClass

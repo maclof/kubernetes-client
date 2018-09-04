@@ -8,6 +8,6 @@ class ReplicationControllerRepository extends Repository
 
 	protected function createCollection($response)
 	{
-		return new ReplicationControllerCollection($response);
+		return new ReplicationControllerCollection($response['items']);
 	}
 }

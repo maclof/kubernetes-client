@@ -8,6 +8,6 @@ class HorizontalPodAutoscalerRepository extends Repository
 
 	protected function createCollection($response)
 	{
-		return new HorizontalPodAutoscalerCollection($response);
+		return new HorizontalPodAutoscalerCollection($response['items']);
 	}
 }

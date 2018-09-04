@@ -12,7 +12,7 @@ class PersistentVolumeRepository extends Repository
 	 */
 	protected function createCollection($response)
 	{
-		return new PersistentVolumeCollection($response);
+		return new PersistentVolumeCollection($response['items']);
 	}
 
 	/**
@@ -36,4 +36,3 @@ class PersistentVolumeRepository extends Repository
 		return $this->client->sendRequest($method, $uri, $query, $body, $namespace, $apiVersion);
 	}
 }
-

@@ -8,6 +8,6 @@ class CronJobRepository extends Repository
 
 	protected function createCollection($response)
 	{
-		return new CronJobCollection($response);
+		return new CronJobCollection($response['items']);
 	}
 }

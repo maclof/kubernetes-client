@@ -7,22 +7,26 @@ class ConfigMapCollection extends Collection
 	/**
 	 * The constructor.
 	 *
-	 * @param array $data
+	 * @param array $items
 	 */
-	public function __construct(array $data)
+	public function __construct(array $items)
 	{
-		parent::__construct($this->getConfigMaps(isset($data['items']) ? $data['items'] : []));
+		parent::__construct($this->getConfigMaps($items));
 	}
 
 	/**
 	 * Get an array of config maps.
 	 *
-	 * @param  array  $items
+	 * @param  array $items
 	 * @return array
 	 */
 	protected function getConfigMaps(array $items)
 	{
 		foreach ($items as &$item) {
+			if ($item instanceof ConfigMap) {
+				continue;
+			}
+			
 			$item = new ConfigMap($item);
 		}
 

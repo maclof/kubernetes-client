@@ -7,22 +7,26 @@ class ServiceCollection extends Collection
 	/**
 	 * The constructor.
 	 *
-	 * @param array $data
+	 * @param array $items
 	 */
-	public function __construct(array $data)
+	public function __construct(array $items)
 	{
-		parent::__construct($this->getServices(isset($data['items']) ? $data['items'] : []));
+		parent::__construct($this->getServices($items));
 	}
 
 	/**
 	 * Get an array of services.
 	 *
-	 * @param  array  $items
+	 * @param  array $items
 	 * @return array
 	 */
 	protected function getServices(array $items)
 	{
 		foreach ($items as &$item) {
+			if ($item instanceof Service) {
+				continue;
+			}
+
 			$item = new Service($item);
 		}
 

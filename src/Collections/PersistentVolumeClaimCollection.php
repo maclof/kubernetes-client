@@ -7,22 +7,26 @@ class PersistentVolumeClaimCollection extends Collection
 	/**
 	 * The constructor.
 	 *
-	 * @param array $data
+	 * @param array $items
 	 */
-	public function __construct(array $data)
+	public function __construct(array $items)
 	{
-		parent::__construct($this->getPersistentVolumeClaims(isset($data['items']) ? $data['items'] : []));
+		parent::__construct($this->getPersistentVolumeClaims($items));
 	}
 
 	/**
 	 * Get an array of persistent volume claims.
 	 *
-	 * @param  array  $items
+	 * @param  array $items
 	 * @return array
 	 */
 	protected function getPersistentVolumeClaims(array $items)
 	{
 		foreach ($items as &$item) {
+			if ($item instanceof PersistentVolumeClaim) {
+				continue;
+			}
+			
 			$item = new PersistentVolumeClaim($item);
 		}
 

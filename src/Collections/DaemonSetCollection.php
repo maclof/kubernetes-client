@@ -7,22 +7,26 @@ class DaemonSetCollection extends Collection
 	/**
 	 * The constructor.
 	 *
-	 * @param array $data
+	 * @param array $items
 	 */
-	public function __construct(array $data)
+	public function __construct(array $items)
 	{
-		parent::__construct($this->getDaemonSets(isset($data['items']) ? $data['items'] : []));
+		parent::__construct($this->getDaemonSets($items));
 	}
 
 	/**
 	 * Get an array of daemon sets.
 	 *
-	 * @param  array  $items
+	 * @param  array $items
 	 * @return array
 	 */
 	protected function getDaemonSets(array $items)
 	{
 		foreach ($items as &$item) {
+			if ($item instanceof DaemonSet) {
+				continue;
+			}
+			
 			$item = new DaemonSet($item);
 		}
 

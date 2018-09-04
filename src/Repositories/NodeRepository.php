@@ -9,6 +9,6 @@ class NodeRepository extends Repository
 
 	protected function createCollection($response)
 	{
-		return new NodeCollection($response);
+		return new NodeCollection($response['items']);
 	}
 }

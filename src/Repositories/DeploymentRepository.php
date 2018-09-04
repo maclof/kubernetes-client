@@ -8,6 +8,6 @@ class DeploymentRepository extends Repository
 
 	protected function createCollection($response)
 	{
-		return new DeploymentCollection($response);
+		return new DeploymentCollection($response['items']);
 	}
 }

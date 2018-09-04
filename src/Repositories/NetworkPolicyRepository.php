@@ -8,6 +8,6 @@ class NetworkPolicyRepository extends Repository
 
 	protected function createCollection($response)
 	{
-		return new NetworkPolicyCollection($response);
+		return new NetworkPolicyCollection($response['items']);
 	}
 }

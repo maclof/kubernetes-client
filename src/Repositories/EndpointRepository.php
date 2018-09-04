@@ -8,6 +8,6 @@ class EndpointRepository extends Repository
 
 	protected function createCollection($response)
 	{
-		return new EndpointCollection($response);
+		return new EndpointCollection($response['items']);
 	}
 }

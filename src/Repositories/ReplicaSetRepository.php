@@ -8,6 +8,6 @@ class ReplicaSetRepository extends Repository
 
 	protected function createCollection($response)
 	{
-		return new ReplicaSetCollection($response);
+		return new ReplicaSetCollection($response['items']);
 	}
 }

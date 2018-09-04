@@ -7,22 +7,26 @@ class ReplicationControllerCollection extends Collection
 	/**
 	 * The constructor.
 	 *
-	 * @param array $data
+	 * @param array $items
 	 */
-	public function __construct(array $data)
+	public function __construct(array $items)
 	{
-		parent::__construct($this->getReplicationControllers(isset($data['items']) ? $data['items'] : []));
+		parent::__construct($this->getReplicationControllers($items));
 	}
 
 	/**
 	 * Get an array of replication controllers.
 	 *
-	 * @param  array  $items
+	 * @param  array $items
 	 * @return array
 	 */
 	protected function getReplicationControllers(array $items)
 	{
 		foreach ($items as &$item) {
+			if ($item instanceof ReplicationController) {
+				continue;
+			}
+			
 			$item = new ReplicationController($item);
 		}
 

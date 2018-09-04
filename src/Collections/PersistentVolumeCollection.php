@@ -5,18 +5,32 @@ use Maclof\Kubernetes\Collections\Collection;
 
 class PersistentVolumeCollection extends Collection
 {
-	public function __construct(array $data)
+	/**
+	 * The constructor.
+	 *
+	 * @param array $items
+	 */
+	public function __construct(array $items)
 	{
-		parent::__construct($this->getPersistentVolume(isset($data['items']) ? $data['items'] : []));
+		parent::__construct($this->getPersistentVolumes($items));
 	}
 
-	protected function getPersistentVolume(array $items)
+	/**
+	 * Get an array of persistent volumes.
+	 *
+	 * @param  array $items
+	 * @return array
+	 */
+	protected function getPersistentVolumes(array $items)
 	{
 		foreach ($items as &$item) {
+			if ($item instanceof PersistentVolume) {
+				continue;
+			}
+			
 			$item = new PersistentVolume($item);
 		}
 
 		return $items;
 	}
 }
-

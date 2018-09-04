@@ -9,7 +9,7 @@ class PodRepository extends Repository
 
 	protected function createCollection($response)
 	{
-		return new PodCollection($response);
+		return new PodCollection($response['items']);
 	}
 
 	/**
