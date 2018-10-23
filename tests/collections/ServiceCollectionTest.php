@@ -12,9 +12,7 @@ class ServiceCollectionTest extends TestCase
 
 	protected function getServiceCollection()
 	{
-		$serviceCollection = new ServiceCollection([
-			'items' => $this->items,
-		]);
+		$serviceCollection = new ServiceCollection($this->items);
 
 		return $serviceCollection;
 	}

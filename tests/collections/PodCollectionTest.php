@@ -12,9 +12,7 @@ class PodCollectionTest extends TestCase
 
 	protected function getPodCollection()
 	{
-		$podCollection = new PodCollection([
-			'items' => $this->items,
-		]);
+		$podCollection = new PodCollection($this->items);
 
 		return $podCollection;
 	}

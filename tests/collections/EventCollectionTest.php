@@ -12,9 +12,7 @@ class EventCollectionTest extends TestCase
 
 	protected function getEventCollection()
 	{
-		$eventCollection = new EventCollection([
-			'items' => $this->items,
-		]);
+		$eventCollection = new EventCollection($this->items);
 
 		return $eventCollection;
 	}

@@ -12,9 +12,7 @@ class EndpointCollectionTest extends TestCase
 
 	protected function getEndpointCollection()
 	{
-		$nodeCollection = new EndpointCollection([
-			'items' => $this->items,
-		]);
+		$nodeCollection = new EndpointCollection($this->items);
 
 		return $nodeCollection;
 	}

@@ -12,9 +12,7 @@ class NetworkPolicyCollectionTest extends TestCase
 
 	protected function getNetworkPolicyCollection()
 	{
-		$podCollection = new NetworkPolicyCollection([
-			'items' => $this->items,
-		]);
+		$podCollection = new NetworkPolicyCollection($this->items);
 
 		return $podCollection;
 	}

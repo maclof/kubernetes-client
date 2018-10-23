@@ -12,9 +12,7 @@ class JobCollectionTest extends TestCase
 
 	protected function getJobCollection()
 	{
-		$jobCollection = new JobCollection([
-			'items' => $this->items,
-		]);
+		$jobCollection = new JobCollection($this->items);
 
 		return $jobCollection;
 	}
