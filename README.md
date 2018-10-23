@@ -73,6 +73,13 @@ $pod = $client->pods()->setLabelSelector([
 ])->first();
 ```
 
+### Using [JSONPath](https://github.com/FlowCommunications/JSONPath)
+It allows you to query status data.
+
+```php
+$jobStartTime = $client->jobs()->find()->getJsonPath('$.status.startTime')[0];
+```
+
 ## Authentication Examples
 
 ### Insecure HTTP

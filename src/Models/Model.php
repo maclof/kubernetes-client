@@ -1,5 +1,7 @@
 <?php namespace Maclof\Kubernetes\Models;
 
+use Flow\JSONPath\JSONPath;
+use Flow\JSONPath\JSONPathException;
 use Illuminate\Contracts\Support\Arrayable;
 
 abstract class Model implements Arrayable
@@ -64,6 +66,20 @@ abstract class Model implements Arrayable
 	}
 
 	/**
+     * Get data ussing Json Path.
+     *
+     * @param  string $expression
+     * @throws JSONPathException
+     * @return mixed
+     */
+    public function getJsonPath($expression)
+    {
+        $jsonPath = new JSONPath($this->attributes);
+
+        return $jsonPath->find($expression);
+    }
+
+	 /**
 	 * Get the schema.
 	 *
 	 * @return string
