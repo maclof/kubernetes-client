@@ -12,9 +12,7 @@ class ConfigMapCollectionTest extends TestCase
 
 	protected function getConfigMapCollection()
 	{
-		$configMapCollection = new ConfigMapCollection([
-			'items' => $this->items,
-		]);
+		$configMapCollection = new ConfigMapCollection($this->items);
 
 		return $configMapCollection;
 	}

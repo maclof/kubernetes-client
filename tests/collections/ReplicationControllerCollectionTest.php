@@ -12,9 +12,7 @@ class ReplicationControllerCollectionTest extends TestCase
 
 	protected function getReplicationControllerCollection()
 	{
-		$replicationControllerCollection = new ReplicationControllerCollection([
-			'items' => $this->items,
-		]);
+		$replicationControllerCollection = new ReplicationControllerCollection($this->items);
 
 		return $replicationControllerCollection;
 	}

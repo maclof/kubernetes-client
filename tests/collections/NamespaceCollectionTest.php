@@ -12,9 +12,7 @@ class NamespaceCollectionTest extends TestCase
 
 	protected function getNamespaceCollection()
 	{
-		$namespaceCollection = new NamespaceCollection([
-			'items' => $this->items,
-		]);
+		$namespaceCollection = new NamespaceCollection($this->items);
 
 		return $namespaceCollection;
 	}

@@ -12,9 +12,7 @@ class DeploymentCollectionTest extends TestCase
 
 	protected function getDeploymentCollection()
 	{
-		$deploymentCollection = new DeploymentCollection([
-			'items' => $this->items,
-		]);
+		$deploymentCollection = new DeploymentCollection($this->items);
 
 		return $deploymentCollection;
 	}

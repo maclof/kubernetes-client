@@ -12,9 +12,7 @@ class NodeCollectionTest extends TestCase
 
 	protected function getNodeCollection()
 	{
-		$nodeCollection = new NodeCollection([
-			'items' => $this->items,
-		]);
+		$nodeCollection = new NodeCollection($this->items);
 
 		return $nodeCollection;
 	}

@@ -12,9 +12,7 @@ class ReplicaSetCollectionTest extends TestCase
 
 	protected function getReplicaSetCollection()
 	{
-		$replicaSetCollection = new ReplicaSetCollection([
-			'items' => $this->items,
-		]);
+		$replicaSetCollection = new ReplicaSetCollection($this->items);
 
 		return $replicaSetCollection;
 	}

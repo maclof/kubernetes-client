@@ -12,9 +12,7 @@ class IngressCollectionTest extends TestCase
 
 	protected function getIngressCollection()
 	{
-		$ingressCollection = new IngressCollection([
-			'items' => $this->items,
-		]);
+		$ingressCollection = new IngressCollection($this->items);
 
 		return $ingressCollection;
 	}

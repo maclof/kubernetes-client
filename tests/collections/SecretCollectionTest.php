@@ -12,9 +12,7 @@ class SecretCollectionTest extends TestCase
 
 	protected function getSecretCollection()
 	{
-		$secretCollection = new SecretCollection([
-			'items' => $this->items,
-		]);
+		$secretCollection = new SecretCollection($this->items);
 
 		return $secretCollection;
 	}
