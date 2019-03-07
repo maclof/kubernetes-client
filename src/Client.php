@@ -355,7 +355,7 @@ class Client
 			$requestOptions['query'] = $query;
 		}
 		if ($body !== null) {
-			$requestOptions['body'] = is_array($body) ? json_encode($body) : $body;
+			$requestOptions['body'] = is_array($body) ? json_encode($body, JSON_FORCE_OBJECT) : $body;
 		}
 
 		if ($method === 'PATCH') {
