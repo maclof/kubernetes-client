@@ -156,9 +156,11 @@ class Client
 		// batch/v2alpha1
 		'cronJobs'               => 'Repositories\CronJobRepository',
 
+		// apps/v1
+		'deployments'            => 'Repositories\DeploymentRepository',
+
 		// extensions/v1beta1
 		'daemonSets'             => 'Repositories\DaemonSetRepository',
-		'deployments'            => 'Repositories\DeploymentRepository',
 		'ingresses'              => 'Repositories\IngressRepository',
 
 		// autoscaling/v2beta1
@@ -353,7 +355,7 @@ class Client
 			$requestOptions['query'] = $query;
 		}
 		if ($body !== null) {
-			$requestOptions['body'] = is_array($body) ? json_encode($body) : $body;
+			$requestOptions['body'] = is_array($body) ? json_encode($body, JSON_FORCE_OBJECT) : $body;
 		}
 
 		if ($method === 'PATCH') {
