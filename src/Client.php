@@ -172,7 +172,7 @@ class Client
 		'networkPolicies'        => 'Repositories\NetworkPolicyRepository',
 		
 		// agones
-		'gameServers'		=> 'Respositories\GameServerRepository',
+		'gameServers'		=> 'Repositories\GameServerRepository',
 		'fleetAllocations' 	=> 'Repositories\FleetAllocationRepository',
 	];
 
