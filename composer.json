@@ -1,5 +1,5 @@
 {
-	"name": "maclof/kubernetes-client",
+	"name": "rennekon/kubernetes-client",
 	"description": "A simple yet elegant client for accessing and controlling a Kubernetes cluster.",
 	"keywords": ["kubernetes", "docker", "container", "cluster", "guzzle", "guzzlehttp"],
 	"authors": [
