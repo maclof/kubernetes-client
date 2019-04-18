@@ -168,6 +168,10 @@ class Client
 
 		// networking.k8s.io/v1
 		'networkPolicies'        => 'Repositories\NetworkPolicyRepository',
+		
+		// agones
+		'gameServers'		=> 'Respositories\GameServer',
+		'fleetAllocations' 	=> 'Repositories\FleetAllocation',
 	];
 
 	/**
