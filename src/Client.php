@@ -26,6 +26,8 @@ use Maclof\Kubernetes\Repositories\ReplicationControllerRepository;
 use Maclof\Kubernetes\Repositories\SecretRepository;
 use Maclof\Kubernetes\Repositories\ServiceRepository;
 use Maclof\Kubernetes\Repositories\NamespaceRepository;
+use Maclof\Kubernetes\Repositories\GameServerRepository;
+use Maclof\Kubernetes\Repositories\FleetAllocationRepository;
 use Maclof\Kubernetes\Models\PersistentVolume;
 
 /**
@@ -170,8 +172,8 @@ class Client
 		'networkPolicies'        => 'Repositories\NetworkPolicyRepository',
 		
 		// agones
-		'gameServers'		=> 'Respositories\GameServer',
-		'fleetAllocations' 	=> 'Repositories\FleetAllocation',
+		'gameServers'		=> 'Respositories\GameServerRepository',
+		'fleetAllocations' 	=> 'Repositories\FleetAllocationRepository',
 	];
 
 	/**
