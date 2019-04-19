@@ -11,7 +11,7 @@ class FleetAllocationCollection extends Collection
 	 */
 	public function __construct(array $items)
 	{
-		parent::__construct($this->getPods($items));
+		parent::__construct($this->getFleetAllocations($items));
 	}
 
 	/**
