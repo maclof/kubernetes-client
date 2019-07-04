@@ -3,8 +3,10 @@
 use BadMethodCallException;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\ClientInterface as GuzzleClientInterface;
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\ParseException;
+use GuzzleHttp\Exception\ClientException as GuzzleClientException;
+use React\EventLoop\Factory as ReactFactory;
+use React\Socket\Connector as ReactSocketConnector;
+use Ratchet\Client\Connector as WebSocketConnector;
 use Maclof\Kubernetes\Exceptions\BadRequestException;
 use Maclof\Kubernetes\Exceptions\MissingOptionException;
 use Maclof\Kubernetes\Repositories\ConfigMapRepository;
@@ -130,6 +132,19 @@ class Client
 	protected $guzzleClient;
 
 	/**
+	 * The exec channels for result messages.
+	 *
+	 * @var array
+	 */
+	protected $execChannels = [
+		'stdin',
+		'stdout',
+		'stderr',
+		'error',
+		'resize',
+	];
+
+	/**
 	 * The class map.
 	 *
 	 * @var array
@@ -249,7 +264,8 @@ class Client
 	 *
 	 * @param patch type
 	 */
-	public function setPatchType($patchType = "strategic") {
+	public function setPatchType($patchType = "strategic")
+	{
 		if ($patchType == "merge") {
 			$this->patchHeader = ['Content-Type' => 'application/merge-patch+json'];
 		} elseif ($patchType == "json") {
@@ -257,16 +273,6 @@ class Client
 		} else {
 			$this->patchHeader = ['Content-Type' => 'application/strategic-merge-patch+json'];
 		}
-	}
-
-	/**
-	 * Check if we're using guzzle 6.
-	 *
-	 * @return boolean
-	 */
-	protected function isUsingGuzzle6()
-	{
-		return version_compare(GuzzleClientInterface::VERSION, '6') === 1;
 	}
 
 	/**
@@ -306,13 +312,6 @@ class Client
 				$this->username,
 				$this->password,
 			];
-		}
-
-		if (!$this->isUsingGuzzle6()) {
-			return new GuzzleClient([
-				'base_url' => $this->master,
-				'defaults' => $options,
-			]);
 		}
 
 		$options['base_uri'] = $this->master;
@@ -362,21 +361,6 @@ class Client
 			$requestOptions['headers'] = $this->patchHeader;
 		}
 
-		if (!$this->isUsingGuzzle6()) {
-			try {
-				$request = $this->guzzleClient->createRequest($method, $requestUri, $requestOptions);
-				$response = $this->guzzleClient->send($request);
-			} catch (ClientException $e) {
-				throw new BadRequestException($e->getMessage(), 0, $e);
-			}
-
-			try {
-				return $response->json();
-			} catch (ParseException $e) {
-				return (string) $response->getBody();
-			}
-		}
-
 		try {
 			$response = $this->guzzleClient->request($method, $requestUri, $requestOptions);
 
@@ -384,10 +368,141 @@ class Client
 			$jsonResponse = json_decode($bodyResponse, true);
 
 			return is_array($jsonResponse) ? $jsonResponse : $bodyResponse;
-		} catch (ClientException $e) {
-			$fullMessage = (string) $e->getResponse()->getBody();
-			throw new BadRequestException($fullMessage, 0, $e);
+		} catch (GuzzleClientException $e) {
+			$response = $e->getResponse();
+
+			$bodyResponse = (string) $response->getBody();
+
+			if (in_array('application/json', $response->getHeader('Content-Type'))) {
+				$jsonResponse = json_decode($bodyResponse, true);
+
+				if ($this->isUpgradeRequestRequired($jsonResponse)) {
+					return $this->sendUpgradeRequest($requestUri, $query);
+				}
+			}
+
+			throw new BadRequestException($bodyResponse, 0, $e);
 		}
+	}
+
+	/**
+	 * Check if an upgrade request is required.
+	 *
+	 * @param  array $response
+	 * @return boolean
+	 */
+	protected function isUpgradeRequestRequired(array $response)
+	{
+		return $response['code'] == 400 && $response['status'] == 'Failure' && $response['message'] == 'Upgrade request required';
+	}
+
+	/**
+	 * Send an upgrade request and return any response messages.
+	 *
+	 * @param  string $requestUri
+	 * @param  array  $query
+	 * @return array
+	 */
+	protected function sendUpgradeRequest($requestUri, array $query)
+	{
+		$fullUrl = $this->master .'/' . $requestUri . '?' . implode('&', $this->parseQueryParams($query));
+		if (parse_url($fullUrl, PHP_URL_SCHEME) == 'https') {
+			$fullUrl = str_replace('https://', 'wss://', $fullUrl);
+		} else {
+			$fullUrl = str_replace('http://', 'ws://', $fullUrl);
+		}
+
+		$headers = [];
+		$socketOptions = [
+			'timeout' => 20,
+			'tls' => [],
+		];
+
+		if ($this->token) {
+			$token = $this->token;
+			if (file_exists($token)) {
+				$token = file_get_contents($token);
+			}
+
+			$headers['Authorization'] = 'Bearer ' . trim($token);
+		}
+
+		if (!is_null($this->verify)) {
+			$socketOptions['tls']['verify_peer'] = $this->verify;
+		} elseif ($this->caCert) {
+			$socketOptions['tls']['cafile'] = $this->caCert;
+		}
+
+		if ($this->clientCert) {
+			$socketOptions['tls']['local_cert'] = $this->clientCert;
+		}
+		if ($this->clientKey) {
+			$socketOptions['tls']['local_pk'] = $this->clientKey;
+		}
+
+		$loop = ReactFactory::create();
+
+		$socketConnector = new ReactSocketConnector($loop, $socketOptions);
+
+		$wsConnector = new WebSocketConnector($loop, $socketConnector);
+
+		$connPromise = $wsConnector($fullUrl, ['base64.channel.k8s.io'], $headers);
+
+		$wsConnection = null;
+		$messages = [];
+
+		$connPromise->then(function ($conn) use (&$wsConnection, &$messages) {
+			$wsConnection = $conn;
+
+			$conn->on('message', function ($message) use (&$messages) {
+				$data = $message->getContents();
+
+				$channel = $this->execChannels[substr($data, 2, 1)];
+				$message = base64_decode(substr($data, 3));
+
+				if (strlen($message) == 0) {
+					return;
+				}
+
+				$messages[] = [
+					'channel' => $channel,
+					'message' => $message,
+				];
+			});
+		}, function ($e) {
+			throw new BadRequestException('Websocket Exception', 0, $e);
+		});
+
+		$loop->run();
+
+		$wsConnection->close();
+
+		return $messages;
+	}
+
+	/**
+	 * Parse an array of query params.
+	 *
+	 * @param  array $query
+	 * @return array
+	 */
+	protected function parseQueryParams(array $query)
+	{
+		$parts = [];
+
+		foreach ($query as $key => $value) {
+			if (is_array($value)) {
+				foreach ($value as $val) {
+					$parts[] = $key . '=' . $val;
+				}
+
+				continue;
+			}
+
+			$parts[] = $key . '=' . $value;
+		}
+
+		return $parts;
 	}
 
 	/**
