@@ -99,7 +99,12 @@ abstract class Model implements Arrayable
 
 		$schema = array_merge($this->schema, $this->toArray());
 
-		return json_encode($schema, JSON_PRETTY_PRINT);
+		$jsonSchema = json_encode($schema, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+
+		// Fix for issue #37, can't use JSON_FORCE_OBJECT as the encoding breaks arrays of objects, for example port mappings.
+		$jsonSchema = str_replace(': []', ': {}', $jsonSchema);
+
+		return $jsonSchema;
 	}
 
 	/**
