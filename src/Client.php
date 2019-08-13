@@ -457,17 +457,10 @@ class Client
 			$wsConnection = $conn;
 
 			$conn->on('message', function ($message) use (&$messages) {
-				$data = $message->getContents();
+				$data = $message->getPayload();
 
-				$channelIndex = substr($data, 4, 1);
-				$rawMessage = substr($data, 5);
-
-				$channel = isset($this->execChannels[$channelIndex]) ? $this->execChannels[$channelIndex] : 'unknown';
-				$message = base64_decode($rawMessage);
-
-				if (strlen($message) == 0) {
-					return;
-				}
+				$channel = $this->execChannels[substr($data, 0, 1)];
+				$message = base64_decode(substr($data, 1));
 
 				$messages[] = [
 					'channel' => $channel,
