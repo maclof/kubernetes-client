@@ -32,6 +32,11 @@ class TestCase extends PHPUnitTestCase
 			return;
 		}
 
-		return file_get_contents($path);
+		$contents = file_get_contents($path);
+
+		// Fix for windows encoded fixtures.
+		$contents = str_replace("\r\n", "\n", $contents);
+
+		return $contents;
 	}
 }
