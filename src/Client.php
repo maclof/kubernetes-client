@@ -459,9 +459,11 @@ class Client
 			$conn->on('message', function ($message) use (&$messages) {
 				$data = $message->getContents();
 
-				$channelIndex = substr($data, 2, 1);
+				$channelIndex = substr($data, 4, 1);
+				$rawMessage = substr($data, 5);
+
 				$channel = isset($this->execChannels[$channelIndex]) ? $this->execChannels[$channelIndex] : 'unknown';
-				$message = base64_decode(substr($data, 3));
+				$message = base64_decode($rawMessage);
 
 				if (strlen($message) == 0) {
 					return;
