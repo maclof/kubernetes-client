@@ -425,6 +425,8 @@ class Client
 			}
 
 			$headers['Authorization'] = 'Bearer ' . trim($token);
+		} elseif ($this->username && $this->password) {
+			$headers['Authorization'] = 'Basic ' . base64_encode($this->username . ':' . $this->password);
 		}
 
 		if (!is_null($this->verify)) {
@@ -457,7 +459,8 @@ class Client
 			$conn->on('message', function ($message) use (&$messages) {
 				$data = $message->getContents();
 
-				$channel = $this->execChannels[substr($data, 2, 1)];
+				$channelIndex = substr($data, 2, 1);
+				$channel = isset($this->execChannels[$channelIndex]) ? $this->execChannels[$channelIndex] : 'unknown';
 				$message = base64_decode(substr($data, 3));
 
 				if (strlen($message) == 0) {
@@ -475,7 +478,9 @@ class Client
 
 		$loop->run();
 
-		$wsConnection->close();
+		if ($wsConnection) {
+			$wsConnection->close();
+		}
 
 		return $messages;
 	}
