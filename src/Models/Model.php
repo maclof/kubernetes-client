@@ -118,6 +118,16 @@ abstract class Model implements Arrayable
 	}
 
 	/**
+	 * Set the api version.
+	 * 
+	 * @param string $apiVersion
+	 */
+	public function setApiVersion($apiVersion)
+	{
+		$this->apiVersion = $apiVersion;
+	}
+
+	/**
 	 * Get the model as a string.
 	 *
 	 * @return string
