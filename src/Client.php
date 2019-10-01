@@ -483,7 +483,7 @@ class Client
 	public function __call($name, array $args)
 	{
 		if (isset($this->classRegistry[$name])) {
-			$class = 'Maclof\Kubernetes\\' . $this->classRegistry[$name];
+			$class = $this->classRegistry[$name];
 
 			return isset($this->classInstances[$name]) ? $this->classInstances[$name] : new $class($this);
 		}
