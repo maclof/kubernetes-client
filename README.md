@@ -117,6 +117,21 @@ $client = new Client([
 ]);
 ```
 
+## Extending a library
+
+### Custom repositories
+```php
+$repositories = new RepositoryRegistry();
+
+$repositories['things'] = MyApp\Kubernetes\Repository\ThingRepository;
+
+$client = new Client([
+    'master' => 'https://master.mycluster.com','
+], $repositories);
+
+$client->things() //ThingRepository
+```
+
 ## Usage Examples
 
 ### Create/Update a Replication Controller

@@ -145,45 +145,11 @@ class Client
 	];
 
 	/**
-	 * The class map.
+	 * The repository class registry.
 	 *
-	 * @var array
+	 * @var RepositoryRegistry
 	 */
-	protected $classMap = [
-		// v1
-		'nodes'                  => 'Repositories\NodeRepository',
-		'quotas'                 => 'Repositories\QuotaRepository',
-		'pods'                   => 'Repositories\PodRepository',
-		'replicaSets'            => 'Repositories\ReplicaSetRepository',
-		'replicationControllers' => 'Repositories\ReplicationControllerRepository',
-		'services'               => 'Repositories\ServiceRepository',
-		'secrets'                => 'Repositories\SecretRepository',
-		'events'                 => 'Repositories\EventRepository',
-		'configMaps'             => 'Repositories\ConfigMapRepository',
-		'endpoints'              => 'Repositories\EndpointRepository',
-		'persistentVolume'       => 'Repositories\PersistentVolumeRepository',
-		'persistentVolumeClaims' => 'Repositories\PersistentVolumeClaimRepository',
-		'namespaces'             => 'Repositories\NamespaceRepository',
-
-		// batch/v1
-		'jobs'                   => 'Repositories\JobRepository',
-
-		// batch/v2alpha1
-		'cronJobs'               => 'Repositories\CronJobRepository',
-
-		// apps/v1
-		'deployments'            => 'Repositories\DeploymentRepository',
-
-		// extensions/v1beta1
-		'daemonSets'             => 'Repositories\DaemonSetRepository',
-		'ingresses'              => 'Repositories\IngressRepository',
-
-		// autoscaling/v2beta1
-		'horizontalPodAutoscalers'  => 'Repositories\HorizontalPodAutoscalerRepository',
-
-		// networking.k8s.io/v1
-		'networkPolicies'        => 'Repositories\NetworkPolicyRepository',
-	];
+	protected $classRegistry;
 
 	/**
 	 * The class instances.
@@ -205,10 +171,11 @@ class Client
 	 * @param array $options
 	 * @param \GuzzleHttp\Client $guzzleClient
 	 */
-	public function __construct(array $options = array(), GuzzleClient $guzzleClient = null)
+	public function __construct(array $options = array(), GuzzleClient $guzzleClient = null, RepositoryRegistry $repositoryRegistry = null)
 	{
 		$this->setOptions($options);
 		$this->guzzleClient = $guzzleClient ? $guzzleClient : $this->createGuzzleClient();
+		$this->classRegistry = $repositoryRegistry ? $repositoryRegistry : new RepositoryRegistry();
 	}
 
 	/**
@@ -515,8 +482,8 @@ class Client
 	 */
 	public function __call($name, array $args)
 	{
-		if (isset($this->classMap[$name])) {
-			$class = 'Maclof\Kubernetes\\' . $this->classMap[$name];
+		if (isset($this->classRegistry[$name])) {
+			$class = 'Maclof\Kubernetes\\' . $this->classRegistry[$name];
 
 			return isset($this->classInstances[$name]) ? $this->classInstances[$name] : new $class($this);
 		}
