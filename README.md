@@ -127,6 +127,7 @@ $client = new Client([
 ```php
 $repositories = new RepositoryRegistry();
 
+
 $repositories['things'] = MyApp\Kubernetes\Repository\ThingRepository::class;
 
 $client = new Client([
