@@ -126,6 +126,25 @@ abstract class Repository
 		return $this->sendRequest('PATCH', '/' . $this->uri . '/' . $model->getMetadata('name'), null, $model->getSchema(), $this->namespace);
 	}
 
+    /**
+     * Apply a model.
+     *
+     * Creates a new api object if not exists, or patch.
+     *
+     * @param \Maclof\Kubernetes\Models\Model $model
+     * @return array
+     */
+	public function apply(Model $model)
+    {
+        $exists = $this->exists($model->getMetadata("name"));
+
+        if ($exists) {
+            return $this->patch($model);
+        } else {
+            return $this->create($model);
+        }
+    }
+
 	/**
 	 * Delete a model.
 	 *
@@ -258,7 +277,7 @@ abstract class Repository
 
 	/**
 	 * Create a collection of models from the response.
-	 * 
+	 *
 	 * @param  array $response
 	 * @return \Maclof\Kubernetes\Collections\Collection
 	 */
