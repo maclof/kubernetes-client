@@ -2,8 +2,10 @@
 
 use BadMethodCallException;
 use GuzzleHttp\Client as GuzzleClient;
-use GuzzleHttp\ClientInterface as GuzzleClientInterface;
 use GuzzleHttp\Exception\ClientException as GuzzleClientException;
+use GuzzleHttp\Exception\ServerException;
+use Maclof\Kubernetes\Exceptions\ApiServerException;
+use Maclof\Kubernetes\Repositories\CertificateRepository;
 use React\EventLoop\Factory as ReactFactory;
 use React\Socket\Connector as ReactSocketConnector;
 use Ratchet\Client\Connector as WebSocketConnector;
@@ -51,6 +53,8 @@ use Maclof\Kubernetes\Models\PersistentVolume;
  * @method NamespaceRepository namespaces()
  * @method NetworkPolicyRepository networkPolicies()
  * @method HorizontalPodAutoscalerRepository horizontalPodAutoscalers()
+ * @method CertificateRepository certificates()
+ * @method IssuersRepository issuers()
  */
 class Client
 {

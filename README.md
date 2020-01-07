@@ -43,6 +43,10 @@ $ composer require maclof/kubernetes-client
 ### networking.k8s.io/v1
 * Network Policies
 
+### certmanager.k8s.io/v1alpha1
+* Certificates
+* Issuers
+
 ## Basic Usage
 
 ```php
@@ -123,13 +127,14 @@ $client = new Client([
 ```php
 $repositories = new RepositoryRegistry();
 
-$repositories['things'] = MyApp\Kubernetes\Repository\ThingRepository;
+
+$repositories['things'] = MyApp\Kubernetes\Repository\ThingRepository::class;
 
 $client = new Client([
     'master' => 'https://master.mycluster.com','
-], $repositories);
+], null, $repositories);
 
-$client->things() //ThingRepository
+$client->things(); //ThingRepository
 ```
 
 ## Usage Examples

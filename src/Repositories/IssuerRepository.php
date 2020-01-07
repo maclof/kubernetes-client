@@ -1,17 +1,17 @@
 <?php namespace Maclof\Kubernetes\Repositories;
 
-use Maclof\Kubernetes\Collections\CertificateCollection;
+use Maclof\Kubernetes\Collections\IssuerCollection;
 use Maclof\Kubernetes\Repositories\Strategy\PatchMergeTrait;
 
-class CertificateRepository extends Repository
+class IssuerRepository extends Repository
 {
     use PatchMergeTrait;
 
-    protected $uri = 'certificates';
+    protected $uri = 'issuers';
 
     protected function createCollection($response)
     {
-        return new CertificateCollection($response['items']);
+        return new IssuerCollection($response['items']);
     }
 
 }
