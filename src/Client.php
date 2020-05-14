@@ -318,8 +318,13 @@ class Client
 		if ($namespace) {
 			$baseUri .= '/namespaces/' . $this->namespace;
 		}
-
-		$requestUri = $baseUri . $uri;
+		
+		if ($uri === '/healthz') {
+            		$requestUri = $uri;
+        	} else {
+            		$requestUri = $baseUri . $uri;
+        	}
+		
 		$requestOptions = [];
 		if (is_array($query) && !empty($query)) {
 			$requestOptions['query'] = $query;
@@ -476,6 +481,16 @@ class Client
 		return $parts;
 	}
 
+	/**
+	 * Check the health.
+	 *
+	 * @return array|string
+	 */
+	public function health()
+    	{
+        	return $this->sendRequest('GET', '/healthz');
+    	}
+	
 	/**
 	 * Magic call method to grab a class instance.
 	 *
