@@ -38,10 +38,12 @@ $ composer require maclof/kubernetes-client
 
 ### extensions/v1beta1
 * Daemon Sets
-* Ingresses
 
 ### networking.k8s.io/v1
 * Network Policies
+
+### networking.k8s.io/v1beta1
+* Ingresses
 
 ### certmanager.k8s.io/v1alpha1
 * Certificates
