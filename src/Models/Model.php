@@ -1,7 +1,11 @@
 <?php namespace Maclof\Kubernetes\Models;
 
+use JsonException;
+use InvalidArgumentException;
 use Flow\JSONPath\JSONPath;
 use Flow\JSONPath\JSONPathException;
+use Symfony\Component\Yaml\Yaml;
+use Symfony\Component\Yaml\Exception\ParseException as YamlParseException;
 use Illuminate\Contracts\Support\Arrayable;
 
 abstract class Model implements Arrayable
@@ -37,11 +41,40 @@ abstract class Model implements Arrayable
 	/**
 	 * The constructor.
 	 *
-	 * @param array $attributes
+	 * @param mixed  $attributes
+	 * @param string $attributeType
 	 */
-	public function __construct(array $attributes = array())
+	public function __construct($attributes, $attributeType = 'array')
 	{
-		$this->attributes = $attributes;
+		if ($attributeType == 'array') {
+			if (is_array($attributes)) {
+				$this->attributes = $attributes;
+			} else {
+				throw new InvalidArgumentException('Attributes are not an array');
+			}
+		} elseif ($attributeType == 'json') {
+			if (!is_string($attributes)) {
+				throw new InvalidArgumentException('JSON attributes must be provided as a JSON encoded string.');
+			}
+
+			try {
+				$this->attributes = json_decode($attributes, true, 512, JSON_THROW_ON_ERROR);
+			} catch (JsonException $e) {
+				throw new InvalidArgumentException('Failed to parse JSON attributes: ' . $e->getMessage(), 0, $e);
+			}
+		} elseif ($attributeType == 'yaml') {
+			if (!is_string($attributes)) {
+				throw new InvalidArgumentException('YAML attributes must be provided as a YAML encoded string.');
+			}
+
+			try {
+				$this->attributes = Yaml::parse($attributes);
+			} catch (YamlParseException $e) {
+				throw new InvalidArgumentException('Failed to parse YAML attributes: ' . $e->getMessage(), 0, $e);
+			}
+		} else {
+			throw new InvalidArgumentException('Invalid attribute type: ' . $attributeType);
+		}
 	}
 
 	/**
