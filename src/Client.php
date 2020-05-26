@@ -8,6 +8,7 @@ use Symfony\Component\Yaml\Exception\ParseException as YamlParseException;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\ClientException as GuzzleClientException;
 use GuzzleHttp\Exception\ServerException;
+use GuzzleHttp\Psr7\Stream;
 use React\EventLoop\Factory as ReactFactory;
 use React\Socket\Connector as ReactSocketConnector;
 use Ratchet\Client\Connector as WebSocketConnector;
@@ -474,10 +475,11 @@ class Client
 	 * @param  mixed   $body
 	 * @param  boolean $namespace
 	 * @param  string  $apiVersion
-	 * @return array|string
+	 * @param  array   $requestOptions
+	 * @return mixed
 	 * @throws \Maclof\Kubernetes\Exceptions\BadRequestException
 	 */
-	public function sendRequest($method, $uri, $query = [], $body = [], $namespace = true, $apiVersion = null)
+	public function sendRequest($method, $uri, $query = [], $body = [], $namespace = true, $apiVersion = null, array $requestOptions = [])
 	{
 		$baseUri = $apiVersion ? 'apis/' . $apiVersion : 'api/' . $this->apiVersion;
 		if ($namespace) {
@@ -485,12 +487,11 @@ class Client
 		}
 		
 		if ($uri === '/healthz') {
-            		$requestUri = $uri;
-        	} else {
-            		$requestUri = $baseUri . $uri;
-        	}
-		
-		$requestOptions = [];
+			$requestUri = $uri;
+		} else {
+			$requestUri = $baseUri . $uri;
+		}
+
 		if (is_array($query) && !empty($query)) {
 			$requestOptions['query'] = $query;
 		}
@@ -504,25 +505,30 @@ class Client
 
 		try {
 			$response = $this->guzzleClient->request($method, $requestUri, $requestOptions);
+			$responseBody = $response->getBody();
 
-			$bodyResponse = (string) $response->getBody();
-			$jsonResponse = json_decode($bodyResponse, true);
+			if ($responseBody instanceof Stream) {
+				return $response;
+			}
 
-			return is_array($jsonResponse) ? $jsonResponse : $bodyResponse;
+			$responseBody = (string) $responseBody;
+			$jsonResponse = json_decode($responseBody, true);
+
+			return is_array($jsonResponse) ? $jsonResponse : $responseBody;
 		} catch (GuzzleClientException $e) {
 			$response = $e->getResponse();
 
-			$bodyResponse = (string) $response->getBody();
+			$responseBody = (string) $response->getBody();
 
 			if (in_array('application/json', $response->getHeader('Content-Type'))) {
-				$jsonResponse = json_decode($bodyResponse, true);
+				$jsonResponse = json_decode($responseBody, true);
 
 				if ($this->isUpgradeRequestRequired($jsonResponse)) {
 					return $this->sendUpgradeRequest($requestUri, $query);
 				}
 			}
 
-			throw new BadRequestException($bodyResponse, 0, $e);
+			throw new BadRequestException($responseBody, 0, $e);
 		}
 	}
 
@@ -652,9 +658,9 @@ class Client
 	 * @return array|string
 	 */
 	public function health()
-    	{
-        	return $this->sendRequest('GET', '/healthz');
-    	}
+		{
+			return $this->sendRequest('GET', '/healthz');
+		}
 	
 	/**
 	 * Magic call method to grab a class instance.
