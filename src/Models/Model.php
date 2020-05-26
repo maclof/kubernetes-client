@@ -44,7 +44,7 @@ abstract class Model implements Arrayable
 	 * @param mixed  $attributes
 	 * @param string $attributeType
 	 */
-	public function __construct($attributes, $attributeType = 'array')
+	public function __construct($attributes = [], $attributeType = 'array')
 	{
 		if ($attributeType == 'array') {
 			if (is_array($attributes)) {
