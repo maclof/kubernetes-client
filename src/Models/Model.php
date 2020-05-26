@@ -43,6 +43,7 @@ abstract class Model implements Arrayable
 	 *
 	 * @param mixed  $attributes
 	 * @param string $attributeType
+	 * @throws \InvalidArgumentException
 	 */
 	public function __construct($attributes = [], $attributeType = 'array')
 	{
@@ -50,7 +51,7 @@ abstract class Model implements Arrayable
 			if (is_array($attributes)) {
 				$this->attributes = $attributes;
 			} else {
-				throw new InvalidArgumentException('Attributes are not an array');
+				throw new InvalidArgumentException('Attributes are not an array.');
 			}
 		} elseif ($attributeType == 'json') {
 			if (!is_string($attributes)) {
@@ -60,7 +61,7 @@ abstract class Model implements Arrayable
 			try {
 				$this->attributes = json_decode($attributes, true, 512, JSON_THROW_ON_ERROR);
 			} catch (JsonException $e) {
-				throw new InvalidArgumentException('Failed to parse JSON attributes: ' . $e->getMessage(), 0, $e);
+				throw new InvalidArgumentException('Failed to parse JSON encoded attributes: ' . $e->getMessage(), 0, $e);
 			}
 		} elseif ($attributeType == 'yaml') {
 			if (!is_string($attributes)) {
@@ -70,7 +71,7 @@ abstract class Model implements Arrayable
 			try {
 				$this->attributes = Yaml::parse($attributes);
 			} catch (YamlParseException $e) {
-				throw new InvalidArgumentException('Failed to parse YAML attributes: ' . $e->getMessage(), 0, $e);
+				throw new InvalidArgumentException('Failed to parse YAML encoded attributes: ' . $e->getMessage(), 0, $e);
 			}
 		} else {
 			throw new InvalidArgumentException('Invalid attribute type: ' . $attributeType);
