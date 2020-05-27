@@ -505,13 +505,12 @@ class Client
 
 		try {
 			$response = $this->guzzleClient->request($method, $requestUri, $requestOptions);
-			$responseBody = $response->getBody();
 
-			if ($responseBody instanceof Stream) {
+			if (!empty($options['stream'])) {
 				return $response;
 			}
 
-			$responseBody = (string) $responseBody;
+			$responseBody = (string) $response->getBody();
 			$jsonResponse = json_decode($responseBody, true);
 
 			return is_array($jsonResponse) ? $jsonResponse : $responseBody;
