@@ -577,6 +577,7 @@ class Client
 
 		if (!is_null($this->verify)) {
 			$socketOptions['tls']['verify_peer'] = $this->verify;
+			$socketOptions['tls']['verify_peer_name'] = $this->verify;
 		} elseif ($this->caCert) {
 			$socketOptions['tls']['cafile'] = $this->caCert;
 		}
