@@ -173,7 +173,7 @@ class Client
 		
 		// agones
 		'gameServers'		=> 'Repositories\GameServerRepository',
-		'fleetAllocations' 	=> 'Repositories\FleetAllocationRepository',
+		'gameServerAllocations' 	=> 'Repositories\GameServerAllocationRepository',
 	];
 
 	/**

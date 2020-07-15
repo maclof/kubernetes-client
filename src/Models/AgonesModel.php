@@ -6,5 +6,5 @@ class AgonesModel extends Model
 	 *
 	 * @var string
 	 */
-	protected $apiVersion = 'stable.agones.dev/v1alpha1';
+	protected $apiVersion = 'agones.dev/v1';
 }

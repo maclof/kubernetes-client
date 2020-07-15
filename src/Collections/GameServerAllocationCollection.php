@@ -1,8 +1,8 @@
 <?php namespace Maclof\Kubernetes\Collections;
 
-use Maclof\Kubernetes\Models\FleetAllocation;
+use Maclof\Kubernetes\Models\GameServerAllocation;
 
-class FleetAllocationCollection extends Collection
+class GameServerAllocationCollection extends Collection
 {
 	/**
 	 * The constructor.
@@ -11,7 +11,7 @@ class FleetAllocationCollection extends Collection
 	 */
 	public function __construct(array $items)
 	{
-		parent::__construct($this->getFleetAllocations($items));
+		parent::__construct($this->getGameServerAllocations($items));
 	}
 
 	/**
@@ -20,14 +20,14 @@ class FleetAllocationCollection extends Collection
 	 * @param  array $items
 	 * @return array
 	 */
-	protected function getFleetAllocations(array $items)
+	protected function getGameServerAllocations(array $items)
 	{
 		foreach ($items as &$item) {
-			if ($item instanceof FleetAllocation) {
+			if ($item instanceof GameServerAllocation) {
 				continue;
 			}
 			
-			$item = new FleetAllocation($item);
+			$item = new GameServerAllocation($item);
 		}
 
 		return $items;
