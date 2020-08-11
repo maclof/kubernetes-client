@@ -199,7 +199,7 @@ class Client
 			$this->verify = null;
 			$this->caCert = null;
 			$this->clientCert = null;
-			$this->cientKey = null;
+			$this->clientKey = null;
 			$this->token = null;
 			$this->username = null;
 			$this->password = null;
@@ -349,6 +349,8 @@ class Client
 		}
 
 		$this->setOptions($options, true);
+		
+		$this->guzzleClient = $this->createGuzzleClient();
 	}
 
 	/**
