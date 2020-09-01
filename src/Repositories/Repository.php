@@ -43,6 +43,14 @@ abstract class Repository
 	 */
 	protected $fieldSelector = [];
 
+
+	/**
+	 * The default class namespace of the repositories
+	 * 
+	 * @var string
+	 */
+	protected $modelClassNamespace = 'Maclof\Kubernetes\Models\\';
+
 	/**
 	 * The constructor.
 	 *
@@ -86,7 +94,7 @@ abstract class Repository
 		}
 
 		$className = str_replace('Repository', '', class_basename($this));
-		$classPath = 'Maclof\Kubernetes\Models\\' . $className;
+		$classPath = $this->modelClassNamespace . $className;
 
 		if (!class_exists($classPath)) {
 			return;
