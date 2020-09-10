@@ -335,7 +335,7 @@ class Client
 		$options['master'] = $cluster['server'];
 
 		if (isset($cluster['certificate-authority-data'])) {
-			$options['verify'] = $this->getTempFilePath('ca-cert.pem', base64_decode($cluster['certificate-authority-data'], true));
+			$options['ca_cert'] = $this->getTempFilePath('ca-cert.pem', base64_decode($cluster['certificate-authority-data'], true));
 		} elseif (strpos($options['master'], 'https://') !== false) {
 			$options['verify'] = false;
 		}
