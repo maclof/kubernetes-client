@@ -11,7 +11,7 @@
 	"license" : "MIT",
 	"require": {
 		"php"               : ">=5.4",
-		"guzzlehttp/guzzle" : "~6.0",
+		"guzzlehttp/guzzle" : "~6.0|^7.0.1",
 		"illuminate/support": ">=5.0",
 		"flow/jsonpath"     : "~0.4",
 		"ratchet/pawl"      : "~0.3",
