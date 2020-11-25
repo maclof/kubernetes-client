@@ -5,10 +5,19 @@ use InvalidArgumentException;
 use BadMethodCallException;
 use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\Yaml\Exception\ParseException as YamlParseException;
-use GuzzleHttp\Client as GuzzleClient;
-use GuzzleHttp\Exception\ClientException as GuzzleClientException;
-use GuzzleHttp\Exception\ServerException;
-use GuzzleHttp\Psr7\Stream;
+
+// use GuzzleHttp\Client as GuzzleClient;
+// use GuzzleHttp\Exception\ClientException as GuzzleClientException;
+// use GuzzleHttp\Exception\ServerException;
+// use GuzzleHttp\Psr7\Stream;
+
+use Http\Client\HttpClient;
+use Http\Client\Common\HttpMethodsClient;
+use Http\Client\Exception\TransferException as HttpTransferException;
+use Http\Message\RequestFactory as HttpRequestFactory;
+use Http\Discovery\HttpClientDiscovery;
+use Http\Discovery\MessageFactoryDiscovery as HttpMessageFactoryDiscovery;
+
 use React\EventLoop\Factory as ReactFactory;
 use React\Socket\Connector as ReactSocketConnector;
 use Ratchet\Client\Connector as WebSocketConnector;
@@ -77,34 +86,6 @@ class Client
 	protected $master;
 
 	/**
-	 * Whether to verify the ca certificate.
-	 *
-	 * @var boolean|null
-	 */
-	protected $verify;
-
-	/**
-	 * The ca certificate.
-	 *
-	 * @var string|null
-	 */
-	protected $caCert;
-
-	/**
-	 * The client certificate.
-	 *
-	 * @var string|null
-	 */
-	protected $clientCert;
-
-	/**
-	 * The client key.
-	 *
-	 * @var string|null
-	 */
-	protected $clientKey;
-
-	/**
 	 * The servide account token.
 	 *
 	 * @var string
@@ -135,9 +116,9 @@ class Client
 	/**
 	 * The http client.
 	 *
-	 * @var \GuzzleHttp\Client|null
+	 * @var \Http\Client\Common\HttpMethodsClient
 	 */
-	protected $guzzleClient;
+	protected $httpClient;
 
 	/**
 	 * The exec channels for result messages.
@@ -171,19 +152,24 @@ class Client
 	 *
 	 * @var array
 	 */
-	protected $patchHeader = ['Content-Type' => 'application/strategic-merge-patch+json'];
+	protected $patchHeaders = ['Content-Type' => 'application/strategic-merge-patch+json'];
 
 	/**
 	 * The constructor.
 	 *
 	 * @param array $options
-	 * @param \GuzzleHttp\Client $guzzleClient
+	 * @param \Maclof\Kubernetes\RepositoryRegistry|null $repositoryRegistry
+	 * @param \Http\Client\HttpClient|null $httpClient
+	 * @param \Http\Message\RequestFactory $httpRequestFactory
 	 */
-	public function __construct(array $options = array(), GuzzleClient $guzzleClient = null, RepositoryRegistry $repositoryRegistry = null)
+	public function __construct(array $options = [], RepositoryRegistry $repositoryRegistry = null, HttpClient $httpClient = null, HttpRequestFactory $httpRequestFactory = null)
 	{
 		$this->setOptions($options);
-		$this->guzzleClient = $guzzleClient ? $guzzleClient : $this->createGuzzleClient();
-		$this->classRegistry = $repositoryRegistry ? $repositoryRegistry : new RepositoryRegistry();
+		$this->classRegistry = $repositoryRegistry ?: new RepositoryRegistry();
+		$this->httpClient = new HttpMethodsClient(
+			$httpClient ?: HttpClientDiscovery::find(),
+			$httpRequestFactory ?: HttpMessageFactoryDiscovery::find()
+		);
 	}
 
 	/**
@@ -197,9 +183,6 @@ class Client
 		if ($reset) {
 			$this->master = null;
 			$this->verify = null;
-			$this->caCert = null;
-			$this->clientCert = null;
-			$this->clientKey = null;
 			$this->token = null;
 			$this->username = null;
 			$this->password = null;
@@ -208,18 +191,6 @@ class Client
 
 		if (isset($options['master'])) {
 			$this->master = $options['master'];
-		}
-
-		if (isset($options['verify'])) {
-			$this->verify = $options['verify'];
-		} elseif (isset($options['ca_cert'])) {
-			$this->caCert = $options['ca_cert'];
-		}
-		if (isset($options['client_cert'])) {
-			$this->clientCert = $options['client_cert'];
-		}
-		if (isset($options['client_key'])) {
-			$this->clientKey = $options['client_key'];
 		}
 		if (isset($options['token'])) {
 			$this->token = $options['token'];
@@ -236,13 +207,14 @@ class Client
 	}
 
 	/**
-	 * Set the options from a kubeconfig.
+	 * Parse a kubeconfig.
 	 * 
 	 * @param  string $content
 	 * @param  string $contentType
+	 * @return array
 	 * @throws \InvalidArgumentException
 	 */
-	public function setOptionsFromKubeconfig($content, $contentType = 'yaml')
+	public static function parseKubeconfig($content, $contentType = 'yaml')
 	{
 		if ($contentType == 'array') {
 			if (!is_array($content)) {
@@ -335,37 +307,36 @@ class Client
 		$options['master'] = $cluster['server'];
 
 		if (isset($cluster['certificate-authority-data'])) {
-			$options['ca_cert'] = $this->getTempFilePath('ca-cert.pem', base64_decode($cluster['certificate-authority-data'], true));
+			$options['ca_cert'] = self::getTempFilePath('ca-cert.pem', base64_decode($cluster['certificate-authority-data'], true));
 		} elseif (strpos($options['master'], 'https://') !== false) {
 			$options['verify'] = false;
 		}
 
 		if (isset($user['client-certificate-data'])) {
-			$options['client_cert'] = $this->getTempFilePath('client-cert.pem', base64_decode($user['client-certificate-data'], true));
+			$options['client_cert'] = self::getTempFilePath('client-cert.pem', base64_decode($user['client-certificate-data'], true));
 		}
 
 		if (isset($user['client-key-data'])) {
-			$options['client_key'] = $this->getTempFilePath('client-key.pem', base64_decode($user['client-key-data'], true));
+			$options['client_key'] = self::getTempFilePath('client-key.pem', base64_decode($user['client-key-data'], true));
 		}
 
-		$this->setOptions($options, true);
-		
-		$this->guzzleClient = $this->createGuzzleClient();
+		return $options;
 	}
 
 	/**
-	 * Set the options from a kubeconfig file.
+	 * Parse a kubeconfig file.
 	 * 
 	 * @param  string $filePath
+	 * @return array
 	 * @throws \InvalidArgumentException
 	 */
-	public function setOptionsFromKubeconfigFile($filePath)
+	public static function parseKubeconfigFile($filePath)
 	{
 		if (!file_exists($filePath)) {
 			throw new InvalidArgumentException('Kubeconfig file does not exist at path: ' . $filePath);
 		}
 
-		$this->setOptionsFromKubeconfig(file_get_contents($filePath));
+		return self::parseKubeconfig(file_get_contents($filePath));
 	}
 
 	/**
@@ -375,7 +346,7 @@ class Client
 	 * @param  string $fileContent
 	 * @return string
 	 */
-	protected function getTempFilePath($fileName, $fileContent)
+	protected static function getTempFilePath($fileName, $fileContent)
 	{
 		$fileName = 'kubernetes-client-' . $fileName;
 
@@ -406,66 +377,12 @@ class Client
 	public function setPatchType($patchType = "strategic")
 	{
 		if ($patchType == "merge") {
-			$this->patchHeader = ['Content-Type' => 'application/merge-patch+json'];
+			$this->patchHeaders = ['Content-Type' => 'application/merge-patch+json'];
 		} elseif ($patchType == "json") {
-			$this->patchHeader = ['Content-Type' => 'application/json-patch+json'];
+			$this->patchHeaders = ['Content-Type' => 'application/json-patch+json'];
 		} else {
-			$this->patchHeader = ['Content-Type' => 'application/strategic-merge-patch+json'];
+			$this->patchHeaders = ['Content-Type' => 'application/strategic-merge-patch+json'];
 		}
-	}
-
-	/**
-	 * Create the guzzle client.
-	 *
-	 * @return \GuzzleHttp\Client
-	 */
-	protected function createGuzzleClient()
-	{
-		$options = [
-			'headers' => [
-				'Content-Type' => 'application/json',
-			],
-		];
-
-		if (!is_null($this->verify)) {
-			$options['verify'] = $this->verify;
-		} elseif ($this->caCert) {
-			$options['verify'] = $this->caCert;
-		}
-		if ($this->clientCert) {
-			$options['cert'] = $this->clientCert;
-		}
-		if ($this->clientKey) {
-			$options['ssl_key'] = $this->clientKey;
-		}
-		if ($this->token) {
-			$token = $this->token;
-			if (file_exists($token)) {
-				$token = file_get_contents($token);
-			}
-
-			$options['headers']['Authorization'] = 'Bearer ' . trim($token);
-		}
-		if ($this->username && $this->password) {
-			$options['auth'] = [
-				$this->username,
-				$this->password,
-			];
-		}
-
-		$options['base_uri'] = $this->master;
-
-		return new GuzzleClient($options);
-	}
-
-	/**
-	 * Get the guzzle client.
-	 *
-	 * @return \GuzzleHttp\Client|null
-	 */
-	public function getGuzzleClient()
-	{
-		return $this->guzzleClient;
 	}
 
 	/**
@@ -481,7 +398,7 @@ class Client
 	 * @return mixed
 	 * @throws \Maclof\Kubernetes\Exceptions\BadRequestException
 	 */
-	public function sendRequest($method, $uri, $query = [], $body = [], $namespace = true, $apiVersion = null, array $requestOptions = [])
+	public function sendRequest($method, $uri, $query = [], $body = null, $namespace = true, $apiVersion = null, array $requestOptions = [])
 	{
 		$baseUri = $apiVersion ? 'apis/' . $apiVersion : 'api/' . $this->apiVersion;
 		if ($namespace) {
@@ -489,24 +406,31 @@ class Client
 		}
 		
 		if ($uri === '/healthz') {
-			$requestUri = $uri;
+			$requestUrl = $this->master . '/' . $uri;
 		} else {
-			$requestUri = $baseUri . $uri;
+			$requestUrl = $this->master . '/' . $baseUri . $uri;
 		}
 
 		if (is_array($query) && !empty($query)) {
-			$requestOptions['query'] = $query;
-		}
-		if ($body !== null) {
-			$requestOptions['body'] = is_array($body) ? json_encode($body, JSON_FORCE_OBJECT) : $body;
-		}
-
-		if ($method === 'PATCH') {
-			$requestOptions['headers'] = $this->patchHeader;
+			$requestUrl .= '?' . http_build_query($query);
 		}
 
 		try {
-			$response = $this->guzzleClient->request($method, $requestUri, $requestOptions);
+			$headers = $method == 'PATCH' ? $this->patchHeaders : [];
+
+			if ($this->token) {
+				$token = $this->token;
+				if (file_exists($token)) {
+					$token = file_get_contents($token);
+				}
+				$headers['Authorization'] = 'Bearer ' . trim($token);
+			}
+
+			if (!is_null($body)) {
+				$body = is_array($body) ? json_encode($body, JSON_FORCE_OBJECT) : $body;
+			}
+
+			$response = $this->httpClient->send($method, $requestUrl, $headers, $body);
 
 			if (!empty($options['stream'])) {
 				return $response;
@@ -516,7 +440,7 @@ class Client
 			$jsonResponse = json_decode($responseBody, true);
 
 			return is_array($jsonResponse) ? $jsonResponse : $responseBody;
-		} catch (GuzzleClientException $e) {
+		} catch (HttpTransferException $e) {
 			$response = $e->getResponse();
 
 			$responseBody = (string) $response->getBody();
