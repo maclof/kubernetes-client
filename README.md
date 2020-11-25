@@ -91,6 +91,7 @@ $jobStartTime = $client->jobs()->find()->getJsonPath('$.status.startTime')[0];
 
 ### Insecure HTTP
 ```php
+use Maclof\Kubernetes\Client;
 $client = new Client([
 	'master' => 'http://master.mycluster.com',
 ]);
@@ -98,8 +99,9 @@ $client = new Client([
 
 ### Secure HTTPS (CA + Client Certificate Validation)
 ```php
-use Http\Adapter\Guzzle6\Client;
-$httpClient = Client::createWithConfig([
+use Maclof\Kubernetes\Client;
+use Http\Adapter\Guzzle6\Client as Guzzle6Client;
+$httpClient = Guzzle6Client::createWithConfig([
 	'verify' => '/etc/kubernetes/ssl/ca.crt',
 	'cert' => '/etc/kubernetes/ssl/client.crt',
 	'ssl_key' => '/etc/kubernetes/ssl/client.key',
@@ -111,8 +113,9 @@ $client = new Client([
 
 ### Insecure HTTPS (CA Certificate Verification Disabled)
 ```php
-use Http\Adapter\Guzzle6\Client;
-$httpClient = Client::createWithConfig([
+use Maclof\Kubernetes\Client;
+use Http\Adapter\Guzzle6\Client as Guzzle6Client;
+$httpClient = Guzzle6Client::createWithConfig([
 	'verify' => false,
 ]);
 $client = new Client([
@@ -122,6 +125,7 @@ $client = new Client([
 
 ### Using Basic Auth
 ```php
+use Maclof\Kubernetes\Client;
 $client = new Client([
 	'master' => 'https://master.mycluster.com',
 	'username' => 'admin',
@@ -131,8 +135,9 @@ $client = new Client([
 
 ### Using a Service Account
 ```php
-use Http\Adapter\Guzzle6\Client;
-$httpClient = Client::createWithConfig([
+use Maclof\Kubernetes\Client;
+use Http\Adapter\Guzzle6\Client as Guzzle6Client;
+$httpClient = Guzzle6Client::createWithConfig([
 	'verify' => '/var/run/secrets/kubernetes.io/serviceaccount/ca.crt',
 ]);
 $client = new Client([
@@ -143,6 +148,8 @@ $client = new Client([
 
 ### Parsing a kubeconfig file
 ```php
+use Maclof\Kubernetes\Client;
+
 // Parsing from the file data directly
 $config = Client::parseKubeConfig('kubeconfig yaml data');
 
@@ -163,6 +170,8 @@ $config = [
 
 ### Custom repositories
 ```php
+use Maclof\Kubernetes\Client;
+
 $repositories = new RepositoryRegistry();
 $repositories['things'] = MyApp\Kubernetes\Repository\ThingRepository::class;
 
