@@ -204,7 +204,7 @@ abstract class Repository
 	{
 		$parts = [];
 		foreach ($this->labelSelector as $key => $value) {
-			$parts[] = $key . '=' . $value;
+			$parts[] = null === $value ? $key : ($key . '=' . $value);
 		}
 		return implode(',', $parts);
 	}
