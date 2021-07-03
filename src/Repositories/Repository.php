@@ -37,11 +37,25 @@ abstract class Repository
 	protected $labelSelector = [];
 
 	/**
+	 * The label selector options that should not match.
+	 *
+	 * @var array
+	 */
+	protected $inequalityLabelSelector = [];
+
+	/**
 	 * The field selector.
 	 *
 	 * @var array
 	 */
 	protected $fieldSelector = [];
+
+	/**
+	 * The field selector options that should not match.
+	 *
+	 * @var array
+	 */
+	protected $inequalityFieldSelector = [];
 
 
 	/**
@@ -184,14 +198,16 @@ abstract class Repository
 	}
 
 	/**
-	 * Set the label selector.
+	 * Set the label selector including inequality search terms.
 	 *
 	 * @param  array $labelSelector
+	 * @param  array $inequalityLabelSelector
 	 * @return \Maclof\Kubernetes\Repositories\Repository
 	 */
-	public function setLabelSelector(array $labelSelector)
+	public function setLabelSelector(array $labelSelector, array $inequalityLabelSelector=[])
 	{
-		$this->labelSelector = $labelSelector;
+		$this->labelSelector           = $labelSelector;
+		$this->inequalityLabelSelector = $inequalityLabelSelector;
 		return $this;
 	}
 
@@ -206,18 +222,27 @@ abstract class Repository
 		foreach ($this->labelSelector as $key => $value) {
 			$parts[] = $key . '=' . $value;
 		}
+
+		// If any inequality search terms are set, add them to the parts array
+		if (!empty($this->inequalityLabelSelector)) {
+			foreach ($this->inequalityLabelSelector as $key => $value) {
+				$parts[] = $key . '!=' . $value;
+			}
+		}
 		return implode(',', $parts);
 	}
 
 	/**
-	 * Set the field selector.
+	 * Set the field selector including inequality search terms.
 	 *
 	 * @param  array $fieldSelector
+	 * @param  array $inequalityFieldSelector
 	 * @return \Maclof\Kubernetes\Repositories\Repository
 	 */
-	public function setFieldSelector(array $fieldSelector)
+	public function setFieldSelector(array $fieldSelector, array $inequalityFieldSelector=[])
 	{
-		$this->fieldSelector = $fieldSelector;
+		$this->fieldSelector           = $fieldSelector;
+		$this->inequalityFieldSelector = $inequalityFieldSelector;
 		return $this;
 	}
 
@@ -232,6 +257,14 @@ abstract class Repository
 		foreach ($this->fieldSelector as $key => $value) {
 			$parts[] = $key . '=' . $value;
 		}
+
+		// If any inequality search terms are set, add them to the parts array
+		if (!empty($this->inequalityFieldSelector)) {
+			foreach ($this->inequalityFieldSelector as $key => $value) {
+				$parts[] = $key . '!=' . $value;
+			}
+		}
+
 		return implode(',', $parts);
 	}
 
