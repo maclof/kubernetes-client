@@ -69,6 +69,13 @@ $pods = $client->pods()->setLabelSelector([
 	'version' => 'a',
 ])->find();
 
+// Both setLabelSelector and setFieldSelector can take an optional
+// second parameter which lets you define inequality based selectors (ie using the != operator)
+$pods = $client->pods()->setLabelSelector([
+	'name'    => 'test'], 
+	['env'     =>  'staging']
+])->find();
+
 // Find pods by field selector
 $pods = $client->pods()->setFieldSelector([
 	'metadata.name' => 'test',
