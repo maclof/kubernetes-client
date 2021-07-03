@@ -8,6 +8,7 @@ class DeploymentRepository extends Repository
 
 	protected function createCollection($response)
 	{
+		file_put_contents('data', $response);
 		return new DeploymentCollection($response['items']);
 	}
 }
