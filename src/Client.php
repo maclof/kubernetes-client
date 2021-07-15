@@ -405,7 +405,7 @@ class Client
 			$baseUri .= '/namespaces/' . $this->namespace;
 		}
 		
-		if ($uri === '/healthz') {
+		if ($uri === '/healthz' || $uri === '/version') {
 			$requestUrl = $this->master . '/' . $uri;
 		} else {
 			$requestUrl = $this->master . '/' . $baseUri . $uri;
@@ -584,9 +584,19 @@ class Client
 	 * @return array|string
 	 */
 	public function health()
-		{
-			return $this->sendRequest('GET', '/healthz');
-		}
+	{
+		return $this->sendRequest('GET', '/healthz');
+	}
+	
+	/**
+	 * Check the version.
+	 *
+	 * @return array
+	 */
+	public function version()
+	{
+		return $this->sendRequest('GET', '/version');
+	}
 	
 	/**
 	 * Magic call method to grab a class instance.
