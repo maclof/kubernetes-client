@@ -220,7 +220,7 @@ abstract class Repository
 	{
 		$parts = [];
 		foreach ($this->labelSelector as $key => $value) {
-			$parts[] = $key . '=' . $value;
+			$parts[] = null === $value ? $key : ($key . '=' . $value);
 		}
 
 		// If any inequality search terms are set, add them to the parts array
