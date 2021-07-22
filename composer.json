@@ -13,6 +13,7 @@
 		"php"                   : "^7.1|^8.0",
 		"php-http/client-common": "^2.0",
 		"php-http/socket-client": "^2.0",
+		"php-http/discovery"    : "^1.0",
 		"illuminate/support"    : "^5.0|^6.0|^7.0|^8.0",
 		"ratchet/pawl"          : "^0.3",
 		"symfony/yaml"          : "^4.0|^5.0",
