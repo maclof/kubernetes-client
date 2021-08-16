@@ -138,6 +138,22 @@ abstract class Repository
 		return $this->sendRequest('PATCH', '/' . $this->uri . '/' . $model->getMetadata('name'), null, $model->getSchema(), $this->namespace);
 	}
 
+	/**
+	 * Apply a json patch to a model.
+	 *
+	 * @param \Maclof\Kubernetes\Models\Model $model
+	 * @param array $model
+	 * @return array
+	 */
+	public function applyJsonPatch(Model $model, array $patch)
+	{
+		$patch = json_encode($patch);
+		
+		$this->client->setPatchType('json');
+
+		return $this->sendRequest('PATCH', '/' . $this->uri . '/' . $model->getMetadata('name'), null, $patch, $this->namespace);
+	}
+
     /**
      * Apply a model.
      *
