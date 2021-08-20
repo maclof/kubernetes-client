@@ -31,7 +31,7 @@ class PodRepository extends Repository
 	 *
 	 * @param  \Maclof\Kubernetes\Models\Pod $pod
 	 * @param  array $options
-	 * @return string
+	 * @return string|array
 	 */
 	public function exec(Pod $pod, array $options = [])
 	{
