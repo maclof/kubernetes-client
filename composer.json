@@ -32,7 +32,8 @@
 	},
 	"autoload-dev": {
 		"classmap": [
-			"tests/TestCase.php"
+			"tests/TestCase.php",
+			"tests/helpers/HttpMethodsMockClient.php"
 		]
 	},
 	"minimum-stability": "dev",
