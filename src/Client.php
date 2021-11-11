@@ -1,6 +1,7 @@
 <?php namespace Maclof\Kubernetes;
 
 use Exception;
+use Http\Client\Common\HttpMethodsClientInterface;
 use InvalidArgumentException;
 use BadMethodCallException;
 use Symfony\Component\Yaml\Yaml;
@@ -116,7 +117,7 @@ class Client
 	/**
 	 * The http client.
 	 *
-	 * @var \Http\Client\Common\HttpMethodsClient
+	 * @var \Http\Client\Common\HttpMethodsClientInterface
 	 */
 	protected $httpClient;
 
@@ -416,7 +417,7 @@ class Client
 		}
 
 		try {
-			$headers = $method == 'PATCH' ? $this->patchHeaders : [];
+			$headers = $method === 'PATCH' ? $this->patchHeaders : [];
 
 			if ($this->token) {
 				$token = $this->token;

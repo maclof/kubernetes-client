@@ -1,14 +1,19 @@
 language: php
-dist: trusty
+dist: bionic
 
 php:
   - 7.1
   - 7.2
   - 7.3
   - 7.4
+#  - 8.0 # PHP 8.0 requires PHPUnit to be upgraded, which then would break earlier versions
+
+env:
+  global:
+    - XDEBUG_MODE=coverage
 
 before_script:
   - composer self-update
-  - composer install --prefer-source --no-interaction --dev
+  - composer install --prefer-source --no-interaction
 
 script: vendor/bin/phpunit
