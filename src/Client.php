@@ -1,16 +1,12 @@
 <?php namespace Maclof\Kubernetes;
 
 use Exception;
-use Http\Client\Common\HttpMethodsClientInterface;
 use InvalidArgumentException;
 use BadMethodCallException;
+use Maclof\Kubernetes\Exceptions\ApiServerException;
+use Psr\Http\Client\ClientInterface;
 use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\Yaml\Exception\ParseException as YamlParseException;
-
-// use GuzzleHttp\Client as GuzzleClient;
-// use GuzzleHttp\Exception\ClientException as GuzzleClientException;
-// use GuzzleHttp\Exception\ServerException;
-// use GuzzleHttp\Psr7\Stream;
 
 use Http\Client\HttpClient;
 use Http\Client\Common\HttpMethodsClient;
@@ -22,7 +18,6 @@ use Http\Discovery\MessageFactoryDiscovery as HttpMessageFactoryDiscovery;
 use React\EventLoop\Factory as ReactFactory;
 use React\Socket\Connector as ReactSocketConnector;
 use Ratchet\Client\Connector as WebSocketConnector;
-use Maclof\Kubernetes\Exceptions\ApiServerException;
 use Maclof\Kubernetes\Repositories\CertificateRepository;
 use Maclof\Kubernetes\Exceptions\BadRequestException;
 use Maclof\Kubernetes\Repositories\ConfigMapRepository;
@@ -44,7 +39,6 @@ use Maclof\Kubernetes\Repositories\ReplicationControllerRepository;
 use Maclof\Kubernetes\Repositories\SecretRepository;
 use Maclof\Kubernetes\Repositories\ServiceRepository;
 use Maclof\Kubernetes\Repositories\NamespaceRepository;
-use Maclof\Kubernetes\Models\PersistentVolume;
 
 /**
  * @method NodeRepository nodes()
@@ -160,10 +154,10 @@ class Client
 	 *
 	 * @param array $options
 	 * @param \Maclof\Kubernetes\RepositoryRegistry|null $repositoryRegistry
-	 * @param \Http\Client\HttpClient|null $httpClient
+	 * @param ClientInterface|null $httpClient Some client implementing PSR HTTP ClientInterface
 	 * @param \Http\Message\RequestFactory $httpRequestFactory
 	 */
-	public function __construct(array $options = [], RepositoryRegistry $repositoryRegistry = null, HttpClient $httpClient = null, HttpRequestFactory $httpRequestFactory = null)
+	public function __construct(array $options = [], RepositoryRegistry $repositoryRegistry = null, ClientInterface $httpClient = null, HttpRequestFactory $httpRequestFactory = null)
 	{
 		$this->setOptions($options);
 		$this->classRegistry = $repositoryRegistry ?: new RepositoryRegistry();
@@ -210,28 +204,35 @@ class Client
 	/**
 	 * Parse a kubeconfig.
 	 * 
-	 * @param  string $content
+	 * @param  string|array $content Mixed type, based on the second input argument
 	 * @param  string $contentType
 	 * @return array
 	 * @throws \InvalidArgumentException
 	 */
 	public static function parseKubeconfig($content, $contentType = 'yaml')
 	{
-		if ($contentType == 'array') {
+		if ($contentType === 'array') {
 			if (!is_array($content)) {
 				throw new InvalidArgumentException('Kubeconfig is not an array.');
 			}
-		} elseif ($contentType == 'json') {
+		} elseif ($contentType === 'json') {
 			if (!is_string($content)) {
 				throw new InvalidArgumentException('Kubeconfig is not a string.');
 			}
 
-			try {
-				$content = json_decode($content, true, 512, JSON_THROW_ON_ERROR);
-			} catch (JsonException $e) {
-				throw new InvalidArgumentException('Failed to parse JSON encoded Kubeconfig: ' . $e->getMessage(), 0, $e);
+			if (defined('JSON_THROW_ON_ERROR')) {
+				try {
+					$content = json_decode($content, true, 512, JSON_THROW_ON_ERROR);
+				} catch (\JsonException $e) {
+					throw new InvalidArgumentException('Failed to parse JSON encoded Kubeconfig: ' . $e->getMessage(), 0, $e);
+				}
+			} else {
+				$content = json_decode($content, true, 512);
+				if ($content === false || $content === null) {
+					throw new InvalidArgumentException('Failed to parse JSON encoded Kubeconfig.');
+				}
 			}
-		} elseif ($contentType == 'yaml') {
+		} elseif ($contentType === 'yaml') {
 			if (!is_string($content)) {
 				throw new InvalidArgumentException('Kubeconfig is not a string.');
 			}
@@ -241,7 +242,7 @@ class Client
 				throw new InvalidArgumentException('Failed to parse YAML encoded Kubeconfig: ' . $e->getMessage(), 0, $e);
 			}
 		} else {
-			throw new InvalidArgumentException('Invalid Kubeconfig content type: ' . $contnetType);
+			throw new InvalidArgumentException('Invalid Kubeconfig content type: ' . $contentType);
 		}
 
 		// TODO: support token auth?
@@ -252,7 +253,7 @@ class Client
 				$contexts[$context['name']] = $context['context'];
 			}
 		}
-		if (count($contexts) == 0) {
+		if (count($contexts) === 0) {
 			throw new InvalidArgumentException('Kubeconfig parse error - No contexts are defined.');
 		}
 
@@ -262,7 +263,7 @@ class Client
 				$clusters[$cluster['name']] = $cluster['cluster'];
 			}
 		}
-		if (count($clusters) == 0) {
+		if (count($clusters) === 0) {
 			throw new InvalidArgumentException('Kubeconfig parse error - No clusters are defined.');
 		}
 
@@ -272,7 +273,7 @@ class Client
 				$users[$user['name']] = $user['user'];
 			}
 		}
-		if (count($users) == 0) {
+		if (count($users) === 0) {
 			throw new InvalidArgumentException('Kubeconfig parse error - No users are defined.');
 		}
 
@@ -373,13 +374,13 @@ class Client
 	/**
 	 * Set patch header
 	 *
-	 * @param patch type
+	 * @param string patch type
 	 */
 	public function setPatchType($patchType = "strategic")
 	{
-		if ($patchType == "merge") {
+		if ($patchType === "merge") {
 			$this->patchHeaders = ['Content-Type' => 'application/merge-patch+json'];
-		} elseif ($patchType == "json") {
+		} elseif ($patchType === "json") {
 			$this->patchHeaders = ['Content-Type' => 'application/json-patch+json'];
 		} else {
 			$this->patchHeaders = ['Content-Type' => 'application/strategic-merge-patch+json'];
@@ -433,6 +434,17 @@ class Client
 
 			$response = $this->httpClient->send($method, $requestUrl, $headers, $body);
 
+			// Error Handling
+			if ($response->getStatusCode() >= 500) {
+				$msg = substr((string) $response->getBody(), 0, 1200); // Limit maximum chars
+				throw new ApiServerException("Server responded with 500 Error: " . $msg, 500);
+			}
+
+			if (in_array($response->getStatusCode(), [401, 403], true)) {
+				$msg = substr((string) $response->getBody(), 0, 1200); // Limit maximum chars
+				throw new ApiServerException("Authentication Exception: " . $msg, $response->getStatusCode());
+			}
+
 			if (!empty($options['stream'])) {
 				return $response;
 			}
@@ -446,11 +458,11 @@ class Client
 
 			$responseBody = (string) $response->getBody();
 
-			if (in_array('application/json', $response->getHeader('Content-Type'))) {
+			if (in_array('application/json', $response->getHeader('Content-Type'), true)) {
 				$jsonResponse = json_decode($responseBody, true);
 
 				if ($this->isUpgradeRequestRequired($jsonResponse)) {
-					return $this->sendUpgradeRequest($requestUri, $query);
+					return $this->sendUpgradeRequest($requestUrl, $query);
 				}
 			}
 
@@ -466,7 +478,7 @@ class Client
 	 */
 	protected function isUpgradeRequestRequired(array $response)
 	{
-		return $response['code'] == 400 && $response['status'] == 'Failure' && $response['message'] == 'Upgrade request required';
+		return $response['code'] == 400 && $response['status'] === 'Failure' && $response['message'] === 'Upgrade request required';
 	}
 
 	/**
@@ -479,7 +491,7 @@ class Client
 	protected function sendUpgradeRequest($requestUri, array $query)
 	{
 		$fullUrl = $this->master .'/' . $requestUri . '?' . implode('&', $this->parseQueryParams($query));
-		if (parse_url($fullUrl, PHP_URL_SCHEME) == 'https') {
+		if (parse_url($fullUrl, PHP_URL_SCHEME) === 'https') {
 			$fullUrl = str_replace('https://', 'wss://', $fullUrl);
 		} else {
 			$fullUrl = str_replace('http://', 'ws://', $fullUrl);
@@ -612,7 +624,7 @@ class Client
 		if (isset($this->classRegistry[$name])) {
 			$class = $this->classRegistry[$name];
 
-			return isset($this->classInstances[$name]) ? $this->classInstances[$name] : new $class($this);
+			return $this->classInstances[$name] ?? new $class($this);
 		}
 
 		throw new BadMethodCallException('No client methods exist with the name: ' . $name);

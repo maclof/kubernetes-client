@@ -1,6 +1,7 @@
 
 # Kubernetes Client
-[![Build Status](https://api.travis-ci.org/maclof/kubernetes-client.svg?branch=master)](https://travis-ci.org/maclof/kubernetes-client)
+
+[![Build Status](https://app.travis-ci.com/maclof/kubernetes-client.svg?branch=master)](https://app.travis-ci.com/maclof/kubernetes-client)
 
 A PHP client for managing a Kubernetes cluster.
 
