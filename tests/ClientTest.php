@@ -44,12 +44,20 @@ class ClientTest extends TestCase
 		], $result);
 	}
 
+	/**
+	 * Helper function for tests. Pass in a valid Client and have a fake response set on it.
+	 * @param Client $client
+	 * @param array $mockResponseData Response body (will be JSON encoded)
+	 * @param array $expectedSendArgs Expected arguments of ->send() method
+	 * @param int $respStatusCode Response status code
+	 * @param array $respHeaders Response headers (key => value map)
+	 */
 	private function setMockHttpResponse(
 		Client $client,
-		array $mockResponse,
-		array $expectedSendArgs,
-		int $respStatusCode = 200,
-		array $respHeaders = []
+		array  $mockResponseData,
+		array  $expectedSendArgs,
+		int    $respStatusCode = 200,
+		array  $respHeaders = []
 	) {
 		$httpClientProp = new ReflectionProperty(Client::class, 'httpClient');
 		$httpClientProp->setAccessible(true);
@@ -58,7 +66,7 @@ class ClientTest extends TestCase
 			->setMethods(['send'])
 			->getMock();
 
-		$jsonBody = json_encode($mockResponse);
+		$jsonBody = json_encode($mockResponseData);
 
 		$response = new Response($respStatusCode, $respHeaders, $jsonBody);
 
@@ -92,5 +100,45 @@ class ClientTest extends TestCase
 
 		$pod1 = $result->first();
 		$this->assertInstanceOf(Pod::class, $pod1);
+	}
+
+	public function providerForFailedResponses()
+	{
+		return [
+			[
+				500,
+				\Maclof\Kubernetes\Exceptions\ApiServerException::class,
+				'/500 Error/',
+			],
+			[
+				401,
+				\Maclof\Kubernetes\Exceptions\ApiServerException::class,
+				'/Authentication Exception/',
+			],
+			[
+				403,
+				\Maclof\Kubernetes\Exceptions\ApiServerException::class,
+				'/Authentication Exception/',
+			],
+		];
+	}
+
+	/**
+	 * @dataProvider providerForFailedResponses
+	 */
+	public function testExceptionIsThrownOnFailureResponse(int $respCode, string $exceptionClass, string $msgRegEx)
+	{
+		$client = new Client();
+
+		$this->setMockHttpResponse(
+			$client,
+			['message' => 'Error hath occurred'],
+			["GET", "/api/v1/namespaces/default/api/anything", [], null],
+			$respCode
+		);
+
+		$this->expectException($exceptionClass);
+		$this->expectExceptionMessageRegExp($msgRegEx);
+		$client->sendRequest('GET', '/api/anything');
 	}
 }
