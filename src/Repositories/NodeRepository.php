@@ -14,8 +14,7 @@ class NodeRepository extends Repository
 
 	public function proxy($node, $method, $proxy_uri, array $options = [])
 	{
-		$response = $this->client->sendRequest($method, '/' . $this->uri . '/' . $node->getMetadata('name') . '/proxy/' . $proxy_uri, $options, [], $this->namespace);
-
+		$response = $this->client->sendRequest($method, '/' . $this->uri . '/' . $node->getMetadata('name') . '/proxy/' . $proxy_uri, [], [], $this->namespace, $this->getApiVersion(), $options);
 		return $response;
 	}
 }

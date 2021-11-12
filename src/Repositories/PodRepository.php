@@ -21,7 +21,7 @@ class PodRepository extends Repository
 	 */
 	public function logs(Pod $pod, array $options = [])
 	{
-		$response = $this->client->sendRequest('GET', '/' . $this->uri . '/' . $pod->getMetadata('name') . '/log', $options);
+		$response = $this->client->sendRequest('GET', '/' . $this->uri . '/' . $pod->getMetadata('name') . '/log', [], null, $this->namespace, $this->getApiVersion(), $options);
 
 		return $response;
 	}
@@ -35,7 +35,7 @@ class PodRepository extends Repository
 	 */
 	public function exec(Pod $pod, array $options = [])
 	{
-		$response = $this->client->sendRequest('POST', '/' . $this->uri . '/' . $pod->getMetadata('name') . '/exec', $options);
+		$response = $this->client->sendRequest('POST', '/' . $this->uri . '/' . $pod->getMetadata('name') . '/exec', [], null, $this->namespace, $this->getApiVersion(), $options);
 
 		return $response;
 	}

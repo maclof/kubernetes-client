@@ -402,7 +402,7 @@ class Client
 	 */
 	public function sendRequest($method, $uri, $query = [], $body = null, $namespace = true, $apiVersion = null, array $requestOptions = [])
 	{
-		$baseUri = $apiVersion ? 'apis/' . $apiVersion : 'api/' . $this->apiVersion;
+		$baseUri = $apiVersion ? 'api/' . $apiVersion : 'api/' . $this->apiVersion;
 		if ($namespace) {
 			$baseUri .= '/namespaces/' . $this->namespace;
 		}
@@ -445,7 +445,7 @@ class Client
 				throw new ApiServerException("Authentication Exception: " . $msg, $response->getStatusCode());
 			}
 
-			if (!empty($options['stream'])) {
+			if (isset($requestOptions['stream']) && $requestOptions['stream'] === true) {
 				return $response;
 			}
 

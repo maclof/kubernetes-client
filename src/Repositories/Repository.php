@@ -89,7 +89,7 @@ abstract class Repository
 	protected function sendRequest($method, $uri, $query = [], $body = [], $namespace = true, array $requestOptions = [])
 	{
 		$apiVersion = $this->getApiVersion();
-		if ($apiVersion == 'v1') {
+		if ($apiVersion === 'v1') {
 			$apiVersion = null;
 		}
 
@@ -99,7 +99,7 @@ abstract class Repository
 	/**
 	 * Get the api version from the model.
 	 *
-	 * @return string
+	 * @return string|null
 	 */
 	protected function getApiVersion()
 	{
@@ -111,7 +111,7 @@ abstract class Repository
 		$classPath = $this->modelClassNamespace . $className;
 
 		if (!class_exists($classPath)) {
-			return;
+			return null;
 		}
 
 		$this->apiVersion = (new $classPath)->getApiVersion();
