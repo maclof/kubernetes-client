@@ -402,7 +402,7 @@ class Client
 	 */
 	public function sendRequest($method, $uri, $query = [], $body = null, $namespace = true, $apiVersion = null, array $requestOptions = [])
 	{
-		$baseUri = $apiVersion ? 'api/' . $apiVersion : 'api/' . $this->apiVersion;
+		$baseUri = $apiVersion ? ('apis/' . $apiVersion) : ('api/' . $this->apiVersion);
 		if ($namespace) {
 			$baseUri .= '/namespaces/' . $this->namespace;
 		}
