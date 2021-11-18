@@ -445,7 +445,7 @@ class Client
 				throw new ApiServerException("Authentication Exception: " . $msg, $response->getStatusCode());
 			}
 
-			if (isset($requestOptions['stream']) && $requestOptions['stream'] === true) {
+			if (isset($query['stream']) && $query['stream'] === true) {
 				return $response;
 			}
 

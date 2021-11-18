@@ -12,9 +12,9 @@ class NodeRepository extends Repository
 		return new NodeCollection($response['items']);
 	}
 
-	public function proxy($node, $method, $proxy_uri, array $options = [])
+	public function proxy($node, $method, $proxy_uri, array $queryParams = [])
 	{
-		$response = $this->client->sendRequest($method, '/' . $this->uri . '/' . $node->getMetadata('name') . '/proxy/' . $proxy_uri, [], [], $this->namespace, $this->getApiVersion(), $options);
+		$response = $this->client->sendRequest($method, '/' . $this->uri . '/' . $node->getMetadata('name') . '/proxy/' . $proxy_uri, $queryParams, [], $this->namespace);
 		return $response;
 	}
 }
