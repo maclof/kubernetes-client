@@ -26,6 +26,7 @@ class PodRepository extends Repository
 	 *
 	 * @return mixed
 	 */
+	#[\ReturnTypeWillChange]
 	public function exec(Pod $pod, array $queryParams = [])
 	{
 		$response = $this->client->sendRequest('POST', '/' . $this->uri . '/' . $pod->getMetadata('name') . '/exec', $queryParams);

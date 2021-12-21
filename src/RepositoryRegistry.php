@@ -56,6 +56,7 @@ class RepositoryRegistry implements \ArrayAccess, \Countable
         return isset($this->map[$offset]);
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return $this->map[$offset];
