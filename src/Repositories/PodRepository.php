@@ -14,10 +14,6 @@ class PodRepository extends Repository
 
 	/**
 	 * Get the logs for a pod.
-	 *
-	 * @param  \Maclof\Kubernetes\Models\Pod $pod
-	 * @param  array $queryParams
-	 * @return string
 	 */
 	public function logs(Pod $pod, array $queryParams = []): string
 	{
@@ -28,8 +24,6 @@ class PodRepository extends Repository
 	/**
 	 * Execute a command on a pod.
 	 *
-	 * @param  \Maclof\Kubernetes\Models\Pod $pod
-	 * @param  array $queryParams
 	 * @return mixed
 	 */
 	public function exec(Pod $pod, array $queryParams = [])

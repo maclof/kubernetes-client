@@ -6,50 +6,36 @@ class JSONStreamingListener
 {
 	/**
 	 * The closure to call.
-	 * 
-	 * @var \Closure
 	 */
 	protected Closure $closure;
 
 	/**
 	 * The current depth within the JSON stream.
-	 *
-	 * @var int
 	 */
 	protected int $depth = 0;
 
 	/**
 	 * The current JSON object stack.
-	 *
-	 * @var array
 	 */
 	protected array $stack = [];
 
 	/**
 	 * The current key for each depth.
-	 *
-	 * @var array
 	 */
 	protected array $keyByDepth = [];
 
 	/**
 	 * The current position within the JSON stream.
-	 *
-	 * @var array
 	 */
 	protected array $breadcrumbs = [];
 
 	/**
 	 * The target containing the JSON objects.
-	 *
-	 * @var array
 	 */
 	protected array $target = [];
 
 	/**
 	 * The constructor.
-	 * 
-	 * @param \Closure $closure
 	 */
 	public function __construct(Closure $closure)
 	{
@@ -58,9 +44,6 @@ class JSONStreamingListener
 
 	/**
 	 * Set the target from the given key
-	 *
-	 * @param string $key
-	 * @return void
 	 */
 	public function setTargetFromKey(string $key) : self
 	{
@@ -72,8 +55,6 @@ class JSONStreamingListener
 
 	/**
 	 * Listen to the start of the document.
-	 *
-	 * @return void
 	 */
 	public function startDocument() : void
 	{
@@ -82,8 +63,6 @@ class JSONStreamingListener
 
 	/**
 	 * Listen to the end of the document.
-	 *
-	 * @return void
 	 */
 	public function endDocument() : void
 	{
@@ -95,8 +74,6 @@ class JSONStreamingListener
 
 	/**
 	 * Listen to the start of the object.
-	 *
-	 * @return void
 	 */
 	public function startObject() : void
 	{
@@ -111,8 +88,6 @@ class JSONStreamingListener
 
 	/**
 	 * Determine whether the current object should be extracted
-	 *
-	 * @return bool
 	 */
 	protected function shouldBeExtracted() : bool
 	{
@@ -128,8 +103,6 @@ class JSONStreamingListener
 
 	/**
 	 * Listen to the end of the object.
-	 *
-	 * @return void
 	 */
 	public function endObject() : void
 	{
@@ -156,8 +129,6 @@ class JSONStreamingListener
 
 	/**
 	 * Determine whether the current object should be skipped
-	 *
-	 * @return bool
 	 */
 	protected function shouldBeSkipped() : bool
 	{
@@ -166,9 +137,6 @@ class JSONStreamingListener
 
 	/**
 	 * Process the given extracted object.
-	 *
-	 * @param array $extractedObject
-	 * @return void
 	 */
 	protected function processExtractedObject(array $extractedObject): void
 	{
@@ -183,8 +151,6 @@ class JSONStreamingListener
 
 	/**
 	 * Listen to the start of the array.
-	 *
-	 * @return void
 	 */
 	public function startArray() : void
 	{
@@ -208,8 +174,6 @@ class JSONStreamingListener
 
 	/**
 	 * Determine whether the current element is the target
-	 *
-	 * @return bool
 	 */
 	protected function isTarget() : bool
 	{
@@ -223,8 +187,6 @@ class JSONStreamingListener
 
 	/**
 	 * Listen to the end of the array.
-	 *
-	 * @return void
 	 */
 	public function endArray() : void
 	{
@@ -251,9 +213,6 @@ class JSONStreamingListener
 
 	/**
 	 * Listen to the key.
-	 *
-	 * @param string $key
-	 * @return void
 	 */
 	public function key(string $key) : void
 	{
@@ -270,7 +229,6 @@ class JSONStreamingListener
 	 * Listen to the value.
 	 *
 	 * @param mixed $value
-	 * @return void
 	 */
 	public function value($value) : void
 	{
@@ -293,9 +251,6 @@ class JSONStreamingListener
 
 	/**
 	 * Listen to the whitespace.
-	 *
-	 * @param string $whitespace
-	 * @return void
 	 */
 	public function whitespace(string $whitespace) : void
 	{

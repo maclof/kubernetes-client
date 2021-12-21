@@ -6,8 +6,6 @@ class PersistentVolumeClaimCollection extends Collection
 {
 	/**
 	 * The constructor.
-	 *
-	 * @param array $items
 	 */
 	public function __construct(array $items)
 	{
@@ -16,9 +14,6 @@ class PersistentVolumeClaimCollection extends Collection
 
 	/**
 	 * Get an array of persistent volume claims.
-	 *
-	 * @param  array $items
-	 * @return array
 	 */
 	protected function getPersistentVolumeClaims(array $items): array
 	{

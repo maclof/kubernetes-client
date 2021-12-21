@@ -6,8 +6,6 @@ class ReplicaSetCollection extends Collection
 {
 	/**
 	 * The constructor.
-	 *
-	 * @param array $items
 	 */
 	public function __construct(array $items)
 	{
@@ -16,9 +14,6 @@ class ReplicaSetCollection extends Collection
 
 	/**
 	 * Get an array of replication sets.
-	 *
-	 * @param  array $items
-	 * @return array
 	 */
 	protected function getReplicaSets(array $items): array
 	{

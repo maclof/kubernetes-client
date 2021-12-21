@@ -18,12 +18,8 @@ class PersistentVolumeRepository extends Repository
 	/**
 	 * Send a request.
 	 *
-	 * @param  string  $method
-	 * @param  string  $uri
-	 * @param  array   $query
-	 * @param  mixed   $body
-	 * @param  boolean $namespace
-	 * @return array
+	 * @param mixed $body
+	 * @return mixed
 	 */
 	protected function sendRequest(string $method, string $uri, array $query = [], $body = [], bool $namespace = false, array $requestOptions = [])
 	{

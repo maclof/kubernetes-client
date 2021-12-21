@@ -6,8 +6,6 @@ class EventCollection extends Collection
 {
 	/**
 	 * The constructor.
-	 *
-	 * @param array $items
 	 */
 	public function __construct(array $items)
 	{
@@ -16,9 +14,6 @@ class EventCollection extends Collection
 
 	/**
 	 * Get an array of nodes.
-	 *
-	 * @param  array $items
-	 * @return array
 	 */
 	protected function getEvents(array $items): array
 	{

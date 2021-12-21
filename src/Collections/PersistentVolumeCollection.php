@@ -7,8 +7,6 @@ class PersistentVolumeCollection extends Collection
 {
 	/**
 	 * The constructor.
-	 *
-	 * @param array $items
 	 */
 	public function __construct(array $items)
 	{
@@ -17,9 +15,6 @@ class PersistentVolumeCollection extends Collection
 
 	/**
 	 * Get an array of persistent volumes.
-	 *
-	 * @param  array $items
-	 * @return array
 	 */
 	protected function getPersistentVolumes(array $items): array
 	{

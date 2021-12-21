@@ -12,8 +12,6 @@ abstract class Repository
 {
 	/**
 	 * The client.
-	 *
-	 * @var \Maclof\Kubernetes\Client
 	 */
 	protected Client $client;
 
@@ -24,57 +22,41 @@ abstract class Repository
 
 	/**
 	 * Include the namespace in the requests.
-	 *
-	 * @var boolean
 	 */
 	protected bool $namespace = true;
 
 	/**
 	 * The api version to use for requests.
-	 *
-	 * @var null
 	 */
 	protected ?string $apiVersion = null;
 
 	/**
 	 * The label selector.
-	 *
-	 * @var array
 	 */
 	protected array $labelSelector = [];
 
 	/**
 	 * The label selector options that should not match.
-	 *
-	 * @var array
 	 */
 	protected array $inequalityLabelSelector = [];
 
 	/**
 	 * The field selector.
-	 *
-	 * @var array
 	 */
 	protected array $fieldSelector = [];
 
 	/**
 	 * The field selector options that should not match.
-	 *
-	 * @var array
 	 */
 	protected array $inequalityFieldSelector = [];
 
 	/**
 	 * The default class namespace of the repositories
-	 * 
-	 * @var string
 	 */
 	protected string $modelClassNamespace = 'Maclof\Kubernetes\Models\\';
 
 	/**
 	 * The constructor.
-	 *
-	 * @param \Maclof\Kubernetes\Client $client
 	 */
 	public function __construct(Client $client)
 	{
@@ -84,13 +66,8 @@ abstract class Repository
 	/**
 	 * Send a request.
 	 *
-	 * @param  string  $method
-	 * @param  string  $uri
-	 * @param  array   $query
-	 * @param  mixed   $body
-	 * @param  boolean $namespace
-	 * @param  array   $requestOptions
-	 * @return array
+	 * @param mixed $body
+	 * @return mixed
 	 */
 	protected function sendRequest(string $method, string $uri, array $query = [], $body = [], bool $namespace = true, array $requestOptions = [])
 	{
@@ -104,8 +81,6 @@ abstract class Repository
 
 	/**
 	 * Get the api version from the model.
-	 *
-	 * @return string|null
 	 */
 	protected function getApiVersion(): ?string
 	{
@@ -127,9 +102,6 @@ abstract class Repository
 
 	/**
 	 * Create a new model.
-	 *
-	 * @param  \Maclof\Kubernetes\Models\Model $model
-	 * @return array
 	 */
 	public function create(Model $model): array
 	{
@@ -138,9 +110,6 @@ abstract class Repository
 
 	/**
 	 * Update a model.
-	 *
-	 * @param  \Maclof\Kubernetes\Models\Model $model
-	 * @return array
 	 */
 	public function update(Model $model): array
 	{
@@ -149,9 +118,6 @@ abstract class Repository
 
 	/**
 	 * Patch a model.
-	 *
-	 * @param \Maclof\Kubernetes\Models\Model $model
-	 * @return array
 	 */
 	public function patch(Model $model): array
 	{
@@ -160,10 +126,6 @@ abstract class Repository
 
 	/**
 	 * Apply a json patch to a model.
-	 *
-	 * @param \Maclof\Kubernetes\Models\Model $model
-	 * @param array $model
-	 * @return array
 	 */
 	public function applyJsonPatch(Model $model, array $patch): array
 	{
@@ -178,9 +140,6 @@ abstract class Repository
      * Apply a model.
      *
      * Creates a new api object if not exists, or patch.
-     *
-     * @param \Maclof\Kubernetes\Models\Model $model
-     * @return array
      */
 	public function apply(Model $model): array
     {
@@ -195,10 +154,6 @@ abstract class Repository
 
 	/**
 	 * Delete a model.
-	 *
-	 * @param  \Maclof\Kubernetes\Models\Model         $model
-	 * @param  \Maclof\Kubernetes\Models\DeleteOptions $options
-	 * @return array
 	 */
 	public function delete(Model $model, DeleteOptions $options = null): array
 	{
@@ -207,10 +162,6 @@ abstract class Repository
 
 	/**
 	 * Delete a model by name.
-	 *
-	 * @param  string                                  $name
-	 * @param  \Maclof\Kubernetes\Models\DeleteOptions $options
-	 * @return array
 	 */
 	public function deleteByName(string $name, DeleteOptions $options = null): array
 	{
@@ -221,10 +172,6 @@ abstract class Repository
 
 	/**
 	 * Set the label selector including inequality search terms.
-	 *
-	 * @param  array $labelSelector
-	 * @param  array $inequalityLabelSelector
-	 * @return \Maclof\Kubernetes\Repositories\Repository
 	 */
 	public function setLabelSelector(array $labelSelector, array $inequalityLabelSelector=[]): Repository
 	{
@@ -235,8 +182,6 @@ abstract class Repository
 
 	/**
 	 * Get the label selector query.
-	 *
-	 * @return string
 	 */
 	protected function getLabelSelectorQuery(): string
 	{
@@ -256,10 +201,6 @@ abstract class Repository
 
 	/**
 	 * Set the field selector including inequality search terms.
-	 *
-	 * @param  array $fieldSelector
-	 * @param  array $inequalityFieldSelector
-	 * @return \Maclof\Kubernetes\Repositories\Repository
 	 */
 	public function setFieldSelector(array $fieldSelector, array $inequalityFieldSelector=[]): Repository
 	{
@@ -270,8 +211,6 @@ abstract class Repository
 
 	/**
 	 * Get the field selector query.
-	 *
-	 * @return string
 	 */
 	protected function getFieldSelectorQuery(): string
 	{
@@ -292,8 +231,6 @@ abstract class Repository
 
 	/**
 	 * Reset the parameters.
-	 *
-	 * @return void
 	 */
 	protected function resetParameters(): void
 	{
@@ -303,9 +240,6 @@ abstract class Repository
 
 	/**
 	 * Get a collection of items.
-	 *
-	 * @param  array $query
-	 * @return mixed
 	 */
 	public function find(array $query = []): Collection
 	{
@@ -325,8 +259,6 @@ abstract class Repository
 
 	/**
 	 * Find the first item.
-	 *
-	 * @return \Maclof\Kubernetes\Models\Model|null
 	 */
 	public function first(): ?Model
 	{
@@ -335,11 +267,6 @@ abstract class Repository
 
 	/**
 	 * Watch a model for changes.
-	 *
-	 * @param  \Maclof\Kubernetes\Models\Model $model
-	 * @param  \Closure $closure
-	 * @param  array $query
-	 * @return void
 	 */
 	public function watch(Model $model, Closure $closure, array $query = []): void
 	{
@@ -371,9 +298,6 @@ abstract class Repository
 
 	/**
 	 * Check if an item exists by name.
-	 *
-	 * @param  string $name
-	 * @return boolean
 	 */
 	public function exists(string $name): bool
 	{
@@ -383,9 +307,6 @@ abstract class Repository
 
 	/**
 	 * Create a collection of models from the response.
-	 *
-	 * @param  array $response
-	 * @return \Maclof\Kubernetes\Collections\Collection
 	 */
 	abstract protected function createCollection(array $response): Collection;
 }

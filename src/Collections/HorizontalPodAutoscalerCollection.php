@@ -6,8 +6,6 @@ class HorizontalPodAutoscalerCollection extends Collection
 {
 	/**
 	 * The constructor.
-	 *
-	 * @param array $items
 	 */
 	public function __construct(array $items)
 	{
@@ -16,9 +14,6 @@ class HorizontalPodAutoscalerCollection extends Collection
 
 	/**
 	 * Get an array of autoscalers.
-	 *
-	 * @param  array $items
-	 * @return array
 	 */
 	protected function getHorizontalPodAutoscalers(array $items): array
 	{

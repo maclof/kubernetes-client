@@ -69,57 +69,41 @@ class Client
 {
 	/**
 	 * The api version.
-	 *
-	 * @var string
 	 */
 	protected string $apiVersion = 'v1';
 
 	/**
 	 * The address of the master server.
-	 *
-	 * @var string|null
 	 */
 	protected ?string $master = null;
 
 	/**
 	 * The servide account token.
-	 *
-	 * @var string
 	 */
 	protected ?string $token = null;
 
 	/**
 	 * The username for basic auth.
-	 *
-	 * @var string
 	 */
 	protected ?string $username = null;
 
 	/**
 	 * The password for basic auth.
-	 *
-	 * @var string
 	 */
 	protected ?string $password = null;
 
 	/**
 	 * The namespace.
-	 *
-	 * @var string
 	 */
 	protected string $namespace = 'default';
 
 	/**
 	 * The http client.
-	 *
-	 * @var \Http\Client\Common\HttpMethodsClientInterface
 	 */
 	protected HttpMethodsClientInterface $httpClient;
 
 	/**
 	 * The exec channels for result messages.
-	 *
-	 * @var array
 	 */
 	protected array $execChannels = [
 		'stdin',
@@ -131,22 +115,16 @@ class Client
 
 	/**
 	 * The repository class registry.
-	 *
-	 * @var RepositoryRegistry
 	 */
 	protected RepositoryRegistry $classRegistry;
 
 	/**
 	 * The class instances.
-	 *
-	 * @var array
 	 */
 	protected array $classInstances = [];
 
 	/**
 	 * header for patch.
-	 *
-	 * @var array
 	 */
 	protected array $patchHeaders = ['Content-Type' => 'application/strategic-merge-patch+json'];
 
@@ -160,11 +138,6 @@ class Client
 
 	/**
 	 * The constructor.
-	 *
-	 * @param array $options
-	 * @param \Maclof\Kubernetes\RepositoryRegistry|null $repositoryRegistry
-	 * @param ClientInterface|null $httpClient Some client implementing PSR HTTP ClientInterface
-	 * @param \Http\Message\RequestFactory $httpRequestFactory
 	 */
 	public function __construct(array $options = [], RepositoryRegistry $repositoryRegistry = null, ClientInterface $httpClient = null, HttpRequestFactory $httpRequestFactory = null)
 	{
@@ -178,9 +151,6 @@ class Client
 
 	/**
 	 * Set the options.
-	 *
-	 * @param  array $options
-	 * @param  bool  $reset
 	 */
 	public function setOptions(array $options, bool $reset = false): void
 	{
@@ -214,8 +184,6 @@ class Client
 	 * Parse a kubeconfig.
 	 * 
 	 * @param  string|array $content Mixed type, based on the second input argument
-	 * @param  string $contentType
-	 * @return array
 	 * @throws \InvalidArgumentException
 	 */
 	public static function parseKubeconfig($content, string $contentType = 'yaml'): array
@@ -337,8 +305,6 @@ class Client
 	/**
 	 * Parse a kubeconfig file.
 	 * 
-	 * @param  string $filePath
-	 * @return array
 	 * @throws \InvalidArgumentException
 	 */
 	public static function parseKubeconfigFile(string $filePath): array
@@ -352,10 +318,6 @@ class Client
 
 	/**
 	 * Get a temp file path for some content.
-	 *
-	 * @param  string $fileName
-	 * @param  string $fileContent
-	 * @return string
 	 */
 	protected static function getTempFilePath(string $fileName, string $fileContent): string
 	{
@@ -372,8 +334,6 @@ class Client
 
 	/**
 	 * Set namespace.
-	 *
-	 * @param string $namespace
 	 */
 	public function setNamespace(string $namespace): void
 	{
@@ -382,8 +342,6 @@ class Client
 
 	/**
 	 * Set patch header
-	 *
-	 * @param string patch type
 	 */
 	public function setPatchType(string $patchType = "strategic"): void
 	{
@@ -399,13 +357,7 @@ class Client
 	/**
 	 * Send a request.
 	 *
-	 * @param  string  $method
-	 * @param  string  $uri
-	 * @param  array   $query
-	 * @param  mixed   $body
-	 * @param  boolean $namespace
-	 * @param  string  $apiVersion
-	 * @param  array   $requestOptions
+	 * @param  mixed $body
 	 * @return mixed
 	 * @throws \Maclof\Kubernetes\Exceptions\BadRequestException
 	 */
@@ -481,9 +433,6 @@ class Client
 
 	/**
 	 * Check if an upgrade request is required.
-	 *
-	 * @param  array $response
-	 * @return boolean
 	 */
 	protected function isUpgradeRequestRequired(array $response): bool
 	{
@@ -492,10 +441,6 @@ class Client
 
 	/**
 	 * Send an upgrade request and return any response messages.
-	 *
-	 * @param  string $requestUri
-	 * @param  array  $query
-	 * @return array
 	 */
 	protected function sendUpgradeRequest(string $requestUri, array $query): array
 	{
@@ -577,9 +522,6 @@ class Client
 
 	/**
 	 * Parse an array of query params.
-	 *
-	 * @param  array $query
-	 * @return array
 	 */
 	protected function parseQueryParams(array $query): array
 	{
@@ -612,8 +554,6 @@ class Client
 	
 	/**
 	 * Check the version.
-	 *
-	 * @return array
 	 */
 	public function version(): array
 	{
@@ -623,8 +563,6 @@ class Client
 	/**
 	 * Magic call method to grab a class instance.
 	 *
-	 * @param  string $name
-	 * @param  array  $args
 	 * @return \stdClass
 	 * @throws \BadMethodCallException
 	 */

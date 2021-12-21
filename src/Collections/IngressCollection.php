@@ -6,8 +6,6 @@ class IngressCollection extends Collection
 {
 	/**
 	 * The constructor.
-	 *
-	 * @param array $items
 	 */
 	public function __construct(array $items)
 	{
@@ -16,9 +14,6 @@ class IngressCollection extends Collection
 
 	/**
 	 * Get an array of Ingresses.
-	 *
-	 * @param  array $items
-	 * @return array
 	 */
 	protected function getIngresses(array $items): array
 	{

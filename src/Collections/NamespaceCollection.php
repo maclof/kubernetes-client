@@ -6,8 +6,6 @@ class NamespaceCollection extends Collection
 {
 	/**
 	 * The constructor.
-	 *
-	 * @param array $items
 	 */
 	public function __construct(array $items)
 	{
@@ -16,9 +14,6 @@ class NamespaceCollection extends Collection
 
 	/**
 	 * Get an array of Namespaces.
-	 *
-	 * @param  array $items
-	 * @return array
 	 */
 	protected function getNamespaces(array $items): array
 	{

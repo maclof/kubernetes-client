@@ -4,8 +4,6 @@ class Job extends Model
 {
 	/**
 	 * The api version.
-	 *
-	 * @var string
 	 */
 	protected string $apiVersion = 'batch/v1';
 }

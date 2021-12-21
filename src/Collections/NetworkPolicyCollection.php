@@ -6,8 +6,6 @@ class NetworkPolicyCollection extends Collection
 {
 	/**
 	 * The constructor.
-	 *
-	 * @param array $items
 	 */
 	public function __construct(array $items)
 	{
@@ -16,9 +14,6 @@ class NetworkPolicyCollection extends Collection
 
 	/**
 	 * Get an array of network policies.
-	 *
-	 * @param  array $items
-	 * @return array
 	 */
 	protected function getPolicies(array $items): array
 	{

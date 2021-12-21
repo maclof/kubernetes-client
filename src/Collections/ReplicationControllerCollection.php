@@ -6,8 +6,6 @@ class ReplicationControllerCollection extends Collection
 {
 	/**
 	 * The constructor.
-	 *
-	 * @param array $items
 	 */
 	public function __construct(array $items)
 	{
@@ -16,9 +14,6 @@ class ReplicationControllerCollection extends Collection
 
 	/**
 	 * Get an array of replication controllers.
-	 *
-	 * @param  array $items
-	 * @return array
 	 */
 	protected function getReplicationControllers(array $items): array
 	{

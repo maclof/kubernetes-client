@@ -30,9 +30,6 @@ class JSONStreamingParser
 	const UTF16_BOM = 2;
 	const UTF32_BOM = 3;
 
-	/**
-	 * @var int
-	 */
 	private int $state;
 
 	/**
@@ -40,26 +37,14 @@ class JSONStreamingParser
 	 */
 	private array $stack = [];
 
-	/**
-	 * @var \GuzzleHttp\Psr7\Stream
-	 */
 	private Stream $stream;
 
 	private JSONStreamingListener $listener;
 
-	/**
-	 * @var bool
-	 */
 	private bool $emitWhitespace;
 
-	/**
-	 * @var string
-	 */
 	private string $buffer = '';
 
-	/**
-	 * @var int
-	 */
 	private int $bufferSize;
 
 	/**
@@ -67,49 +52,22 @@ class JSONStreamingParser
 	 */
 	private array $unicodeBuffer = [];
 
-	/**
-	 * @var int
-	 */
 	private int $unicodeHighSurrogate = -1;
 
-	/**
-	 * @var string
-	 */
 	private string $unicodeEscapeBuffer = '';
 
-	/**
-	 * @var string
-	 */
 	private string $lineEnding;
 
-	/**
-	 * @var int
-	 */
 	private int $lineNumber;
 
-	/**
-	 * @var int
-	 */
 	private int $charNumber;
 
-	/**
-	 * @var bool
-	 */
 	private bool $stopParsing = false;
 
-	/**
-	 * @var int
-	 */
 	private int $utfBom = 0;
 
 	/**
 	 * The constructor.
-	 *
-	 * @param \GuzzleHttp\Psr7\Stream $stream
-	 * @param \Maclof\Kubernetes\Repositories\Utils\JSONStreamingListener $listener
-	 * @param string $lineEnding
-	 * @param bool|boolean $emitWhitespace
-	 * @param int|integer $bufferSize
 	 */
 	public function __construct(
 		Stream $stream,
@@ -128,8 +86,6 @@ class JSONStreamingParser
 
 	/**
 	 * Parse the stream.
-	 *
-	 * @return void
 	 */
 	public function parse(): void
 	{
