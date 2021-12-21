@@ -20,7 +20,7 @@ class SecretCollection extends Collection
 	 * @param  array $items
 	 * @return array
 	 */
-	protected function getSecrets(array $items)
+	protected function getSecrets(array $items): array
 	{
 		foreach ($items as &$item) {
 			if ($item instanceof Secret) {

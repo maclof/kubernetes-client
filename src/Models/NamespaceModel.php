@@ -7,5 +7,5 @@ class NamespaceModel extends Model
 	 *
 	 * @var array
 	 */
-	protected $schema = ['kind' => 'Namespace'];
+	protected array $schema = ['kind' => 'Namespace'];
 }

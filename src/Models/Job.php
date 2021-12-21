@@ -7,5 +7,5 @@ class Job extends Model
 	 *
 	 * @var string
 	 */
-	protected $apiVersion = 'batch/v1';
+	protected string $apiVersion = 'batch/v1';
 }

@@ -9,42 +9,42 @@ class JSONStreamingListener
 	 * 
 	 * @var \Closure
 	 */
-	protected $closure;
+	protected Closure $closure;
 
 	/**
 	 * The current depth within the JSON stream.
 	 *
 	 * @var int
 	 */
-	protected $depth = 0;
+	protected int $depth = 0;
 
 	/**
 	 * The current JSON object stack.
 	 *
 	 * @var array
 	 */
-	protected $stack = [];
+	protected array $stack = [];
 
 	/**
 	 * The current key for each depth.
 	 *
 	 * @var array
 	 */
-	protected $keyByDepth = [];
+	protected array $keyByDepth = [];
 
 	/**
 	 * The current position within the JSON stream.
 	 *
 	 * @var array
 	 */
-	protected $breadcrumbs = [];
+	protected array $breadcrumbs = [];
 
 	/**
 	 * The target containing the JSON objects.
 	 *
 	 * @var array
 	 */
-	protected $target = [];
+	protected array $target = [];
 
 	/**
 	 * The constructor.
@@ -170,7 +170,7 @@ class JSONStreamingListener
 	 * @param array $extractedObject
 	 * @return void
 	 */
-	protected function processExtractedObject(array $extractedObject)
+	protected function processExtractedObject(array $extractedObject): void
 	{
 		$type = isset($extractedObject['type']) ? $extractedObject['type'] : null;
 		$object = isset($extractedObject['object']) ? $extractedObject['object'] : null;

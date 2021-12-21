@@ -4,7 +4,7 @@ use Maclof\Kubernetes\Models\Node;
 
 class NodeTest extends TestCase
 {
-	public function test_get_schema()
+	public function test_get_schema(): void
 	{
 		$node = new Node;
 
@@ -14,7 +14,7 @@ class NodeTest extends TestCase
 		$this->assertEquals($schema, $fixture);
 	}
 
-	public function test_get_metadata()
+	public function test_get_metadata(): void
 	{
 		$node = new Node([
 			'metadata' => [

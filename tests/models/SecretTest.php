@@ -4,7 +4,7 @@ use Maclof\Kubernetes\Models\Secret;
 
 class SecretTest extends TestCase
 {
-	public function test_get_schema()
+	public function test_get_schema(): void
 	{
 		$secret = new Secret;
 
@@ -14,7 +14,7 @@ class SecretTest extends TestCase
 		$this->assertEquals($schema, $fixture);
 	}
 
-	public function test_get_metadata()
+	public function test_get_metadata(): void
 	{
 		$secret = new Secret([
 			'metadata' => [

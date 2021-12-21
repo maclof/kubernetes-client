@@ -7,5 +7,5 @@ class Deployment extends Model
 	 *
 	 * @var string
 	 */
-	protected $apiVersion = 'apps/v1';
+	protected string $apiVersion = 'apps/v1';
 }

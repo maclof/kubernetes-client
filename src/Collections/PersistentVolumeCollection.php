@@ -21,7 +21,7 @@ class PersistentVolumeCollection extends Collection
 	 * @param  array $items
 	 * @return array
 	 */
-	protected function getPersistentVolumes(array $items)
+	protected function getPersistentVolumes(array $items): array
 	{
 		foreach ($items as &$item) {
 			if ($item instanceof PersistentVolume) {

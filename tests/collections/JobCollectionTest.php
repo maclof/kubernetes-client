@@ -4,20 +4,20 @@ use Maclof\Kubernetes\Collections\JobCollection;
 
 class JobCollectionTest extends TestCase
 {
-	protected $items = [
+	protected array $items = [
 		[],
 		[],
 		[],
 	];
 
-	protected function getJobCollection()
+	protected function getJobCollection(): JobCollection
 	{
 		$jobCollection = new JobCollection($this->items);
 
 		return $jobCollection;
 	}
 
-	public function test_get_items()
+	public function test_get_items(): void
 	{
 		$jobCollection = $this->getJobCollection();
 		$items = $jobCollection->toArray();

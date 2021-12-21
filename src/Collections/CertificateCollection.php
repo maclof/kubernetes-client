@@ -20,7 +20,7 @@ class CertificateCollection extends Collection
      * @param  array $items
      * @return array
      */
-    protected function getCertificates(array $items)
+    protected function getCertificates(array $items): array
     {
         foreach ($items as &$item) {
             if ($item instanceof Certificate) {

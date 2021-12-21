@@ -20,7 +20,7 @@ class QuotaCollection extends Collection
 	 * @param  array $items
 	 * @return array
 	 */
-	protected function getQuotas(array $items)
+	protected function getQuotas(array $items): array
 	{
 		foreach ($items as &$item) {
 			if ($item instanceof QuotaModel) {

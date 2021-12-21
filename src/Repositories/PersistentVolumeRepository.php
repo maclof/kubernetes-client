@@ -5,12 +5,12 @@ use Maclof\Kubernetes\Collections\PersistentVolumeCollection;
 
 class PersistentVolumeRepository extends Repository
 {
-	protected $uri = 'persistentvolumes';
+	protected string $uri = 'persistentvolumes';
 
 	/**
 	 * @see \Maclof\Kubernetes\Repositories\Repository::createCollection()
 	 */
-	protected function createCollection($response)
+	protected function createCollection($response): PersistentVolumeCollection
 	{
 		return new PersistentVolumeCollection($response['items']);
 	}
@@ -25,7 +25,7 @@ class PersistentVolumeRepository extends Repository
 	 * @param  boolean $namespace
 	 * @return array
 	 */
-	protected function sendRequest($method, $uri, $query = [], $body = [], $namespace = false)
+	protected function sendRequest(string $method, string $uri, array $query = [], $body = [], bool $namespace = false, array $requestOptions = [])
 	{
 		$namespace = false;
 		$apiVersion = $this->getApiVersion();

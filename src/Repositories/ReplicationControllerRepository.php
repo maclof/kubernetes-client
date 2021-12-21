@@ -4,9 +4,9 @@ use Maclof\Kubernetes\Collections\ReplicationControllerCollection;
 
 class ReplicationControllerRepository extends Repository
 {
-	protected $uri = 'replicationcontrollers';
+	protected string $uri = 'replicationcontrollers';
 
-	protected function createCollection($response)
+	protected function createCollection($response): ReplicationControllerCollection
 	{
 		return new ReplicationControllerCollection($response['items']);
 	}

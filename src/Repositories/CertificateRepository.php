@@ -7,9 +7,9 @@ class CertificateRepository extends Repository
 {
     use PatchMergeTrait;
 
-    protected $uri = 'certificates';
+    protected string $uri = 'certificates';
 
-    protected function createCollection($response)
+    protected function createCollection($response): CertificateCollection
     {
         return new CertificateCollection($response['items']);
     }

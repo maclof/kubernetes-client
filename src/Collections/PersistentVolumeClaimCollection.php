@@ -20,7 +20,7 @@ class PersistentVolumeClaimCollection extends Collection
 	 * @param  array $items
 	 * @return array
 	 */
-	protected function getPersistentVolumeClaims(array $items)
+	protected function getPersistentVolumeClaims(array $items): array
 	{
 		foreach ($items as &$item) {
 			if ($item instanceof PersistentVolumeClaim) {

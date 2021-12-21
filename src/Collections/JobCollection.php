@@ -20,7 +20,7 @@ class JobCollection extends Collection
 	 * @param  array $items
 	 * @return array
 	 */
-	protected function getJobs(array $items)
+	protected function getJobs(array $items): array
 	{
 		foreach ($items as &$item) {
 			if ($item instanceof Job) {

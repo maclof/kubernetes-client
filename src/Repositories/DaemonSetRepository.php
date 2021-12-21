@@ -4,9 +4,9 @@ use Maclof\Kubernetes\Collections\DaemonSetCollection;
 
 class DaemonSetRepository extends Repository
 {
-	protected $uri = 'daemonsets';
+	protected string $uri = 'daemonsets';
 
-	protected function createCollection($response)
+	protected function createCollection($response): DaemonSetCollection
 	{
 		return new DaemonSetCollection($response['items']);
 	}

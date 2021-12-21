@@ -4,7 +4,7 @@ use Maclof\Kubernetes\Models\Deployment;
 
 class DeploymentTest extends TestCase
 {
-	public function test_get_schema()
+	public function test_get_schema(): void
 	{
 		$deployment = new Deployment;
 
@@ -14,7 +14,7 @@ class DeploymentTest extends TestCase
 		$this->assertEquals($schema, $fixture);
 	}
 
-	public function test_get_metadata()
+	public function test_get_metadata(): void
 	{
 		$deployment = new Deployment([
 			'metadata' => [

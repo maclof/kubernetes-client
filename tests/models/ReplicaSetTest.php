@@ -4,7 +4,7 @@ use Maclof\Kubernetes\Models\ReplicaSet;
 
 class ReplicaSetTest extends TestCase
 {
-	public function test_get_schema()
+	public function test_get_schema(): void
 	{
 		$replicaSet = new ReplicaSet;
 
@@ -14,7 +14,7 @@ class ReplicaSetTest extends TestCase
 		$this->assertEquals($schema, $fixture);
 	}
 
-	public function test_get_metadata()
+	public function test_get_metadata(): void
 	{
 		$replicaSet = new ReplicaSet([
 			'metadata' => [

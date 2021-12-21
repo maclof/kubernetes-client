@@ -7,5 +7,5 @@ class Endpoint extends Model
 	 * 
 	 * @var boolean
 	 */
-	protected $pluralKind = true;
+	protected bool $pluralKind = true;
 }

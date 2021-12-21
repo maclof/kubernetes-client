@@ -4,7 +4,7 @@ use Maclof\Kubernetes\Models\Model;
 
 trait PatchMergeTrait {
 
-    public function patch(Model $model)
+    public function patch(Model $model): array
     {
         $this->client->setPatchType("merge");
 

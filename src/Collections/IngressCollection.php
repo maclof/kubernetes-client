@@ -20,7 +20,7 @@ class IngressCollection extends Collection
 	 * @param  array $items
 	 * @return array
 	 */
-	protected function getIngresses(array $items)
+	protected function getIngresses(array $items): array
 	{
 		foreach ($items as &$item) {
 			if ($item instanceof Ingress) {

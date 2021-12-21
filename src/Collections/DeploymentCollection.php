@@ -20,7 +20,7 @@ class DeploymentCollection extends Collection
 	 * @param  array $items
 	 * @return array
 	 */
-	protected function getDeployments(array $items)
+	protected function getDeployments(array $items): array
 	{
 		foreach ($items as &$item) {
 			if ($item instanceof Deployment) {

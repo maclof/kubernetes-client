@@ -20,7 +20,7 @@ class NetworkPolicyCollection extends Collection
 	 * @param  array $items
 	 * @return array
 	 */
-	protected function getPolicies(array $items)
+	protected function getPolicies(array $items): array
 	{
 		foreach ($items as &$item) {
 			if ($item instanceof NetworkPolicy) {

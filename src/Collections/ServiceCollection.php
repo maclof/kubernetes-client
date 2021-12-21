@@ -20,7 +20,7 @@ class ServiceCollection extends Collection
 	 * @param  array $items
 	 * @return array
 	 */
-	protected function getServices(array $items)
+	protected function getServices(array $items): array
 	{
 		foreach ($items as &$item) {
 			if ($item instanceof Service) {

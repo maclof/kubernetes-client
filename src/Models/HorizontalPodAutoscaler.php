@@ -7,5 +7,5 @@ class HorizontalPodAutoscaler extends \Maclof\Kubernetes\Models\Model
 	 *
 	 * @var string
 	 */
-	protected $apiVersion = 'autoscaling/v2beta1';
+	protected string $apiVersion = 'autoscaling/v2beta1';
 }

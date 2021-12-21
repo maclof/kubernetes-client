@@ -20,7 +20,7 @@ class ReplicationControllerCollection extends Collection
 	 * @param  array $items
 	 * @return array
 	 */
-	protected function getReplicationControllers(array $items)
+	protected function getReplicationControllers(array $items): array
 	{
 		foreach ($items as &$item) {
 			if ($item instanceof ReplicationController) {

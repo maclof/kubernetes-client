@@ -4,9 +4,9 @@ use Maclof\Kubernetes\Collections\CronJobCollection;
 
 class CronJobRepository extends Repository
 {
-	protected $uri = 'cronjobs';
+	protected string $uri = 'cronjobs';
 
-	protected function createCollection($response)
+	protected function createCollection($response): CronJobCollection
 	{
 		return new CronJobCollection($response['items']);
 	}

@@ -20,7 +20,7 @@ class HorizontalPodAutoscalerCollection extends Collection
 	 * @param  array $items
 	 * @return array
 	 */
-	protected function getHorizontalPodAutoscalers(array $items)
+	protected function getHorizontalPodAutoscalers(array $items): array
 	{
 		foreach ($items as &$item) {
 			if ($item instanceof HorizontalPodAutoscaler) {

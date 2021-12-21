@@ -5,9 +5,9 @@ use Maclof\Kubernetes\Collections\PodCollection;
 
 class PodRepository extends Repository
 {
-	protected $uri = 'pods';
+	protected string $uri = 'pods';
 
-	protected function createCollection($response)
+	protected function createCollection($response): PodCollection
 	{
 		return new PodCollection($response['items']);
 	}
@@ -19,7 +19,7 @@ class PodRepository extends Repository
 	 * @param  array $queryParams
 	 * @return string
 	 */
-	public function logs(Pod $pod, array $queryParams = [])
+	public function logs(Pod $pod, array $queryParams = []): string
 	{
 		$response = $this->client->sendRequest('GET', '/' . $this->uri . '/' . $pod->getMetadata('name') . '/log', $queryParams);
 		return $response;

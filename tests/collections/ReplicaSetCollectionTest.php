@@ -4,20 +4,20 @@ use Maclof\Kubernetes\Collections\ReplicaSetCollection;
 
 class ReplicaSetCollectionTest extends TestCase
 {
-	protected $items = [
+	protected array $items = [
 		[],
 		[],
 		[],
 	];
 
-	protected function getReplicaSetCollection()
+	protected function getReplicaSetCollection(): ReplicaSetCollection
 	{
 		$replicaSetCollection = new ReplicaSetCollection($this->items);
 
 		return $replicaSetCollection;
 	}
 
-	public function test_get_items()
+	public function test_get_items(): void
 	{
 		$replicaSetCollection = $this->getReplicaSetCollection();
 		$items = $replicaSetCollection->toArray();

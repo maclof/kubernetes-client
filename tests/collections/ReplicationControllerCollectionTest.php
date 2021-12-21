@@ -4,20 +4,20 @@ use Maclof\Kubernetes\Collections\ReplicationControllerCollection;
 
 class ReplicationControllerCollectionTest extends TestCase
 {
-	protected $items = [
+	protected array $items = [
 		[],
 		[],
 		[],
 	];
 
-	protected function getReplicationControllerCollection()
+	protected function getReplicationControllerCollection(): ReplicationControllerCollection
 	{
 		$replicationControllerCollection = new ReplicationControllerCollection($this->items);
 
 		return $replicationControllerCollection;
 	}
 
-	public function test_get_items()
+	public function test_get_items(): void
 	{
 		$replicationControllerCollection = $this->getReplicationControllerCollection();
 		$items = $replicationControllerCollection->toArray();

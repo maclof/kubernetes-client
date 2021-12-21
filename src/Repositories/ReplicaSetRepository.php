@@ -4,9 +4,9 @@ use Maclof\Kubernetes\Collections\ReplicaSetCollection;
 
 class ReplicaSetRepository extends Repository
 {
-	protected $uri = 'replicasets';
+	protected string $uri = 'replicasets';
 
-	protected function createCollection($response)
+	protected function createCollection($response): ReplicaSetCollection
 	{
 		return new ReplicaSetCollection($response['items']);
 	}

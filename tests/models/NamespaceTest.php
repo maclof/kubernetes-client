@@ -4,7 +4,7 @@ use Maclof\Kubernetes\Models\NamespaceModel;
 
 class NamespaceTest extends TestCase
 {
-	public function test_get_schema()
+	public function test_get_schema(): void
 	{
 		$namespace = new NamespaceModel;
 
@@ -14,7 +14,7 @@ class NamespaceTest extends TestCase
 		$this->assertEquals($schema, $fixture);
 	}
 
-	public function test_get_metadata()
+	public function test_get_metadata(): void
 	{
 		$node = new NamespaceModel([
 			'metadata' => [

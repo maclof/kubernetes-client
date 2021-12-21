@@ -4,20 +4,20 @@ use Maclof\Kubernetes\Collections\SecretCollection;
 
 class SecretCollectionTest extends TestCase
 {
-	protected $items = [
+	protected array $items = [
 		[],
 		[],
 		[],
 	];
 
-	protected function getSecretCollection()
+	protected function getSecretCollection(): SecretCollection
 	{
 		$secretCollection = new SecretCollection($this->items);
 
 		return $secretCollection;
 	}
 
-	public function test_get_items()
+	public function test_get_items(): void
 	{
 		$secretCollection = $this->getSecretCollection();
 		$items = $secretCollection->toArray();

@@ -20,7 +20,7 @@ class CronJobCollection extends Collection
 	 * @param  array $items
 	 * @return array
 	 */
-	protected function getCronJobs(array $items)
+	protected function getCronJobs(array $items): array
 	{
 		foreach ($items as &$item) {
 			if ($item instanceof CronJob) {

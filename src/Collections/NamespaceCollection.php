@@ -20,7 +20,7 @@ class NamespaceCollection extends Collection
 	 * @param  array $items
 	 * @return array
 	 */
-	protected function getNamespaces(array $items)
+	protected function getNamespaces(array $items): array
 	{
 		foreach ($items as &$item) {
 			if ($item instanceof NamespaceModel) {

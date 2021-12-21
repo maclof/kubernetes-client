@@ -20,7 +20,7 @@ class EventCollection extends Collection
 	 * @param  array $items
 	 * @return array
 	 */
-	protected function getEvents(array $items)
+	protected function getEvents(array $items): array
 	{
 		foreach ($items as &$item) {
 			if ($item instanceof Event) {

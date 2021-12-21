@@ -6,7 +6,7 @@ class RepositoryRegistry implements \ArrayAccess, \Countable
     /**
      * @var array Initial registry class map. Contains only package builtin repositories.
      */
-    protected $map = [
+    protected array $map = [
         'nodes'                  => Repositories\NodeRepository::class,
         'quotas'                 => Repositories\QuotaRepository::class,
         'pods'                   => Repositories\PodRepository::class,
@@ -51,27 +51,27 @@ class RepositoryRegistry implements \ArrayAccess, \Countable
 
     }
 
-    public function offsetExists($method)
+    public function offsetExists($offset): bool
     {
-        return isset($this->map[$method]);
+        return isset($this->map[$offset]);
     }
 
-    public function offsetGet($method)
+    public function offsetGet($offset)
     {
-        return $this->map[$method];
+        return $this->map[$offset];
     }
 
-    public function offsetSet($method, $class)
+    public function offsetSet($offset, $value): void
     {
-        $this->map[$method] = $class;
+        $this->map[$offset] = $value;
     }
 
-    public function offsetUnset($method)
+    public function offsetUnset($offset): void
     {
-        unset($this->map[$method]);
+        unset($this->map[$offset]);
     }
 
-    public function count()
+    public function count(): int
     {
         return count($this->map);
     }

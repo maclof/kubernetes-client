@@ -4,9 +4,9 @@ use Maclof\Kubernetes\Collections\EndpointCollection;
 
 class EndpointRepository extends Repository
 {
-	protected $uri = 'endpoints';
+	protected string $uri = 'endpoints';
 
-	protected function createCollection($response)
+	protected function createCollection($response): EndpointCollection
 	{
 		return new EndpointCollection($response['items']);
 	}

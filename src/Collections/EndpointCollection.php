@@ -20,7 +20,7 @@ class EndpointCollection extends Collection
 	 * @param  array $items
 	 * @return array
 	 */
-	protected function getEndpoints(array $items)
+	protected function getEndpoints(array $items): array
 	{
 		foreach ($items as &$item) {
 			if ($item instanceof Endpoint) {

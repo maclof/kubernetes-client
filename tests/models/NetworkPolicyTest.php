@@ -4,7 +4,7 @@ use Maclof\Kubernetes\Models\NetworkPolicy;
 
 class NetworkPolicyTest extends TestCase
 {
-	public function test_get_schema()
+	public function test_get_schema(): void
 	{
 		$policy = new NetworkPolicy();
 
@@ -14,7 +14,7 @@ class NetworkPolicyTest extends TestCase
 		$this->assertEquals($schema, $fixture);
 	}
 
-	public function test_get_metadata()
+	public function test_get_metadata(): void
 	{
 		$policy = new NetworkPolicy([
 			'metadata' => [

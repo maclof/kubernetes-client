@@ -4,20 +4,20 @@ use Maclof\Kubernetes\Collections\IngressCollection;
 
 class IngressCollectionTest extends TestCase
 {
-	protected $items = [
+	protected array $items = [
 		[],
 		[],
 		[],
 	];
 
-	protected function getIngressCollection()
+	protected function getIngressCollection(): IngressCollection
 	{
 		$ingressCollection = new IngressCollection($this->items);
 
 		return $ingressCollection;
 	}
 
-	public function test_get_items()
+	public function test_get_items(): void
 	{
 		$ingressCollection = $this->getIngressCollection();
 		$items = $ingressCollection->toArray();

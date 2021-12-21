@@ -1,6 +1,8 @@
 <?php namespace Maclof\Kubernetes\Repositories;
 
 use Closure;
+use Maclof\Kubernetes\Client;
+use Maclof\Kubernetes\Collections\Collection;
 use Maclof\Kubernetes\Models\Model;
 use Maclof\Kubernetes\Models\DeleteOptions;
 use Maclof\Kubernetes\Repositories\Utils\JSONStreamingParser;
@@ -13,64 +15,68 @@ abstract class Repository
 	 *
 	 * @var \Maclof\Kubernetes\Client
 	 */
-	protected $client;
+	protected Client $client;
+
+	/**
+	 * The resource uri, has to be overwritten.
+	 */
+	protected string $uri = '';
 
 	/**
 	 * Include the namespace in the requests.
 	 *
 	 * @var boolean
 	 */
-	protected $namespace = true;
+	protected bool $namespace = true;
 
 	/**
 	 * The api version to use for requests.
 	 *
 	 * @var null
 	 */
-	protected $apiVersion;
+	protected ?string $apiVersion = null;
 
 	/**
 	 * The label selector.
 	 *
 	 * @var array
 	 */
-	protected $labelSelector = [];
+	protected array $labelSelector = [];
 
 	/**
 	 * The label selector options that should not match.
 	 *
 	 * @var array
 	 */
-	protected $inequalityLabelSelector = [];
+	protected array $inequalityLabelSelector = [];
 
 	/**
 	 * The field selector.
 	 *
 	 * @var array
 	 */
-	protected $fieldSelector = [];
+	protected array $fieldSelector = [];
 
 	/**
 	 * The field selector options that should not match.
 	 *
 	 * @var array
 	 */
-	protected $inequalityFieldSelector = [];
-
+	protected array $inequalityFieldSelector = [];
 
 	/**
 	 * The default class namespace of the repositories
 	 * 
 	 * @var string
 	 */
-	protected $modelClassNamespace = 'Maclof\Kubernetes\Models\\';
+	protected string $modelClassNamespace = 'Maclof\Kubernetes\Models\\';
 
 	/**
 	 * The constructor.
 	 *
 	 * @param \Maclof\Kubernetes\Client $client
 	 */
-	public function __construct($client)
+	public function __construct(Client $client)
 	{
 		$this->client = $client;
 	}
@@ -86,7 +92,7 @@ abstract class Repository
 	 * @param  array   $requestOptions
 	 * @return array
 	 */
-	protected function sendRequest($method, $uri, $query = [], $body = [], $namespace = true, array $requestOptions = [])
+	protected function sendRequest(string $method, string $uri, array $query = [], $body = [], bool $namespace = true, array $requestOptions = [])
 	{
 		$apiVersion = $this->getApiVersion();
 		if ($apiVersion === 'v1') {
@@ -101,7 +107,7 @@ abstract class Repository
 	 *
 	 * @return string|null
 	 */
-	protected function getApiVersion()
+	protected function getApiVersion(): ?string
 	{
 		if ($this->apiVersion) {
 			return $this->apiVersion;
@@ -125,9 +131,9 @@ abstract class Repository
 	 * @param  \Maclof\Kubernetes\Models\Model $model
 	 * @return array
 	 */
-	public function create(Model $model)
+	public function create(Model $model): array
 	{
-		return $this->sendRequest('POST', '/' . $this->uri, null, $model->getSchema(), $this->namespace);
+		return $this->sendRequest('POST', '/' . $this->uri, [], $model->getSchema(), $this->namespace);
 	}
 
 	/**
@@ -136,9 +142,9 @@ abstract class Repository
 	 * @param  \Maclof\Kubernetes\Models\Model $model
 	 * @return array
 	 */
-	public function update(Model $model)
+	public function update(Model $model): array
 	{
-		return $this->sendRequest('PUT', '/' . $this->uri . '/' . $model->getMetadata('name'), null, $model->getSchema(), $this->namespace);
+		return $this->sendRequest('PUT', '/' . $this->uri . '/' . $model->getMetadata('name'), [], $model->getSchema(), $this->namespace);
 	}
 
 	/**
@@ -147,9 +153,9 @@ abstract class Repository
 	 * @param \Maclof\Kubernetes\Models\Model $model
 	 * @return array
 	 */
-	public function patch(Model $model)
+	public function patch(Model $model): array
 	{
-		return $this->sendRequest('PATCH', '/' . $this->uri . '/' . $model->getMetadata('name'), null, $model->getSchema(), $this->namespace);
+		return $this->sendRequest('PATCH', '/' . $this->uri . '/' . $model->getMetadata('name'), [], $model->getSchema(), $this->namespace);
 	}
 
 	/**
@@ -159,13 +165,13 @@ abstract class Repository
 	 * @param array $model
 	 * @return array
 	 */
-	public function applyJsonPatch(Model $model, array $patch)
+	public function applyJsonPatch(Model $model, array $patch): array
 	{
 		$patch = json_encode($patch);
 		
 		$this->client->setPatchType('json');
 
-		return $this->sendRequest('PATCH', '/' . $this->uri . '/' . $model->getMetadata('name'), null, $patch, $this->namespace);
+		return $this->sendRequest('PATCH', '/' . $this->uri . '/' . $model->getMetadata('name'), [], $patch, $this->namespace);
 	}
 
     /**
@@ -176,9 +182,9 @@ abstract class Repository
      * @param \Maclof\Kubernetes\Models\Model $model
      * @return array
      */
-	public function apply(Model $model)
+	public function apply(Model $model): array
     {
-        $exists = $this->exists($model->getMetadata("name"));
+        $exists = $this->exists((string)$model->getMetadata("name"));
 
         if ($exists) {
             return $this->patch($model);
@@ -194,9 +200,9 @@ abstract class Repository
 	 * @param  \Maclof\Kubernetes\Models\DeleteOptions $options
 	 * @return array
 	 */
-	public function delete(Model $model, DeleteOptions $options = null)
+	public function delete(Model $model, DeleteOptions $options = null): array
 	{
-		return $this->deleteByName($model->getMetadata('name'), $options);
+		return $this->deleteByName((string)$model->getMetadata('name'), $options);
 	}
 
 	/**
@@ -206,11 +212,11 @@ abstract class Repository
 	 * @param  \Maclof\Kubernetes\Models\DeleteOptions $options
 	 * @return array
 	 */
-	public function deleteByName($name, DeleteOptions $options = null)
+	public function deleteByName(string $name, DeleteOptions $options = null): array
 	{
 		$body = $options ? $options->getSchema() : null;
 
-		return $this->sendRequest('DELETE', '/' . $this->uri . '/' . $name, null, $body, $this->namespace);
+		return $this->sendRequest('DELETE', '/' . $this->uri . '/' . $name, [], $body, $this->namespace);
 	}
 
 	/**
@@ -220,7 +226,7 @@ abstract class Repository
 	 * @param  array $inequalityLabelSelector
 	 * @return \Maclof\Kubernetes\Repositories\Repository
 	 */
-	public function setLabelSelector(array $labelSelector, array $inequalityLabelSelector=[])
+	public function setLabelSelector(array $labelSelector, array $inequalityLabelSelector=[]): Repository
 	{
 		$this->labelSelector           = $labelSelector;
 		$this->inequalityLabelSelector = $inequalityLabelSelector;
@@ -232,7 +238,7 @@ abstract class Repository
 	 *
 	 * @return string
 	 */
-	protected function getLabelSelectorQuery()
+	protected function getLabelSelectorQuery(): string
 	{
 		$parts = [];
 		foreach ($this->labelSelector as $key => $value) {
@@ -255,7 +261,7 @@ abstract class Repository
 	 * @param  array $inequalityFieldSelector
 	 * @return \Maclof\Kubernetes\Repositories\Repository
 	 */
-	public function setFieldSelector(array $fieldSelector, array $inequalityFieldSelector=[])
+	public function setFieldSelector(array $fieldSelector, array $inequalityFieldSelector=[]): Repository
 	{
 		$this->fieldSelector           = $fieldSelector;
 		$this->inequalityFieldSelector = $inequalityFieldSelector;
@@ -267,7 +273,7 @@ abstract class Repository
 	 *
 	 * @return string
 	 */
-	protected function getFieldSelectorQuery()
+	protected function getFieldSelectorQuery(): string
 	{
 		$parts = [];
 		foreach ($this->fieldSelector as $key => $value) {
@@ -289,7 +295,7 @@ abstract class Repository
 	 *
 	 * @return void
 	 */
-	protected function resetParameters()
+	protected function resetParameters(): void
 	{
 		$this->labelSelector = [];
 		$this->fieldSelector = [];
@@ -301,7 +307,7 @@ abstract class Repository
 	 * @param  array $query
 	 * @return mixed
 	 */
-	public function find(array $query = [])
+	public function find(array $query = []): Collection
 	{
 		$query = array_filter(array_merge([
 			'labelSelector' => $this->getLabelSelectorQuery(),
@@ -322,7 +328,7 @@ abstract class Repository
 	 *
 	 * @return \Maclof\Kubernetes\Models\Model|null
 	 */
-	public function first()
+	public function first(): ?Model
 	{
 		return $this->find()->first();
 	}
@@ -335,7 +341,7 @@ abstract class Repository
 	 * @param  array $query
 	 * @return void
 	 */
-	public function watch(Model $model, Closure $closure, array $query = [])
+	public function watch(Model $model, Closure $closure, array $query = []): void
 	{
 		$this->setFieldSelector([
 			'metadata.name' => $model->getMetadata('name'),
@@ -369,7 +375,7 @@ abstract class Repository
 	 * @param  string $name
 	 * @return boolean
 	 */
-	public function exists($name)
+	public function exists(string $name): bool
 	{
 		$this->resetParameters();
 		return !is_null($this->setFieldSelector(['metadata.name' => $name])->first());
@@ -381,5 +387,5 @@ abstract class Repository
 	 * @param  array $response
 	 * @return \Maclof\Kubernetes\Collections\Collection
 	 */
-	abstract protected function createCollection($response);
+	abstract protected function createCollection(array $response): Collection;
 }

@@ -20,7 +20,7 @@ class ReplicaSetCollection extends Collection
 	 * @param  array $items
 	 * @return array
 	 */
-	protected function getReplicaSets(array $items)
+	protected function getReplicaSets(array $items): array
 	{
 		foreach ($items as &$item) {
 			if ($item instanceof ReplicaSet) {

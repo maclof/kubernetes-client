@@ -20,7 +20,7 @@ class NodeCollection extends Collection
 	 * @param  array $items
 	 * @return array
 	 */
-	protected function getNodes(array $items)
+	protected function getNodes(array $items): array
 	{
 		foreach ($items as &$item) {
 			if ($item instanceof Node) {

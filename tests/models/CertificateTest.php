@@ -4,7 +4,7 @@ use Maclof\Kubernetes\Models\Certificate;
 
 class CertificateTest extends TestCase
 {
-    public function test_get_schema()
+    public function test_get_schema(): void
     {
         $certificate = new Certificate;
 
@@ -14,7 +14,7 @@ class CertificateTest extends TestCase
         $this->assertEquals($fixture, $schema);
     }
 
-    public function test_get_metadata()
+    public function test_get_metadata(): void
     {
         $certificate = new Certificate([
             'metadata' => [

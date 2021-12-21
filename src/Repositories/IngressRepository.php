@@ -4,9 +4,9 @@ use Maclof\Kubernetes\Collections\IngressCollection;
 
 class IngressRepository extends Repository
 {
-	protected $uri = 'ingresses';
+	protected string $uri = 'ingresses';
 
-	protected function createCollection($response)
+	protected function createCollection($response): IngressCollection
 	{
 		return new IngressCollection($response['items']);
 	}

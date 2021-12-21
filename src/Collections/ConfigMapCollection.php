@@ -20,7 +20,7 @@ class ConfigMapCollection extends Collection
 	 * @param  array $items
 	 * @return array
 	 */
-	protected function getConfigMaps(array $items)
+	protected function getConfigMaps(array $items): array
 	{
 		foreach ($items as &$item) {
 			if ($item instanceof ConfigMap) {

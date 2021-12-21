@@ -20,7 +20,7 @@ class DaemonSetCollection extends Collection
 	 * @param  array $items
 	 * @return array
 	 */
-	protected function getDaemonSets(array $items)
+	protected function getDaemonSets(array $items): array
 	{
 		foreach ($items as &$item) {
 			if ($item instanceof DaemonSet) {

@@ -4,20 +4,20 @@ use Maclof\Kubernetes\Collections\PodCollection;
 
 class PodCollectionTest extends TestCase
 {
-	protected $items = [
+	protected array $items = [
 		[],
 		[],
 		[],
 	];
 
-	protected function getPodCollection()
+	protected function getPodCollection(): PodCollection
 	{
 		$podCollection = new PodCollection($this->items);
 
 		return $podCollection;
 	}
 
-	public function test_get_items()
+	public function test_get_items(): void
 	{
 		$podCollection = $this->getPodCollection();
 		$items = $podCollection->toArray();

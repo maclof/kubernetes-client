@@ -20,7 +20,7 @@ class IssuerCollection extends Collection
      * @param  array $items
      * @return array
      */
-    protected function getIssuers(array $items)
+    protected function getIssuers(array $items): array
     {
         foreach ($items as &$item) {
             if ($item instanceof Issuer) {

@@ -7,5 +7,5 @@ class Ingress extends Model
 	 *
 	 * @var string
 	 */
-	protected $apiVersion = 'networking.k8s.io/v1beta1';
+	protected string $apiVersion = 'networking.k8s.io/v1beta1';
 }

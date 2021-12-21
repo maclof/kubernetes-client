@@ -4,10 +4,10 @@ use Maclof\Kubernetes\Collections\QuotaCollection;
 
 class QuotaRepository extends Repository
 {
-	protected $uri = 'resourcequotas';
-	protected $namespace = false;
+	protected string $uri = 'resourcequotas';
+	protected bool $namespace = false;
 
-	protected function createCollection($response)
+	protected function createCollection($response): QuotaCollection
 	{
 		return new QuotaCollection($response['items']);
 	}
