@@ -51,16 +51,19 @@ class RepositoryRegistry implements \ArrayAccess, \Countable
 
     }
 
+	#[\ReturnTypeWillChange]
     public function offsetExists($method)
     {
         return isset($this->map[$method]);
     }
 
+	#[\ReturnTypeWillChange]
     public function offsetGet($method)
     {
         return $this->map[$method];
     }
 
+	#[\ReturnTypeWillChange]
     public function offsetSet($method, $class)
     {
         $this->map[$method] = $class;
@@ -71,6 +74,7 @@ class RepositoryRegistry implements \ArrayAccess, \Countable
         unset($this->map[$method]);
     }
 
+	#[\ReturnTypeWillChange]
     public function count()
     {
         return count($this->map);

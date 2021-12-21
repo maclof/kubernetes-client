@@ -138,7 +138,11 @@ class ClientTest extends TestCase
 		);
 
 		$this->expectException($exceptionClass);
-		$this->expectExceptionMessageRegExp($msgRegEx);
+		if (method_exists($this, 'expectExceptionMessageMatches')) {
+			$this->expectExceptionMessageMatches($msgRegEx);
+		} else {
+			$this->expectExceptionMessageRegExp($msgRegEx);
+		}
 		$client->sendRequest('GET', '/api/anything');
 	}
 }
