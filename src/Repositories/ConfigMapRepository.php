@@ -4,9 +4,9 @@ use Maclof\Kubernetes\Collections\ConfigMapCollection;
 
 class ConfigMapRepository extends Repository
 {
-	protected $uri = 'configmaps';
+	protected string $uri = 'configmaps';
 
-	protected function createCollection($response)
+	protected function createCollection($response): ConfigMapCollection
 	{
 		return new ConfigMapCollection($response['items']);
 	}

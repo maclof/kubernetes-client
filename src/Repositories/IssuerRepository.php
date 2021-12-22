@@ -7,9 +7,9 @@ class IssuerRepository extends Repository
 {
     use PatchMergeTrait;
 
-    protected $uri = 'issuers';
+    protected string $uri = 'issuers';
 
-    protected function createCollection($response)
+    protected function createCollection($response): IssuerCollection
     {
         return new IssuerCollection($response['items']);
     }

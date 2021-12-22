@@ -4,8 +4,6 @@ class NetworkPolicy extends Model
 {
 	/**
 	 * The api version.
-	 *
-	 * @var string
 	 */
-	protected $apiVersion = 'networking.k8s.io/v1';
+	protected string $apiVersion = 'networking.k8s.io/v1';
 }

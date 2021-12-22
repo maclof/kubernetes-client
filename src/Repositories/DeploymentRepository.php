@@ -4,9 +4,9 @@ use Maclof\Kubernetes\Collections\DeploymentCollection;
 
 class DeploymentRepository extends Repository
 {
-	protected $uri = 'deployments';
+	protected string $uri = 'deployments';
 
-	protected function createCollection($response)
+	protected function createCollection($response): DeploymentCollection
 	{
 		return new DeploymentCollection($response['items']);
 	}

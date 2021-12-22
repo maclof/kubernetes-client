@@ -4,7 +4,7 @@ use Maclof\Kubernetes\Models\Job;
 
 class JobTest extends TestCase
 {
-	public function test_get_schema()
+	public function test_get_schema(): void
 	{
 		$job = new Job;
 
@@ -14,7 +14,7 @@ class JobTest extends TestCase
 		$this->assertEquals($schema, $fixture);
 	}
 
-	public function test_get_metadata()
+	public function test_get_metadata(): void
 	{
 		$job = new Job([
 			'metadata' => [

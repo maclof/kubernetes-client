@@ -6,8 +6,6 @@ class CronJobCollection extends Collection
 {
 	/**
 	 * The constructor.
-	 *
-	 * @param array $items
 	 */
 	public function __construct(array $items)
 	{
@@ -16,11 +14,8 @@ class CronJobCollection extends Collection
 
 	/**
 	 * Get an array of cron jobs.
-	 *
-	 * @param  array $items
-	 * @return array
 	 */
-	protected function getCronJobs(array $items)
+	protected function getCronJobs(array $items): array
 	{
 		foreach ($items as &$item) {
 			if ($item instanceof CronJob) {

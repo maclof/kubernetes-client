@@ -5,14 +5,14 @@ use Maclof\Kubernetes\RepositoryRegistry;
 class RepositoryRegistryTest extends TestCase
 {
 
-    public function test_builtin_repositories()
+    public function test_builtin_repositories(): void
     {
         $registry = new RepositoryRegistry();
 
         $this->assertCount(22, $registry);
     }
 
-    public function test_add_repository()
+    public function test_add_repository(): void
     {
         $registry = new RepositoryRegistry();
         $class = '\Example\Class';

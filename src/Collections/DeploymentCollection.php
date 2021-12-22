@@ -6,8 +6,6 @@ class DeploymentCollection extends Collection
 {
 	/**
 	 * The constructor.
-	 *
-	 * @param array $items
 	 */
 	public function __construct(array $items)
 	{
@@ -16,11 +14,8 @@ class DeploymentCollection extends Collection
 
 	/**
 	 * Get an array of deployments.
-	 *
-	 * @param  array $items
-	 * @return array
 	 */
-	protected function getDeployments(array $items)
+	protected function getDeployments(array $items): array
 	{
 		foreach ($items as &$item) {
 			if ($item instanceof Deployment) {

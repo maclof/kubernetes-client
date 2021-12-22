@@ -6,8 +6,6 @@ class JobCollection extends Collection
 {
 	/**
 	 * The constructor.
-	 *
-	 * @param array $items
 	 */
 	public function __construct(array $items)
 	{
@@ -16,11 +14,8 @@ class JobCollection extends Collection
 
 	/**
 	 * Get an array of jobs.
-	 *
-	 * @param  array $items
-	 * @return array
 	 */
-	protected function getJobs(array $items)
+	protected function getJobs(array $items): array
 	{
 		foreach ($items as &$item) {
 			if ($item instanceof Job) {

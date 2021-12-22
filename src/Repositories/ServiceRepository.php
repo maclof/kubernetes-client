@@ -4,9 +4,9 @@ use Maclof\Kubernetes\Collections\ServiceCollection;
 
 class ServiceRepository extends Repository
 {
-	protected $uri = 'services';
+	protected string $uri = 'services';
 
-	protected function createCollection($response)
+	protected function createCollection($response): ServiceCollection
 	{
 		return new ServiceCollection($response['items']);
 	}

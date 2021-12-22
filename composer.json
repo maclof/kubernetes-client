@@ -10,7 +10,7 @@
 	],
 	"license" : "MIT",
 	"require": {
-		"php"                   : "^7.1|^8.0",
+		"php"                   : "^7.4|^8.0",
 		"php-http/client-common": "^2.0",
 		"php-http/socket-client": "^2.0",
 		"php-http/discovery"    : "^1.0",

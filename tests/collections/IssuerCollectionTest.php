@@ -4,20 +4,20 @@ use Maclof\Kubernetes\Collections\IssuerCollection;
 
 class IssuerCollectionTest extends TestCase
 {
-    protected $items = [
+    protected array $items = [
         [],
         [],
         [],
     ];
 
-    protected function getIssuerCollection()
+    protected function getIssuerCollection(): IssuerCollection
     {
         $issuerCollection = new IssuerCollection($this->items);
 
         return $issuerCollection;
     }
 
-    public function test_get_items()
+    public function test_get_items(): void
     {
         $issuerCollection = $this->getIssuerCollection();
         $items = $issuerCollection->toArray();

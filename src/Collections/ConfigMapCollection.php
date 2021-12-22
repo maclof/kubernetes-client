@@ -6,8 +6,6 @@ class ConfigMapCollection extends Collection
 {
 	/**
 	 * The constructor.
-	 *
-	 * @param array $items
 	 */
 	public function __construct(array $items)
 	{
@@ -16,11 +14,8 @@ class ConfigMapCollection extends Collection
 
 	/**
 	 * Get an array of config maps.
-	 *
-	 * @param  array $items
-	 * @return array
 	 */
-	protected function getConfigMaps(array $items)
+	protected function getConfigMaps(array $items): array
 	{
 		foreach ($items as &$item) {
 			if ($item instanceof ConfigMap) {

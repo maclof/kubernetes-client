@@ -4,7 +4,7 @@ use Maclof\Kubernetes\Models\ReplicationController;
 
 class ReplicationControllerTest extends TestCase
 {
-	public function test_get_schema()
+	public function test_get_schema(): void
 	{
 		$replicationController = new ReplicationController;
 
@@ -14,7 +14,7 @@ class ReplicationControllerTest extends TestCase
 		$this->assertEquals($schema, $fixture);
 	}
 
-	public function test_get_metadata()
+	public function test_get_metadata(): void
 	{
 		$replicationController = new ReplicationController([
 			'metadata' => [

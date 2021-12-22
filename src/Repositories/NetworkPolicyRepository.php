@@ -4,9 +4,9 @@ use Maclof\Kubernetes\Collections\NetworkPolicyCollection;
 
 class NetworkPolicyRepository extends Repository
 {
-	protected $uri = 'networkpolicies';
+	protected string $uri = 'networkpolicies';
 
-	protected function createCollection($response)
+	protected function createCollection($response): NetworkPolicyCollection
 	{
 		return new NetworkPolicyCollection($response['items']);
 	}

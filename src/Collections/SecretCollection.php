@@ -6,8 +6,6 @@ class SecretCollection extends Collection
 {
 	/**
 	 * The constructor.
-	 *
-	 * @param array $items
 	 */
 	public function __construct(array $items)
 	{
@@ -16,11 +14,8 @@ class SecretCollection extends Collection
 
 	/**
 	 * Get an array of secrets.
-	 *
-	 * @param  array $items
-	 * @return array
 	 */
-	protected function getSecrets(array $items)
+	protected function getSecrets(array $items): array
 	{
 		foreach ($items as &$item) {
 			if ($item instanceof Secret) {

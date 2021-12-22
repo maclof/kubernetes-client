@@ -4,20 +4,20 @@ use Maclof\Kubernetes\Collections\NetworkPolicyCollection;
 
 class NetworkPolicyCollectionTest extends TestCase
 {
-	protected $items = [
+	protected array $items = [
 		[],
 		[],
 		[],
 	];
 
-	protected function getNetworkPolicyCollection()
+	protected function getNetworkPolicyCollection(): NetworkPolicyCollection
 	{
 		$podCollection = new NetworkPolicyCollection($this->items);
 
 		return $podCollection;
 	}
 
-	public function test_get_items()
+	public function test_get_items(): void
 	{
 		$podCollection = $this->getNetworkPolicyCollection();
 		$items = $podCollection->toArray();

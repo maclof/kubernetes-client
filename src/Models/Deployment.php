@@ -4,8 +4,6 @@ class Deployment extends Model
 {
 	/**
 	 * The api version.
-	 *
-	 * @var string
 	 */
-	protected $apiVersion = 'apps/v1';
+	protected string $apiVersion = 'apps/v1';
 }

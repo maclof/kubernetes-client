@@ -12,40 +12,30 @@ abstract class Model implements Arrayable
 {
 	/**
 	 * The schema.
-	 *
-	 * @var array
 	 */
-	protected $schema = [];
+	protected array $schema = [];
 
 	/**
 	 * The api version.
-	 *
-	 * @var string
 	 */
-	protected $apiVersion = 'v1';
+	protected string $apiVersion = 'v1';
 
 	/**
 	 * Whether or not the kind is plural.
-	 *
-	 * @var boolean
 	 */
-	protected $pluralKind = false;
+	protected bool $pluralKind = false;
 
 	/**
 	 * The attributes.
-	 *
-	 * @var array
 	 */
-	protected $attributes = [];
+	protected array $attributes = [];
 
 	/**
 	 * The constructor.
 	 *
-	 * @param mixed  $attributes
-	 * @param string $attributeType
 	 * @throws \InvalidArgumentException
 	 */
-	public function __construct($attributes = [], $attributeType = 'array')
+	public function __construct(array $attributes = [], string $attributeType = 'array')
 	{
 		if ($attributeType == 'array') {
 			if (is_array($attributes)) {
@@ -80,21 +70,16 @@ abstract class Model implements Arrayable
 
 	/**
 	 * Get the model as an array.
-	 *
-	 * @return array
 	 */
-	public function toArray()
+	public function toArray(): array
 	{
 		return $this->attributes;
 	}
 
 	/**
 	 * Get some metadata.
-	 *
-	 * @param  string $key
-	 * @return string
 	 */
-	public function getMetadata($key)
+	public function getMetadata(string $key): ?string
 	{
 		return isset($this->attributes['metadata'][$key]) ? $this->attributes['metadata'][$key] : null;
 	}
@@ -102,11 +87,9 @@ abstract class Model implements Arrayable
 	/**
      * Get data ussing Json Path.
      *
-     * @param  string $expression
      * @throws JSONPathException
-     * @return mixed
      */
-    public function getJsonPath($expression)
+    public function getJsonPath(string $expression): JSONPath
     {
         $jsonPath = new JSONPath($this->attributes);
 
@@ -115,10 +98,8 @@ abstract class Model implements Arrayable
 
 	 /**
 	 * Get the schema.
-	 *
-	 * @return string
 	 */
-	public function getSchema()
+	public function getSchema(): string
 	{
 		if (!isset($this->schema['kind'])) {
 			$this->schema['kind'] = basename(str_replace('\\', '/', get_class($this)));
@@ -143,28 +124,22 @@ abstract class Model implements Arrayable
 
 	/**
 	 * Get the api version.
-	 *
-	 * @return string
 	 */
-	public function getApiVersion()
+	public function getApiVersion(): string
 	{
 		return $this->apiVersion;
 	}
 
 	/**
 	 * Set the api version.
-	 * 
-	 * @param string $apiVersion
 	 */
-	public function setApiVersion($apiVersion)
+	public function setApiVersion(string $apiVersion): void
 	{
 		$this->apiVersion = $apiVersion;
 	}
 
 	/**
 	 * Get the model as a string.
-	 *
-	 * @return string
 	 */
 	public function __toString()
 	{

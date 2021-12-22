@@ -4,7 +4,7 @@ use Maclof\Kubernetes\Models\Pod;
 
 class PodTest extends TestCase
 {
-	public function test_get_schema()
+	public function test_get_schema(): void
 	{
 		$pod = new Pod;
 
@@ -14,7 +14,7 @@ class PodTest extends TestCase
 		$this->assertEquals($schema, $fixture);
 	}
 
-	public function test_get_metadata()
+	public function test_get_metadata(): void
 	{
 		$pod = new Pod([
 			'metadata' => [

@@ -30,84 +30,44 @@ class JSONStreamingParser
 	const UTF16_BOM = 2;
 	const UTF32_BOM = 3;
 
-	/**
-	 * @var int
-	 */
-	private $state;
+	private int $state;
 
 	/**
 	 * @var int[]
 	 */
-	private $stack = [];
+	private array $stack = [];
 
-	/**
-	 * @var \GuzzleHttp\Psr7\Stream
-	 */
-	private $stream;
+	private Stream $stream;
 
-	/**
-	 * @var bool
-	 */
-	private $emitWhitespace;
+	private JSONStreamingListener $listener;
 
-	/**
-	 * @var string
-	 */
-	private $buffer = '';
+	private bool $emitWhitespace;
 
-	/**
-	 * @var int
-	 */
-	private $bufferSize;
+	private string $buffer = '';
+
+	private int $bufferSize;
 
 	/**
 	 * @var string[]
 	 */
-	private $unicodeBuffer = [];
+	private array $unicodeBuffer = [];
 
-	/**
-	 * @var int
-	 */
-	private $unicodeHighSurrogate = -1;
+	private int $unicodeHighSurrogate = -1;
 
-	/**
-	 * @var string
-	 */
-	private $unicodeEscapeBuffer = '';
+	private string $unicodeEscapeBuffer = '';
 
-	/**
-	 * @var string
-	 */
-	private $lineEnding;
+	private string $lineEnding;
 
-	/**
-	 * @var int
-	 */
-	private $lineNumber;
+	private int $lineNumber;
 
-	/**
-	 * @var int
-	 */
-	private $charNumber;
+	private int $charNumber;
 
-	/**
-	 * @var bool
-	 */
-	private $stopParsing = false;
+	private bool $stopParsing = false;
 
-	/**
-	 * @var int
-	 */
-	private $utfBom = 0;
+	private int $utfBom = 0;
 
 	/**
 	 * The constructor.
-	 * 
-	 * @param \GuzzleHttp\Psr7\Stream $stream
-	 * @param \Maclof\Kubernetes\Repositories\Utils\JSONStreamingListener $listener
-	 * @param string $lineEnding
-	 * @param bool|boolean $emitWhitespace
-	 * @param int|integer $bufferSize
 	 */
 	public function __construct(
 		Stream $stream,
@@ -126,10 +86,8 @@ class JSONStreamingParser
 
 	/**
 	 * Parse the stream.
-	 * 
-	 * @return void
 	 */
-	public function parse()
+	public function parse(): void
 	{
 		$this->lineNumber = 1;
 		$this->charNumber = 1;
@@ -151,12 +109,12 @@ class JSONStreamingParser
 		}
 	}
 
-	public function stop()
+	public function stop(): void
 	{
 		$this->stopParsing = true;
 	}
 
-	private function consumeChar(string $char)
+	private function consumeChar(string $char): void
 	{
 		// see https://en.wikipedia.org/wiki/Byte_order_mark
 		if ($this->charNumber < 5
@@ -380,7 +338,7 @@ class JSONStreamingParser
 	/**
 	 * @throws ParsingException
 	 */
-	private function startValue(string $c)
+	private function startValue(string $c): void
 	{
 		if ('[' === $c) {
 			$this->startArray();
@@ -404,14 +362,14 @@ class JSONStreamingParser
 		}
 	}
 
-	private function startArray()
+	private function startArray(): void
 	{
 		$this->listener->startArray();
 		$this->state = self::STATE_IN_ARRAY;
 		$this->stack[] = self::STACK_ARRAY;
 	}
 
-	private function endArray()
+	private function endArray(): void
 	{
 		$popped = array_pop($this->stack);
 		if (self::STACK_ARRAY !== $popped) {
@@ -425,14 +383,14 @@ class JSONStreamingParser
 		}
 	}
 
-	private function startObject()
+	private function startObject(): void
 	{
 		$this->listener->startObject();
 		$this->state = self::STATE_IN_OBJECT;
 		$this->stack[] = self::STACK_OBJECT;
 	}
 
-	private function endObject()
+	private function endObject(): void
 	{
 		$popped = array_pop($this->stack);
 		if (self::STACK_OBJECT !== $popped) {
@@ -446,19 +404,19 @@ class JSONStreamingParser
 		}
 	}
 
-	private function startString()
+	private function startString(): void
 	{
 		$this->stack[] = self::STACK_STRING;
 		$this->state = self::STATE_IN_STRING;
 	}
 
-	private function startKey()
+	private function startKey(): void
 	{
 		$this->stack[] = self::STACK_KEY;
 		$this->state = self::STATE_IN_STRING;
 	}
 
-	private function endString()
+	private function endString(): void
 	{
 		$popped = array_pop($this->stack);
 		if (self::STACK_KEY === $popped) {
@@ -476,7 +434,7 @@ class JSONStreamingParser
 	/**
 	 * @throws ParsingException
 	 */
-	private function processEscapeCharacter(string $c)
+	private function processEscapeCharacter(string $c): void
 	{
 		if ('"' === $c) {
 			$this->buffer .= '"';
@@ -508,7 +466,7 @@ class JSONStreamingParser
 	/**
 	 * @throws ParsingException
 	 */
-	private function processUnicodeCharacter(string $char)
+	private function processUnicodeCharacter(string $char): void
 	{
 		if (!JSONStreamingParserHelper::isHexCharacter($char)) {
 			$this->throwParseError(
@@ -541,7 +499,7 @@ class JSONStreamingParser
 		}
 	}
 
-	private function endUnicodeSurrogateInterstitial()
+	private function endUnicodeSurrogateInterstitial(): void
 	{
 		$unicodeEscape = $this->unicodeEscapeBuffer;
 		if ('\\u' !== $unicodeEscape) {
@@ -551,7 +509,7 @@ class JSONStreamingParser
 		$this->state = self::STATE_UNICODE;
 	}
 
-	private function endUnicodeCharacter(int $codepoint)
+	private function endUnicodeCharacter(int $codepoint): void
 	{
 		$this->buffer .= JSONStreamingParserHelper::convertCodepointToCharacter($codepoint);
 		$this->unicodeBuffer = [];
@@ -559,35 +517,35 @@ class JSONStreamingParser
 		$this->state = self::STATE_IN_STRING;
 	}
 
-	private function startNumber(string $c)
+	private function startNumber(string $c): void
 	{
 		$this->state = self::STATE_IN_NUMBER;
 		$this->buffer .= $c;
 	}
 
-	private function endNumber()
+	private function endNumber(): void
 	{
 		$this->listener->value(JSONStreamingParserHelper::convertToNumber($this->buffer));
 		$this->buffer = '';
 		$this->state = self::STATE_AFTER_VALUE;
 	}
 
-	private function endTrue()
+	private function endTrue(): void
 	{
 		$this->endSpecialValue(true, 'true');
 	}
 
-	private function endFalse()
+	private function endFalse(): void
 	{
 		$this->endSpecialValue(false, 'false');
 	}
 
-	private function endNull()
+	private function endNull(): void
 	{
 		$this->endSpecialValue(null, 'null');
 	}
 
-	private function endSpecialValue($value, string $stringValue)
+	private function endSpecialValue($value, string $stringValue): void
 	{
 		if ($this->buffer === $stringValue) {
 			$this->listener->value($value);
@@ -598,7 +556,7 @@ class JSONStreamingParser
 		$this->state = self::STATE_AFTER_VALUE;
 	}
 
-	private function endDocument()
+	private function endDocument(): void
 	{
 		$this->listener->endDocument();
 		$this->state = self::STATE_END_DOCUMENT;
@@ -607,7 +565,7 @@ class JSONStreamingParser
 	/**
 	 * @throws ParsingException
 	 */
-	private function throwParseError(string $message)
+	private function throwParseError(string $message): void
 	{
 		throw new ParsingException($this->lineNumber, $this->charNumber, $message);
 	}

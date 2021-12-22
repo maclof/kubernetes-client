@@ -6,8 +6,6 @@ class QuotaCollection extends Collection
 {
 	/**
 	 * The constructor.
-	 *
-	 * @param array $items
 	 */
 	public function __construct(array $items)
 	{
@@ -16,11 +14,8 @@ class QuotaCollection extends Collection
 
 	/**
 	 * Get an array of Namespaces.
-	 *
-	 * @param  array $items
-	 * @return array
 	 */
-	protected function getQuotas(array $items)
+	protected function getQuotas(array $items): array
 	{
 		foreach ($items as &$item) {
 			if ($item instanceof QuotaModel) {

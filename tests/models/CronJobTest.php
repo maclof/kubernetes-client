@@ -4,7 +4,7 @@ use Maclof\Kubernetes\Models\CronJob;
 
 class CronJobTest extends TestCase
 {
-	public function test_get_schema()
+	public function test_get_schema(): void
 	{
 		$cronJob = new CronJob;
 
@@ -14,7 +14,7 @@ class CronJobTest extends TestCase
 		$this->assertEquals($schema, $fixture);
 	}
 
-	public function test_get_metadata()
+	public function test_get_metadata(): void
 	{
 		$cronJob = new CronJob([
 			'metadata' => [
@@ -27,7 +27,7 @@ class CronJobTest extends TestCase
 		$this->assertEquals($metadata, 'test');
 	}
 
-	public function test_set_api_version()
+	public function test_set_api_version(): void
 	{
 		$cronJob = new CronJob;
 

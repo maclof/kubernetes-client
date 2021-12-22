@@ -4,20 +4,20 @@ use Maclof\Kubernetes\Collections\CertificateCollection;
 
 class CertificateCollectionTest extends TestCase
 {
-    protected $items = [
+    protected array $items = [
         [],
         [],
         [],
     ];
 
-    protected function getCertificateCollection()
+    protected function getCertificateCollection(): CertificateCollection
     {
         $configMapCollection = new CertificateCollection($this->items);
 
         return $configMapCollection;
     }
 
-    public function test_get_items()
+    public function test_get_items(): void
     {
         $certificateCollection = $this->getCertificateCollection();
         $items = $certificateCollection->toArray();

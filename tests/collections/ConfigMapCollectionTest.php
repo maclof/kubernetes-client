@@ -4,20 +4,20 @@ use Maclof\Kubernetes\Collections\ConfigMapCollection;
 
 class ConfigMapCollectionTest extends TestCase
 {
-	protected $items = [
+	protected array $items = [
 		[],
 		[],
 		[],
 	];
 
-	protected function getConfigMapCollection()
+	protected function getConfigMapCollection(): ConfigMapCollection
 	{
 		$configMapCollection = new ConfigMapCollection($this->items);
 
 		return $configMapCollection;
 	}
 
-	public function test_get_items()
+	public function test_get_items(): void
 	{
 		$configMapCollection = $this->getConfigMapCollection();
 		$items = $configMapCollection->toArray();

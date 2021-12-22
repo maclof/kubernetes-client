@@ -6,8 +6,6 @@ class CertificateCollection extends Collection
 {
     /**
      * The constructor.
-     *
-     * @param array $items
      */
     public function __construct(array $items)
     {
@@ -16,11 +14,8 @@ class CertificateCollection extends Collection
 
     /**
      * Get an array of certificates.
-     *
-     * @param  array $items
-     * @return array
      */
-    protected function getCertificates(array $items)
+    protected function getCertificates(array $items): array
     {
         foreach ($items as &$item) {
             if ($item instanceof Certificate) {

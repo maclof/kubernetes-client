@@ -4,9 +4,9 @@ use Maclof\Kubernetes\Collections\HorizontalPodAutoscalerCollection;
 
 class HorizontalPodAutoscalerRepository extends Repository
 {
-	protected $uri = 'horizontalpodautoscalers';
+	protected string $uri = 'horizontalpodautoscalers';
 
-	protected function createCollection($response)
+	protected function createCollection($response): HorizontalPodAutoscalerCollection
 	{
 		return new HorizontalPodAutoscalerCollection($response['items']);
 	}

@@ -4,7 +4,7 @@ use Maclof\Kubernetes\Models\Endpoint;
 
 class EndpointTest extends TestCase
 {
-	public function test_get_schema()
+	public function test_get_schema(): void
 	{
 		$node = new Endpoint;
 
@@ -14,7 +14,7 @@ class EndpointTest extends TestCase
 		$this->assertEquals($schema, $fixture);
 	}
 
-	public function test_get_metadata()
+	public function test_get_metadata(): void
 	{
 		$node = new Endpoint([
 			'metadata' => [

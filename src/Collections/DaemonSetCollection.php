@@ -6,8 +6,6 @@ class DaemonSetCollection extends Collection
 {
 	/**
 	 * The constructor.
-	 *
-	 * @param array $items
 	 */
 	public function __construct(array $items)
 	{
@@ -16,11 +14,8 @@ class DaemonSetCollection extends Collection
 
 	/**
 	 * Get an array of daemon sets.
-	 *
-	 * @param  array $items
-	 * @return array
 	 */
-	protected function getDaemonSets(array $items)
+	protected function getDaemonSets(array $items): array
 	{
 		foreach ($items as &$item) {
 			if ($item instanceof DaemonSet) {

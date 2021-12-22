@@ -4,7 +4,7 @@ use Maclof\Kubernetes\Models\Ingress;
 
 class IngressTest extends TestCase
 {
-	public function test_get_schema()
+	public function test_get_schema(): void
 	{
 		$ingress = new Ingress;
 
@@ -14,7 +14,7 @@ class IngressTest extends TestCase
 		$this->assertEquals($schema, $fixture);
 	}
 
-	public function test_get_metadata()
+	public function test_get_metadata(): void
 	{
 		$ingress = new Ingress([
 			'metadata' => [
