@@ -4,7 +4,7 @@ dist: bionic
 php:
   - 7.4
   - 8.0
-  - 8.1
+  #- 8.1 PHP8.1 is not available on travis's bionic distribution
 
 env:
   global:
