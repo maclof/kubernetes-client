@@ -8,6 +8,8 @@ use Nyholm\Psr7\Factory\Psr17Factory;
 use Nyholm\Psr7\Response;
 use Psr\Http\Client\ClientInterface;
 
+use function method_exists;
+
 class ClientTest extends TestCase
 {
 	public function testSendRequestJsonParsesResponse(): void
@@ -138,7 +140,11 @@ class ClientTest extends TestCase
 		);
 
 		$this->expectException($exceptionClass);
-		$this->expectExceptionMessageRegExp($msgRegEx);
+		if (method_exists($this, 'expectExceptionMessageRegExp')) {
+			$this->expectExceptionMessageRegExp($msgRegEx);
+		} else {
+			$this->expectExceptionMessageMatches($msgRegEx);
+		}
 		$client->sendRequest('GET', '/api/anything');
 	}
 }

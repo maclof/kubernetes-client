@@ -3,7 +3,8 @@ dist: bionic
 
 php:
   - 7.4
-#  - 8.0 # PHP 8.0 requires PHPUnit to be upgraded, which then would break earlier versions
+  - 8.0
+  - 8.1
 
 env:
   global:
