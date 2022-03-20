@@ -8,7 +8,6 @@ use Psr\Http\Client\ClientInterface;
 use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\Yaml\Exception\ParseException as YamlParseException;
 
-use Http\Client\HttpClient;
 use Http\Client\Common\HttpMethodsClient;
 use Http\Client\Common\HttpMethodsClientInterface;
 use Http\Client\Exception\TransferException as HttpTransferException;
@@ -381,6 +380,9 @@ class Client
 
 		try {
 			$headers = $method === 'PATCH' ? $this->patchHeaders : [];
+			if ('POST' === $method) {
+				$headers['Content-Type'] = 'application/json';
+			}
 
 			if ($this->token) {
 				$token = $this->token;
