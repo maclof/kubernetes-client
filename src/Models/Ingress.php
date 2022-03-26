@@ -5,5 +5,5 @@ class Ingress extends Model
 	/**
 	 * The api version.
 	 */
-	protected string $apiVersion = 'networking.k8s.io/v1beta1';
+	protected string $apiVersion = 'networking.k8s.io/v1';
 }

@@ -31,7 +31,7 @@ class CronJobTest extends TestCase
 	{
 		$cronJob = new CronJob;
 
-		$this->assertEquals($cronJob->getApiVersion(), 'batch/v1beta1');
+		$this->assertEquals($cronJob->getApiVersion(), 'batch/v1');
 
 		$cronJob->setApiVersion('batch/v2alpha1');
 		$this->assertEquals($cronJob->getApiVersion(), 'batch/v2alpha1');

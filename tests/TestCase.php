@@ -30,6 +30,6 @@ class TestCase extends PHPUnitTestCase
 		// Fix for windows encoded fixtures.
 		$contents = str_replace("\r\n", "\n", $contents);
 
-		return $contents;
+		return trim($contents, ' ' . PHP_EOL);
 	}
 }
