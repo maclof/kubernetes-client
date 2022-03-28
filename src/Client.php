@@ -4,11 +4,13 @@ use Exception;
 use InvalidArgumentException;
 use BadMethodCallException;
 use Maclof\Kubernetes\Exceptions\ApiServerException;
+use Maclof\Kubernetes\Repositories\RoleBindingRepository;
+use Maclof\Kubernetes\Repositories\RoleRepository;
+use Maclof\Kubernetes\Repositories\ServiceAccountRepository;
 use Psr\Http\Client\ClientInterface;
 use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\Yaml\Exception\ParseException as YamlParseException;
 
-use Http\Client\HttpClient;
 use Http\Client\Common\HttpMethodsClient;
 use Http\Client\Common\HttpMethodsClientInterface;
 use Http\Client\Exception\TransferException as HttpTransferException;
@@ -64,6 +66,9 @@ use Maclof\Kubernetes\Repositories\NamespaceRepository;
  * @method HorizontalPodAutoscalerRepository horizontalPodAutoscalers()
  * @method CertificateRepository certificates()
  * @method IssuersRepository issuers()
+ * @method ServiceAccountRepository serviceAccounts()
+ * @method RoleRepository roles()
+ * @method RoleBindingRepository roleBindings()
  */
 class Client
 {
@@ -381,6 +386,9 @@ class Client
 
 		try {
 			$headers = $method === 'PATCH' ? $this->patchHeaders : [];
+			if ('POST' === $method) {
+				$headers['Content-Type'] = 'application/json';
+			}
 
 			if ($this->token) {
 				$token = $this->token;

@@ -5,5 +5,5 @@ class DaemonSet extends Model
 	/**
 	 * The api version.
 	 */
-	protected string $apiVersion = 'extensions/v1beta1';
+	protected string $apiVersion = 'apps/v1';
 }
