@@ -386,7 +386,7 @@ class Client
 
 		try {
 			$headers = $method === 'PATCH' ? $this->patchHeaders : [];
-			if ('POST' === $method) {
+			if ('POST' === $method || 'PUT' === $method) {
 				$headers['Content-Type'] = 'application/json';
 			}
 
