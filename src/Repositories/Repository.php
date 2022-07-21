@@ -255,7 +255,7 @@ abstract class Repository
 		$response = $this->sendRequest('GET', '/' . $this->uri, $query, null, $this->namespace);
 
         if (\is_string($response)) {
-            throw new \RuntimeException($response, 404);
+            throw new \RuntimeException("{$this->uri}: $response", 404);
         }
 
 		return $this->createCollection($response);
