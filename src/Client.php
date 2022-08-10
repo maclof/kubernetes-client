@@ -7,6 +7,7 @@ use Maclof\Kubernetes\Exceptions\ApiServerException;
 use Maclof\Kubernetes\Repositories\RoleBindingRepository;
 use Maclof\Kubernetes\Repositories\RoleRepository;
 use Maclof\Kubernetes\Repositories\ServiceAccountRepository;
+use Maclof\Kubernetes\Repositories\SubnamespaceAnchorRepository;
 use Psr\Http\Client\ClientInterface;
 use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\Yaml\Exception\ParseException as YamlParseException;
@@ -69,6 +70,7 @@ use Maclof\Kubernetes\Repositories\NamespaceRepository;
  * @method ServiceAccountRepository serviceAccounts()
  * @method RoleRepository roles()
  * @method RoleBindingRepository roleBindings()
+ * @method SubnamespaceAnchorRepository subnamespacesAnchors()
  */
 class Client
 {

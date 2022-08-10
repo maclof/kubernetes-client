@@ -48,6 +48,9 @@ class RepositoryRegistry implements \ArrayAccess, \Countable
 		//rbac.authorization.k8s.io/v1
 		'roles' 				 => Repositories\RoleRepository::class,
 		'roleBindings' 			 => Repositories\RoleBindingRepository::class,
+
+        //hnc.x-k8s.io/v1
+		'subnamespacesAnchors'   => Repositories\SubnamespaceAnchorRepository::class,
     ];
 
     public function __construct()
