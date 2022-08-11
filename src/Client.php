@@ -6,19 +6,19 @@ use BadMethodCallException;
 use Maclof\Kubernetes\Exceptions\ApiServerException;
 use Maclof\Kubernetes\Repositories\RoleBindingRepository;
 use Maclof\Kubernetes\Repositories\RoleRepository;
+use Maclof\Kubernetes\Repositories\ClusterRoleBindingRepository;
+use Maclof\Kubernetes\Repositories\ClusterRoleRepository;
 use Maclof\Kubernetes\Repositories\ServiceAccountRepository;
 use Maclof\Kubernetes\Repositories\SubnamespaceAnchorRepository;
 use Psr\Http\Client\ClientInterface;
 use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\Yaml\Exception\ParseException as YamlParseException;
-
 use Http\Client\Common\HttpMethodsClient;
 use Http\Client\Common\HttpMethodsClientInterface;
 use Http\Client\Exception\TransferException as HttpTransferException;
 use Http\Message\RequestFactory as HttpRequestFactory;
 use Http\Discovery\HttpClientDiscovery;
 use Http\Discovery\MessageFactoryDiscovery as HttpMessageFactoryDiscovery;
-
 use React\EventLoop\Factory as ReactFactory;
 use React\Socket\Connector as ReactSocketConnector;
 use Ratchet\Client\Connector as WebSocketConnector;
@@ -70,6 +70,8 @@ use Maclof\Kubernetes\Repositories\NamespaceRepository;
  * @method ServiceAccountRepository serviceAccounts()
  * @method RoleRepository roles()
  * @method RoleBindingRepository roleBindings()
+ * @method ClusterRoleRepository clusterRoles()
+ * @method ClusterRoleBindingRepository clusterRoleBindings()
  * @method SubnamespaceAnchorRepository subnamespacesAnchors()
  */
 class Client
