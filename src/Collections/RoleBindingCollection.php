@@ -16,7 +16,7 @@ class RoleBindingCollection extends Collection
      */
     public function __construct(array $items)
     {
-        parent::__construct($this->getServiceAccounts($items));
+        parent::__construct($this->getItems($items));
     }
 
     /**
@@ -25,7 +25,7 @@ class RoleBindingCollection extends Collection
      * @param  array<int, array<mixed>|RoleBinding> $items
      * @return array<RoleBinding>
      */
-    protected function getServiceAccounts(array $items)
+    protected function getItems(array $items)
     {
         $final = [];
         foreach ($items as &$item) {

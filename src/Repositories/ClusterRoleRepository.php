@@ -13,7 +13,7 @@ use Maclof\Kubernetes\Collections\Collection;
  */
 class ClusterRoleRepository extends Repository
 {
-    protected string $uri = 'roles';
+    protected string $uri = 'clustersroles';
 
     /**
      * @param array{items: array<int, array<mixed>|ClusterRole>} $response

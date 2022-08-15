@@ -16,7 +16,7 @@ class ClusterRoleCollection extends Collection
      */
     public function __construct(array $items)
     {
-        parent::__construct($this->getServiceAccounts($items));
+        parent::__construct($this->getItems($items));
     }
 
     /**
@@ -25,7 +25,7 @@ class ClusterRoleCollection extends Collection
      * @param  array<int, array<mixed>|ClusterRole> $items
      * @return array<ClusterRole>
      */
-    protected function getServiceAccounts(array $items)
+    protected function getItems(array $items)
     {
         $final = [];
         foreach ($items as &$item) {

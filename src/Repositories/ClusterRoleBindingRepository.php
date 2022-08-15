@@ -13,7 +13,7 @@ use Maclof\Kubernetes\Collections\Collection;
  */
 class ClusterRoleBindingRepository extends Repository
 {
-    protected string $uri = 'rolebindings';
+    protected string $uri = 'clusterroles';
 
     /**
      * @param array{items: array<int, array<mixed>|ClusterRoleBinding>} $response
