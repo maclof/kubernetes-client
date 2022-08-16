@@ -15,6 +15,8 @@ class ClusterRoleBindingRepository extends Repository
 {
     protected string $uri = 'clusterroles';
 
+    protected bool $namespace = false;
+
     /**
      * @param array{items: array<int, array<mixed>|ClusterRoleBinding>} $response
      */
