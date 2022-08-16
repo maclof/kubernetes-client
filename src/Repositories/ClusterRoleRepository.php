@@ -13,7 +13,7 @@ use Maclof\Kubernetes\Collections\Collection;
  */
 class ClusterRoleRepository extends Repository
 {
-    protected string $uri = 'clustersroles';
+    protected string $uri = 'clusterroles';
 
     protected bool $namespace = false;
 
