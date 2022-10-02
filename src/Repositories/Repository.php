@@ -1,12 +1,15 @@
 <?php namespace Maclof\Kubernetes\Repositories;
 
 use Closure;
+use RuntimeException;
 use Maclof\Kubernetes\Client;
 use Maclof\Kubernetes\Collections\Collection;
 use Maclof\Kubernetes\Models\Model;
 use Maclof\Kubernetes\Models\DeleteOptions;
 use Maclof\Kubernetes\Repositories\Utils\JSONStreamingParser;
 use Maclof\Kubernetes\Repositories\Utils\JSONStreamingListener;
+
+use function json_encode;
 
 abstract class Repository
 {
@@ -130,7 +133,7 @@ abstract class Repository
 	public function applyJsonPatch(Model $model, array $patch): array
 	{
 		$patch = json_encode($patch);
-		
+
 		$this->client->setPatchType('json');
 
 		return $this->sendRequest('PATCH', '/' . $this->uri . '/' . $model->getMetadata('name'), [], $patch, $this->namespace);
@@ -253,6 +256,10 @@ abstract class Repository
 		$this->resetParameters();
 
 		$response = $this->sendRequest('GET', '/' . $this->uri, $query, null, $this->namespace);
+
+        if (!isset($response['items'])) {
+            throw new RuntimeException(json_encode($response));
+        }
 
 		return $this->createCollection($response);
 	}
