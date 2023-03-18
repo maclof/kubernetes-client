@@ -10,6 +10,13 @@ use Illuminate\Contracts\Support\Arrayable;
 
 abstract class Model implements Arrayable
 {
+	
+	public const MODEL_FROM_ARRAY = 'array';
+
+	public const MODEL_FROM_JSON = 'json';
+
+	public const MODEL_FROM_YAML = 'yaml';
+
 	/**
 	 * The schema.
 	 */
@@ -35,16 +42,16 @@ abstract class Model implements Arrayable
 	 *
 	 * @throws \InvalidArgumentException
 	 */
-	public function __construct(array $attributes = [], string $attributeType = 'array')
+	public function __construct(array $attributes = [], string $attributeType = self::MODEL_FROM_ARRAY)
 	{
-		if ($attributeType == 'array') {
+		if ($attributeType == self::MODEL_FROM_ARRAY) {
 			if (is_array($attributes)) {
 				$this->attributes = $attributes;
 			} else {
 				throw new InvalidArgumentException('Attributes are not an array.');
 			}
-		} elseif ($attributeType == 'json') {
-			if (!is_string($attributes)) {
+		} elseif ($attributeType == self::MODEL_FROM_JSON) {
+			if (!is_string($attributes[self::MODEL_FROM_JSON])) {
 				throw new InvalidArgumentException('JSON attributes must be provided as a JSON encoded string.');
 			}
 
@@ -53,8 +60,8 @@ abstract class Model implements Arrayable
 			} catch (JsonException $e) {
 				throw new InvalidArgumentException('Failed to parse JSON encoded attributes: ' . $e->getMessage(), 0, $e);
 			}
-		} elseif ($attributeType == 'yaml') {
-			if (!is_string($attributes)) {
+		} elseif ($attributeType == self::MODEL_FROM_YAML) {
+			if (!is_string($attributes[self::MODEL_FROM_YAML])) {
 				throw new InvalidArgumentException('YAML attributes must be provided as a YAML encoded string.');
 			}
 
