@@ -1,6 +1,6 @@
 <?php
 
-use Maclof\Kubernetes\Models\ReplicaSet;
+use Dasann\Kubernetes\Models\ReplicaSet;
 
 class ReplicaSetTest extends TestCase
 {

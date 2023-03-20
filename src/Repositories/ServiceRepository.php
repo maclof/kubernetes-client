@@ -1,6 +1,6 @@
-<?php namespace Maclof\Kubernetes\Repositories;
+<?php namespace Dasann\Kubernetes\Repositories;
 
-use Maclof\Kubernetes\Collections\ServiceCollection;
+use Dasann\Kubernetes\Collections\ServiceCollection;
 
 class ServiceRepository extends Repository
 {

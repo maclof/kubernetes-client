@@ -1,6 +1,6 @@
-<?php namespace Maclof\Kubernetes\Collections;
+<?php namespace Dasann\Kubernetes\Collections;
 
-use Maclof\Kubernetes\Models\Secret;
+use Dasann\Kubernetes\Models\Secret;
 
 class SecretCollection extends Collection
 {

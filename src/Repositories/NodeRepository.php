@@ -1,7 +1,7 @@
-<?php namespace Maclof\Kubernetes\Repositories;
+<?php namespace Dasann\Kubernetes\Repositories;
 
-use Maclof\Kubernetes\Collections\NodeCollection;
-use Maclof\Kubernetes\Models\Node;
+use Dasann\Kubernetes\Collections\NodeCollection;
+use Dasann\Kubernetes\Models\Node;
 
 class NodeRepository extends Repository
 {

@@ -1,6 +1,6 @@
-<?php namespace Maclof\Kubernetes\Collections;
+<?php namespace Dasann\Kubernetes\Collections;
 
-use Maclof\Kubernetes\Models\NamespaceModel;
+use Dasann\Kubernetes\Models\NamespaceModel;
 
 class NamespaceCollection extends Collection
 {

@@ -1,14 +1,14 @@
 <?php
-namespace Maclof\Kubernetes\Repositories;
+namespace Dasann\Kubernetes\Repositories;
 
-use Maclof\Kubernetes\Collections\PersistentVolumeCollection;
+use Dasann\Kubernetes\Collections\PersistentVolumeCollection;
 
 class PersistentVolumeRepository extends Repository
 {
 	protected string $uri = 'persistentvolumes';
 
 	/**
-	 * @see \Maclof\Kubernetes\Repositories\Repository::createCollection()
+	 * @see \Dasann\Kubernetes\Repositories\Repository::createCollection()
 	 */
 	protected function createCollection($response): PersistentVolumeCollection
 	{

@@ -1,6 +1,6 @@
-<?php namespace Maclof\Kubernetes\Repositories;
+<?php namespace Dasann\Kubernetes\Repositories;
 
-use Maclof\Kubernetes\Collections\ReplicationControllerCollection;
+use Dasann\Kubernetes\Collections\ReplicationControllerCollection;
 
 class ReplicationControllerRepository extends Repository
 {

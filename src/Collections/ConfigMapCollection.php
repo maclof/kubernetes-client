@@ -1,6 +1,6 @@
-<?php namespace Maclof\Kubernetes\Collections;
+<?php namespace Dasann\Kubernetes\Collections;
 
-use Maclof\Kubernetes\Models\ConfigMap;
+use Dasann\Kubernetes\Models\ConfigMap;
 
 class ConfigMapCollection extends Collection
 {

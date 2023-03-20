@@ -1,6 +1,6 @@
-<?php namespace Maclof\Kubernetes\Repositories;
+<?php namespace Dasann\Kubernetes\Repositories;
 
-use Maclof\Kubernetes\Collections\CronJobCollection;
+use Dasann\Kubernetes\Collections\CronJobCollection;
 
 class CronJobRepository extends Repository
 {

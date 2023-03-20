@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Maclof\Kubernetes\Repositories;
+namespace Dasann\Kubernetes\Repositories;
 
-use Maclof\Kubernetes\Collections\RoleBindingCollection;
-use Maclof\Kubernetes\Models\RoleBinding;
-use Maclof\Kubernetes\Collections\Collection;
+use Dasann\Kubernetes\Collections\RoleBindingCollection;
+use Dasann\Kubernetes\Models\RoleBinding;
+use Dasann\Kubernetes\Collections\Collection;
 
 /**
  * @author      Richard Déloge <richarddeloge@gmail.com>

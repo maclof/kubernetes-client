@@ -1,6 +1,6 @@
-<?php namespace Maclof\Kubernetes\Repositories;
+<?php namespace Dasann\Kubernetes\Repositories;
 
-use Maclof\Kubernetes\Collections\ConfigMapCollection;
+use Dasann\Kubernetes\Collections\ConfigMapCollection;
 
 class ConfigMapRepository extends Repository
 {

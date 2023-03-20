@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Dasann\Kubernetes\Collections;
 
-use Maclof\Kubernetes\Models\Role;
+use Dasann\Kubernetes\Models\Role;
 
 /**
  * @author      Richard Déloge <richarddeloge@gmail.com>

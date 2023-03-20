@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Maclof\Kubernetes\Repositories;
+namespace Dasann\Kubernetes\Repositories;
 
-use Maclof\Kubernetes\Collections\RoleCollection;
-use Maclof\Kubernetes\Models\Role;
-use Maclof\Kubernetes\Collections\Collection;
+use Dasann\Kubernetes\Collections\RoleCollection;
+use Dasann\Kubernetes\Models\Role;
+use Dasann\Kubernetes\Collections\Collection;
 
 /**
  * @author      Richard Déloge <richarddeloge@gmail.com>

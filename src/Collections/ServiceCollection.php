@@ -1,6 +1,6 @@
 <?php namespace Dasann\Kubernetes\Collections;
 
-use Maclof\Kubernetes\Models\Service;
+use Dasann\Kubernetes\Models\Service;
 
 class ServiceCollection extends Collection
 {

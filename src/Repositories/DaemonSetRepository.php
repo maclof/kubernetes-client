@@ -1,6 +1,6 @@
-<?php namespace Maclof\Kubernetes\Repositories;
+<?php namespace Dasann\Kubernetes\Repositories;
 
-use Maclof\Kubernetes\Collections\DaemonSetCollection;
+use Dasann\Kubernetes\Collections\DaemonSetCollection;
 
 class DaemonSetRepository extends Repository
 {

@@ -1,6 +1,6 @@
-<?php namespace Maclof\Kubernetes\Repositories;
+<?php namespace Dasann\Kubernetes\Repositories;
 
-use Maclof\Kubernetes\Collections\NetworkPolicyCollection;
+use Dasann\Kubernetes\Collections\NetworkPolicyCollection;
 
 class NetworkPolicyRepository extends Repository
 {

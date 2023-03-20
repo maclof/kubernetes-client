@@ -1,6 +1,6 @@
-<?php namespace Maclof\Kubernetes\Repositories;
+<?php namespace Dasann\Kubernetes\Repositories;
 
-use Maclof\Kubernetes\Collections\NamespaceCollection;
+use Dasann\Kubernetes\Collections\NamespaceCollection;
 
 class NamespaceRepository extends Repository
 {

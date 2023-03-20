@@ -1,7 +1,7 @@
-<?php namespace Maclof\Kubernetes\Repositories;
+<?php namespace Dasann\Kubernetes\Repositories;
 
-use Maclof\Kubernetes\Models\Pod;
-use Maclof\Kubernetes\Collections\PodCollection;
+use Dasann\Kubernetes\Models\Pod;
+use Dasann\Kubernetes\Collections\PodCollection;
 
 class PodRepository extends Repository
 {

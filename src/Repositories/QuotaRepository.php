@@ -1,6 +1,6 @@
-<?php namespace Maclof\Kubernetes\Repositories;
+<?php namespace Dasann\Kubernetes\Repositories;
 
-use Maclof\Kubernetes\Collections\QuotaCollection;
+use Dasann\Kubernetes\Collections\QuotaCollection;
 
 class QuotaRepository extends Repository
 {

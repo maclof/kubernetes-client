@@ -1,6 +1,6 @@
-<?php namespace Maclof\Kubernetes\Collections;
+<?php namespace Dasann\Kubernetes\Collections;
 
-use Maclof\Kubernetes\Models\Endpoint;
+use Dasann\Kubernetes\Models\Endpoint;
 
 class EndpointCollection extends Collection
 {

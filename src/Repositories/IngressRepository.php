@@ -1,6 +1,6 @@
-<?php namespace Maclof\Kubernetes\Repositories;
+<?php namespace Dasann\Kubernetes\Repositories;
 
-use Maclof\Kubernetes\Collections\IngressCollection;
+use Dasann\Kubernetes\Collections\IngressCollection;
 
 class IngressRepository extends Repository
 {

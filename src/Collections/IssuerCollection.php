@@ -1,6 +1,6 @@
-<?php namespace Maclof\Kubernetes\Collections;
+<?php namespace Dasann\Kubernetes\Collections;
 
-use Maclof\Kubernetes\Models\Issuer;
+use Dasann\Kubernetes\Models\Issuer;
 
 class IssuerCollection extends Collection
 {

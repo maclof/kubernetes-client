@@ -1,6 +1,6 @@
 <?php
 
-use Maclof\Kubernetes\Models\ServiceAccount;
+use Dasann\Kubernetes\Models\ServiceAccount;
 
 class ServiceAccountTest extends TestCase
 {

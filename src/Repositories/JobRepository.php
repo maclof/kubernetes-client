@@ -1,6 +1,6 @@
-<?php namespace Maclof\Kubernetes\Repositories;
+<?php namespace Dasann\Kubernetes\Repositories;
 
-use Maclof\Kubernetes\Collections\JobCollection;
+use Dasann\Kubernetes\Collections\JobCollection;
 
 class JobRepository extends Repository
 {

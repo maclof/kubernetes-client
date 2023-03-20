@@ -1,6 +1,6 @@
-<?php namespace Maclof\Kubernetes\Repositories;
+<?php namespace Dasann\Kubernetes\Repositories;
 
-use Maclof\Kubernetes\Collections\DeploymentCollection;
+use Dasann\Kubernetes\Collections\DeploymentCollection;
 
 class DeploymentRepository extends Repository
 {

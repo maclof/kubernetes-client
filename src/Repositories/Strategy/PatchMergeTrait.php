@@ -1,6 +1,6 @@
-<?php namespace Maclof\Kubernetes\Repositories\Strategy;
+<?php namespace Dasann\Kubernetes\Repositories\Strategy;
 
-use Maclof\Kubernetes\Models\Model;
+use Dasann\Kubernetes\Models\Model;
 
 trait PatchMergeTrait {
 

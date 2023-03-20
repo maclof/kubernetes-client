@@ -1,12 +1,12 @@
-<?php namespace Maclof\Kubernetes\Repositories;
+<?php namespace Dasann\Kubernetes\Repositories;
 
 use Closure;
-use Maclof\Kubernetes\Client;
-use Maclof\Kubernetes\Collections\Collection;
-use Maclof\Kubernetes\Models\Model;
-use Maclof\Kubernetes\Models\DeleteOptions;
-use Maclof\Kubernetes\Repositories\Utils\JSONStreamingParser;
-use Maclof\Kubernetes\Repositories\Utils\JSONStreamingListener;
+use Dasann\Kubernetes\Client;
+use Dasann\Kubernetes\Collections\Collection;
+use Dasann\Kubernetes\Models\Model;
+use Dasann\Kubernetes\Models\DeleteOptions;
+use Dasann\Kubernetes\Repositories\Utils\JSONStreamingParser;
+use Dasann\Kubernetes\Repositories\Utils\JSONStreamingListener;
 
 abstract class Repository
 {
@@ -53,7 +53,7 @@ abstract class Repository
 	/**
 	 * The default class namespace of the repositories
 	 */
-	protected string $modelClassNamespace = 'Maclof\Kubernetes\Models\\';
+	protected string $modelClassNamespace = 'Dasann\Kubernetes\Models\\';
 
 	/**
 	 * The constructor.

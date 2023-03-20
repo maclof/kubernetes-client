@@ -1,4 +1,4 @@
-<?php namespace Maclof\Kubernetes\Repositories\Utils;
+<?php namespace Dasann\Kubernetes\Repositories\Utils;
 
 use Closure;
 

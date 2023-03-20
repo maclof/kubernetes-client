@@ -1,6 +1,6 @@
 <?php namespace Dasann\Kubernetes\Collections;
 
-use Maclof\Kubernetes\Models\Pod;
+use Dasann\Kubernetes\Models\Pod;
 
 class PodCollection extends Collection
 {

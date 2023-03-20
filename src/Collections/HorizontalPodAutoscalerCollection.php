@@ -1,6 +1,6 @@
-<?php namespace Maclof\Kubernetes\Collections;
+<?php namespace Dasann\Kubernetes\Collections;
 
-use Maclof\Kubernetes\Models\HorizontalPodAutoscaler;
+use Dasann\Kubernetes\Models\HorizontalPodAutoscaler;
 
 class HorizontalPodAutoscalerCollection extends Collection
 {

@@ -1,6 +1,6 @@
-<?php namespace Maclof\Kubernetes\Collections;
+<?php namespace Dasann\Kubernetes\Collections;
 
-use Maclof\Kubernetes\Models\Job;
+use Dasann\Kubernetes\Models\Job;
 
 class JobCollection extends Collection
 {

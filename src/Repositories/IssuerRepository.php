@@ -1,7 +1,7 @@
-<?php namespace Maclof\Kubernetes\Repositories;
+<?php namespace Dasann\Kubernetes\Repositories;
 
-use Maclof\Kubernetes\Collections\IssuerCollection;
-use Maclof\Kubernetes\Repositories\Strategy\PatchMergeTrait;
+use Dasann\Kubernetes\Collections\IssuerCollection;
+use Dasann\Kubernetes\Repositories\Strategy\PatchMergeTrait;
 
 class IssuerRepository extends Repository
 {

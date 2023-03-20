@@ -1,6 +1,6 @@
-<?php namespace Maclof\Kubernetes\Collections;
+<?php namespace Dasann\Kubernetes\Collections;
 
-use Maclof\Kubernetes\Models\ReplicationController;
+use Dasann\Kubernetes\Models\ReplicationController;
 
 class ReplicationControllerCollection extends Collection
 {

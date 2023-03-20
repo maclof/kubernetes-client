@@ -1,6 +1,6 @@
-<?php namespace Maclof\Kubernetes\Repositories;
+<?php namespace Dasann\Kubernetes\Repositories;
 
-use Maclof\Kubernetes\Collections\EndpointCollection;
+use Dasann\Kubernetes\Collections\EndpointCollection;
 
 class EndpointRepository extends Repository
 {
