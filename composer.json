@@ -1,10 +1,10 @@
 {
-	"name": "maclof/kubernetes-client",
+	"name": "dasann/kubernetes-client",
 	"description": "A simple yet elegant client for accessing and controlling a Kubernetes cluster.",
 	"keywords": ["kubernetes", "docker", "container", "cluster"],
 	"authors": [
 		{
-			"name"    : "Marc Lough",
+			"name"    : "Marc Lough (forked by David Sann)",
 			"homepage": "http://maclof.com"
 		}
 	],
