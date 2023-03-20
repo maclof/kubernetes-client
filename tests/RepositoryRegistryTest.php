@@ -1,6 +1,6 @@
 <?php
 
-use Maclof\Kubernetes\RepositoryRegistry;
+use Dasann\Kubernetes\RepositoryRegistry;
 
 class RepositoryRegistryTest extends TestCase
 {

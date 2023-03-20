@@ -1,6 +1,6 @@
-<?php namespace Maclof\Kubernetes\Collections;
+<?php namespace Dasann\Kubernetes\Collections;
 
-use Maclof\Kubernetes\Models\Ingress;
+use Dasann\Kubernetes\Models\Ingress;
 
 class IngressCollection extends Collection
 {

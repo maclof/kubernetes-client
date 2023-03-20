@@ -1,9 +1,9 @@
 <?php
 
 use Http\Client\Common\HttpMethodsClient;
-use Maclof\Kubernetes\Client;
-use Maclof\Kubernetes\Collections\PodCollection;
-use Maclof\Kubernetes\Models\Pod;
+use Dasann\Kubernetes\Client;
+use Dasann\Kubernetes\Collections\PodCollection;
+use Dasann\Kubernetes\Models\Pod;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Nyholm\Psr7\Response;
 use Psr\Http\Client\ClientInterface;
@@ -109,17 +109,17 @@ class ClientTest extends TestCase
 		return [
 			[
 				500,
-				\Maclof\Kubernetes\Exceptions\ApiServerException::class,
+				\Dasann\Kubernetes\Exceptions\ApiServerException::class,
 				'/500 Error/',
 			],
 			[
 				401,
-				\Maclof\Kubernetes\Exceptions\ApiServerException::class,
+				\Dasann\Kubernetes\Exceptions\ApiServerException::class,
 				'/Authentication Exception/',
 			],
 			[
 				403,
-				\Maclof\Kubernetes\Exceptions\ApiServerException::class,
+				\Dasann\Kubernetes\Exceptions\ApiServerException::class,
 				'/Authentication Exception/',
 			],
 		];

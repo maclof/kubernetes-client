@@ -1,8 +1,6 @@
 
 # Kubernetes Client
 
-[![Build Status](https://app.travis-ci.com/maclof/kubernetes-client.svg?branch=master)](https://app.travis-ci.com/maclof/kubernetes-client)
-
 A PHP client for managing a Kubernetes cluster.
 
 Last tested with v1.9.6 on a production cloud hosted cluster.
@@ -11,7 +9,7 @@ Last tested with v1.9.6 on a production cloud hosted cluster.
 ## Installation using [Composer](http://getcomposer.org/)
 
 ```bash
-$ composer require maclof/kubernetes-client
+$ composer require dasann/kubernetes-client
 ```
 
 ## Supported API Features
@@ -58,7 +56,7 @@ $ composer require maclof/kubernetes-client
 
 require __DIR__ . '/vendor/autoload.php';
 
-use Maclof\Kubernetes\Client;
+use Dasann\Kubernetes\Client;
 
 $client = new Client([
 	'master' => 'http://master.mycluster.com',
@@ -99,7 +97,7 @@ $jobStartTime = $client->jobs()->find()->getJsonPath('$.status.startTime')[0];
 
 ### Insecure HTTP
 ```php
-use Maclof\Kubernetes\Client;
+use Dasann\Kubernetes\Client;
 $client = new Client([
 	'master' => 'http://master.mycluster.com',
 ]);
@@ -107,7 +105,7 @@ $client = new Client([
 
 ### Secure HTTPS (CA + Client Certificate Validation)
 ```php
-use Maclof\Kubernetes\Client;
+use Da\Kubernetes\Client;
 use Http\Adapter\Guzzle6\Client as Guzzle6Client;
 $httpClient = Guzzle6Client::createWithConfig([
 	'verify' => '/etc/kubernetes/ssl/ca.crt',
@@ -121,7 +119,7 @@ $client = new Client([
 
 ### Insecure HTTPS (CA Certificate Verification Disabled)
 ```php
-use Maclof\Kubernetes\Client;
+use Dasann\Kubernetes\Client;
 use Http\Adapter\Guzzle6\Client as Guzzle6Client;
 $httpClient = Guzzle6Client::createWithConfig([
 	'verify' => false,
@@ -133,7 +131,7 @@ $client = new Client([
 
 ### Using Basic Auth
 ```php
-use Maclof\Kubernetes\Client;
+use Dasann\Kubernetes\Client;
 $client = new Client([
 	'master' => 'https://master.mycluster.com',
 	'username' => 'admin',
@@ -143,7 +141,7 @@ $client = new Client([
 
 ### Using a Service Account
 ```php
-use Maclof\Kubernetes\Client;
+use Dasann\Kubernetes\Client;
 use Http\Adapter\Guzzle6\Client as Guzzle6Client;
 $httpClient = Guzzle6Client::createWithConfig([
 	'verify' => '/var/run/secrets/kubernetes.io/serviceaccount/ca.crt',
@@ -156,7 +154,7 @@ $client = new Client([
 
 ### Parsing a kubeconfig file
 ```php
-use Maclof\Kubernetes\Client;
+use Dasann\Kubernetes\Client;
 
 // Parsing from the file data directly
 $config = Client::parseKubeConfig('kubeconfig yaml data');
@@ -178,7 +176,7 @@ $config = [
 
 ### Custom repositories
 ```php
-use Maclof\Kubernetes\Client;
+use Dasann\Kubernetes\Client;
 
 $repositories = new RepositoryRegistry();
 $repositories['things'] = MyApp\Kubernetes\Repository\ThingRepository::class;
@@ -195,7 +193,7 @@ $client->things(); //ThingRepository
 ### Create/Update a Replication Controller
 The below example uses an array to specify the replication controller's attributes. You can specify the attributes either as an array, JSON encoded string or a YAML encoded string. The second parameter to the model constructor is the data type and defaults to array.
 ```php
-use Maclof\Kubernetes\Models\ReplicationController;
+use Dasann\Kubernetes\Models\ReplicationController;
 
 $replicationController = new ReplicationController([
 	'metadata' => [
@@ -248,7 +246,7 @@ $client->replicationControllers()->delete($replicationController);
 You can also specify options when performing a deletion, eg. to perform [cascading delete]( https://kubernetes.io/docs/concepts/workloads/controllers/garbage-collection/#setting-the-cascading-deletion-policy)
 
 ```php
-use Maclof\Kubernetes\Models\DeleteOptions;
+use Dasann\Kubernetes\Models\DeleteOptions;
 
 $client->replicationControllers()->delete(
 	$replicationController,

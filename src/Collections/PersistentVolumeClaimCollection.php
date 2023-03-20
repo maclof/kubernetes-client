@@ -1,6 +1,6 @@
-<?php namespace Maclof\Kubernetes\Collections;
+<?php namespace Dasann\Kubernetes\Collections;
 
-use Maclof\Kubernetes\Models\PersistentVolumeClaim;
+use Dasann\Kubernetes\Models\PersistentVolumeClaim;
 
 class PersistentVolumeClaimCollection extends Collection
 {

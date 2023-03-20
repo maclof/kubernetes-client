@@ -1,6 +1,6 @@
-<?php namespace Maclof\Kubernetes\Collections;
+<?php namespace Dasann\Kubernetes\Collections;
 
-use Maclof\Kubernetes\Models\Certificate;
+use Dasann\Kubernetes\Models\Certificate;
 
 class CertificateCollection extends Collection
 {

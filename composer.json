@@ -27,7 +27,7 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"Maclof\\Kubernetes\\": "src/"
+			"Dasann\\Kubernetes\\": "src/"
 		}
 	},
 	"autoload-dev": {

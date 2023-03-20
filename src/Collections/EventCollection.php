@@ -1,6 +1,6 @@
-<?php namespace Maclof\Kubernetes\Collections;
+<?php namespace Dasann\Kubernetes\Collections;
 
-use Maclof\Kubernetes\Models\Event;
+use Dasann\Kubernetes\Models\Event;
 
 class EventCollection extends Collection
 {

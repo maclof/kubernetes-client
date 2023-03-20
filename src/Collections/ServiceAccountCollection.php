@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Maclof\Kubernetes\Collections;
+namespace Dasann\Kubernetes\Collections;
 
-use Maclof\Kubernetes\Models\ServiceAccount;
+use Dasann\Kubernetes\Models\ServiceAccount;
 
 /**
  * @author      Richard Déloge <richarddeloge@gmail.com>

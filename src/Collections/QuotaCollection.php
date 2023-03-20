@@ -1,6 +1,6 @@
-<?php namespace Maclof\Kubernetes\Collections;
+<?php namespace Dasann\Kubernetes\Collections;
 
-use Maclof\Kubernetes\Models\QuotaModel;
+use Dasann\Kubernetes\Models\QuotaModel;
 
 class QuotaCollection extends Collection
 {

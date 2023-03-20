@@ -1,6 +1,6 @@
-<?php namespace Maclof\Kubernetes\Collections;
+<?php namespace Dasann\Kubernetes\Collections;
 
-use Maclof\Kubernetes\Models\Deployment;
+use Dasann\Kubernetes\Models\Deployment;
 
 class DeploymentCollection extends Collection
 {

@@ -1,7 +1,7 @@
-<?php namespace Maclof\Kubernetes\Collections;
+<?php namespace Dasann\Kubernetes\Collections;
 
-use Maclof\Kubernetes\Models\PersistentVolume;
-use Maclof\Kubernetes\Collections\Collection;
+use Dasann\Kubernetes\Models\PersistentVolume;
+use Dasann\Kubernetes\Collections\Collection;
 
 class PersistentVolumeCollection extends Collection
 {

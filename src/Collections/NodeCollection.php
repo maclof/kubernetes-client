@@ -1,6 +1,6 @@
-<?php namespace Maclof\Kubernetes\Collections;
+<?php namespace Dasann\Kubernetes\Collections;
 
-use Maclof\Kubernetes\Models\Node;
+use Dasann\Kubernetes\Models\Node;
 
 class NodeCollection extends Collection
 {

@@ -1,4 +1,4 @@
-<?php namespace Maclof\Kubernetes;
+<?php namespace Dasann\Kubernetes;
 
 class RepositoryRegistry implements \ArrayAccess, \Countable
 {

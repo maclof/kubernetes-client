@@ -1,6 +1,6 @@
-<?php namespace Maclof\Kubernetes\Models;
+<?php namespace Dasann\Kubernetes\Models;
 
-class HorizontalPodAutoscaler extends \Maclof\Kubernetes\Models\Model
+class HorizontalPodAutoscaler extends \Dasann\Kubernetes\Models\Model
 {
 	/**
 	 * The api version.
