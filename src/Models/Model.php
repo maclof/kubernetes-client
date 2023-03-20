@@ -56,7 +56,7 @@ abstract class Model implements Arrayable
 			}
 
 			try {
-				$this->attributes = json_decode($attributes, true, 512, JSON_THROW_ON_ERROR);
+				$this->attributes[self::MODEL_FROM_JSON] = json_decode($attributes[self::MODEL_FROM_JSON], true, 512, JSON_THROW_ON_ERROR);
 			} catch (JsonException $e) {
 				throw new InvalidArgumentException('Failed to parse JSON encoded attributes: ' . $e->getMessage(), 0, $e);
 			}
@@ -66,7 +66,7 @@ abstract class Model implements Arrayable
 			}
 
 			try {
-				$this->attributes = Yaml::parse($attributes);
+				$this->attributes[self::MODEL_FROM_YAML] = Yaml::parse($attributes[self::MODEL_FROM_YAML]);
 			} catch (YamlParseException $e) {
 				throw new InvalidArgumentException('Failed to parse YAML encoded attributes: ' . $e->getMessage(), 0, $e);
 			}
@@ -120,8 +120,15 @@ abstract class Model implements Arrayable
 		}
 
 		$schema = array_merge($this->schema, $this->toArray());
-
-		$jsonSchema = json_encode($schema, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+		
+		if(isset($schema[self::MODEL_FROM_YAML])) {
+			$jsonSchema = json_encode($schema[self::MODEL_FROM_YAML], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+		} elseif (isset($schema[self::MODEL_FROM_JSON])) {
+			$jsonSchema = $schema[self::MODEL_FROM_JSON];
+		} else {
+			$jsonSchema = json_encode($schema, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+		}
+		
 
 		// Fix for issue #37, can't use JSON_FORCE_OBJECT as the encoding breaks arrays of objects, for example port mappings.
 		$jsonSchema = str_replace(': []', ': {}', $jsonSchema);
