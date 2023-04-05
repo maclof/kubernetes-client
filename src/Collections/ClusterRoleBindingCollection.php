@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Maclof\Kubernetes\Collections;
 
-use Maclof\Kubernetes\Models\RoleBinding;
+use Maclof\Kubernetes\Models\ClusterRoleBinding;
 
 /**
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-class RoleBindingCollection extends Collection
+class ClusterRoleBindingCollection extends Collection
 {
     /**
-     * @param array<int, array<mixed>|RoleBinding> $items
+     * @param array<int, array<mixed>|ClusterRoleBinding> $items
      */
     public function __construct(array $items)
     {
@@ -22,15 +22,15 @@ class RoleBindingCollection extends Collection
     /**
      * Get an array of serviceAccounts.
      *
-     * @param  array<int, array<mixed>|RoleBinding> $items
-     * @return array<RoleBinding>
+     * @param  array<int, array<mixed>|ClusterRoleBinding> $items
+     * @return array<ClusterRoleBinding>
      */
     protected function getItems(array $items)
     {
         $final = [];
         foreach ($items as &$item) {
-            if (!$item instanceof RoleBinding) {
-                $final[] = new RoleBinding($item);
+            if (!$item instanceof ClusterRoleBinding) {
+                $final[] = new ClusterRoleBinding($item);
             } else {
                 $final[] = $item;
             }
