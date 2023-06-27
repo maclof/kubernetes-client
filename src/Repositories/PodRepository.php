@@ -32,4 +32,22 @@ class PodRepository extends Repository
 		$response = $this->client->sendRequest('POST', '/' . $this->uri . '/' . $pod->getMetadata('name') . '/exec', $queryParams);
 		return $response;
 	}
+
+    /**
+     * Attach an ephemeralContainer to a pod.
+     * 
+     * @param Pod $pod Pod object
+     * @param array $spec array representing the relevant strategic spec
+     * @see https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.23/#ephemeralcontainer-v1-core EphemeralContainer spec
+     * 
+     * @return array
+     */
+    public function debug(Pod $pod, array $spec): array
+    {
+        $patch = json_encode($spec);
+        
+        $this->client->setPatchType('strategic');
+
+        return $this->sendRequest('PATCH', '/' . $this->uri . '/' . $pod->getMetadata('name') . '/ephemeralcontainers', [], $patch, $this->namespace);
+    }
 }
