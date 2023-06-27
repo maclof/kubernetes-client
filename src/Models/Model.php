@@ -86,7 +86,7 @@ abstract class Model implements Arrayable
 	/**
 	 * Get some metadata.
 	 */
-	public function getMetadata(string $key): ?string
+	public function getMetadata(string $key)
 	{
 		return isset($this->attributes['metadata'][$key]) ? $this->attributes['metadata'][$key] : null;
 	}

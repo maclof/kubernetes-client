@@ -48,13 +48,19 @@ class ModelTest extends TestCase
 
     public function testGetMetadata(): void
     {
-        $expected = 'foo';
+		$model = new ConcreteModel(['metadata' => ['name' => 'foo', 'labels' => ['foo' => 'bar']]]);
 
-        $model = new ConcreteModel(['metadata' => ['name' => 'foo']]);
+		$expected = 'foo';
 
-        $actual = $model->getMetadata('name');
+		$actual = $model->getMetadata('name');
 
         $this->assertEquals($expected, $actual);
+
+		$expected = ['foo' => 'bar'];
+
+		$actual = $model->getMetadata('labels');
+
+		$this->assertEquals($expected, $actual);
     }
 
     public function testIsConvertingToArray(): void
