@@ -152,7 +152,7 @@ class Client
 		$this->httpClient = new HttpMethodsClient(
 			$httpClient ?: Psr18ClientDiscovery::find(),
 			$httpRequestFactory ?: Psr17FactoryDiscovery::findRequestFactory(),
-			$streamFactory ?: Psr17FactoryDiscovery::findStreamFactory(),
+			$streamFactory ?: Psr17FactoryDiscovery::findStreamFactory()
 		);
 	}
 
