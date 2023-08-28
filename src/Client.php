@@ -10,6 +10,7 @@ use Maclof\Kubernetes\Repositories\RoleBindingRepository;
 use Maclof\Kubernetes\Repositories\RoleRepository;
 use Maclof\Kubernetes\Repositories\ServiceAccountRepository;
 use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\StreamFactoryInterface;
 use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\Yaml\Exception\ParseException as YamlParseException;
 
@@ -144,13 +145,14 @@ class Client
 	/**
 	 * The constructor.
 	 */
-	public function __construct(array $options = [], RepositoryRegistry $repositoryRegistry = null, ClientInterface $httpClient = null, HttpRequestFactory $httpRequestFactory = null)
+	public function __construct(array $options = [], RepositoryRegistry $repositoryRegistry = null, ClientInterface $httpClient = null, HttpRequestFactory $httpRequestFactory = null, StreamFactoryInterface $streamFactory = null)
 	{
 		$this->setOptions($options);
 		$this->classRegistry = $repositoryRegistry ?: new RepositoryRegistry();
 		$this->httpClient = new HttpMethodsClient(
 			$httpClient ?: Psr18ClientDiscovery::find(),
-			$httpRequestFactory ?: Psr17FactoryDiscovery::findRequestFactory()
+			$httpRequestFactory ?: Psr17FactoryDiscovery::findRequestFactory(),
+			$streamFactory ?: Psr17FactoryDiscovery::findStreamFactory()
 		);
 	}
 
