@@ -19,7 +19,7 @@ use Http\Client\Common\HttpMethodsClientInterface;
 use Http\Client\Exception\TransferException as HttpTransferException;
 use Http\Message\RequestFactory as HttpRequestFactory;
 
-use React\EventLoop\Factory as ReactFactory;
+use React\EventLoop\Loop;
 use React\Socket\Connector as ReactSocketConnector;
 use Ratchet\Client\Connector as WebSocketConnector;
 use Maclof\Kubernetes\Repositories\CertificateRepository;
@@ -493,7 +493,7 @@ class Client
 			$socketOptions['tls']['local_pk'] = $this->clientKey;
 		}
 
-		$loop = ReactFactory::create();
+		$loop = Loop::get();
 
 		$socketConnector = new ReactSocketConnector($loop, $socketOptions);
 

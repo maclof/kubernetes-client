@@ -21,7 +21,7 @@ class ClientTest extends TestCase
 		]);
 
 		$mockClientInterface = $this->getMockBuilder(ClientInterface::class)
-			->setMethods(['sendRequest'])
+			->onlyMethods(['sendRequest'])
 			->getMock();
 
 		$jsonBody = json_encode([
@@ -65,7 +65,7 @@ class ClientTest extends TestCase
 		$httpClientProp->setAccessible(true);
 
 		$mockHttpMethodsClient = $this->getMockBuilder(HttpMethodsMockClient::class)
-			->setMethods(['send'])
+			->onlyMethods(['send'])
 			->getMock();
 
 		$jsonBody = json_encode($mockResponseData);
