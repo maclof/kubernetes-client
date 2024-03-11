@@ -164,6 +164,9 @@ class Client
 		if ($reset) {
 			$this->master = null;
 			$this->verify = null;
+			$this->caCert = null;
+			$this->clientCert = null;
+			$this->clientKey = null;
 			$this->token = null;
 			$this->username = null;
 			$this->password = null;
@@ -172,6 +175,17 @@ class Client
 
 		if (isset($options['master'])) {
 			$this->master = $options['master'];
+		}
+		if (isset($options['verify'])) {
+			$this->verify = $options['verify'];
+		} elseif (isset($options['ca_cert'])) {
+			$this->caCert = $options['ca_cert'];
+		}
+		if (isset($options['client_cert'])) {
+			$this->clientCert = $options['client_cert'];
+		}
+		if (isset($options['client_key'])) {
+			$this->clientKey = $options['client_key'];
 		}
 		if (isset($options['token'])) {
 			$this->token = $options['token'];
@@ -189,7 +203,7 @@ class Client
 
 	/**
 	 * Parse a kubeconfig.
-	 * 
+	 *
 	 * @param  string|array $content Mixed type, based on the second input argument
 	 * @throws \InvalidArgumentException
 	 */
@@ -311,7 +325,7 @@ class Client
 
 	/**
 	 * Parse a kubeconfig file.
-	 * 
+	 *
 	 * @throws \InvalidArgumentException
 	 */
 	public static function parseKubeconfigFile(string $filePath): array
@@ -375,7 +389,7 @@ class Client
 		if ($namespace) {
 			$baseUri .= '/namespaces/' . $this->namespace;
 		}
-		
+
 		if ($uri === '/healthz' || $uri === '/version') {
 			$requestUrl = $this->master . '/' . $uri;
 		} else {
@@ -424,6 +438,10 @@ class Client
 			$responseBody = (string) $response->getBody();
 			$jsonResponse = json_decode($responseBody, true);
 
+			if ($jsonResponse !== null && array_key_exists('code', $jsonResponse) && $this->isUpgradeRequestRequired($jsonResponse)) {
+				return $this->sendUpgradeRequest($requestUrl, $query);
+			}
+
 			return is_array($jsonResponse) ? $jsonResponse : $responseBody;
 		} catch (HttpTransferException $e) {
 			$response = $e->getResponse();
@@ -455,7 +473,7 @@ class Client
 	 */
 	protected function sendUpgradeRequest(string $requestUri, array $query): array
 	{
-		$fullUrl = $this->master .'/' . $requestUri . '?' . implode('&', $this->parseQueryParams($query));
+		$fullUrl = $requestUri . '?' . implode('&', $this->parseQueryParams($query));
 		if (parse_url($fullUrl, PHP_URL_SCHEME) === 'https') {
 			$fullUrl = str_replace('https://', 'wss://', $fullUrl);
 		} else {
@@ -562,7 +580,7 @@ class Client
 	{
 		return $this->sendRequest('GET', '/healthz');
 	}
-	
+
 	/**
 	 * Check the version.
 	 */
@@ -570,7 +588,7 @@ class Client
 	{
 		return $this->sendRequest('GET', '/version');
 	}
-	
+
 	/**
 	 * Magic call method to grab a class instance.
 	 *
