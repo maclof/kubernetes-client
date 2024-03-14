@@ -37,10 +37,5 @@
 		]
 	},
 	"minimum-stability": "dev",
-	"prefer-stable": true,
-	"config": {
-		"allow-plugins": {
-			"php-http/discovery": false
-		}
-	}
+	"prefer-stable": true
 }
