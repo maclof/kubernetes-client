@@ -16,7 +16,7 @@ use Symfony\Component\Yaml\Exception\ParseException as YamlParseException;
 
 use Http\Client\Common\HttpMethodsClient;
 use Http\Client\Common\HttpMethodsClientInterface;
-use Http\Client\Exception\TransferException as HttpTransferException;
+use Http\Client\Exception\HttpException;
 use Http\Message\RequestFactory as HttpRequestFactory;
 
 use React\EventLoop\Factory as ReactFactory;
@@ -145,7 +145,7 @@ class Client
 	/**
 	 * The constructor.
 	 */
-	public function __construct(array $options = [], RepositoryRegistry $repositoryRegistry = null, ClientInterface $httpClient = null, HttpRequestFactory $httpRequestFactory = null, StreamFactoryInterface $streamFactory = null)
+	public function __construct(array $options = [], ?RepositoryRegistry $repositoryRegistry = null, ?ClientInterface $httpClient = null, ?HttpRequestFactory $httpRequestFactory = null, ?StreamFactoryInterface $streamFactory = null)
 	{
 		$this->setOptions($options);
 		$this->classRegistry = $repositoryRegistry ?: new RepositoryRegistry();
@@ -383,7 +383,7 @@ class Client
 	 * @throws \Maclof\Kubernetes\Exceptions\BadRequestException
 	 */
 	#[\ReturnTypeWillChange]
-	public function sendRequest(string $method, string $uri, array $query = [], $body = null, bool $namespace = true, string $apiVersion = null, array $requestOptions = [])
+	public function sendRequest(string $method, string $uri, array $query = [], $body = null, bool $namespace = true, ?string $apiVersion = null, array $requestOptions = [])
 	{
 		$baseUri = $apiVersion ? ('apis/' . $apiVersion) : ('api/' . $this->apiVersion);
 		if ($namespace) {
@@ -436,6 +436,10 @@ class Client
 			}
 
 			$responseBody = (string) $response->getBody();
+			if (isset($requestOptions['decode_json']) && $requestOptions['decode_json'] === false) {
+				return $responseBody;
+			}
+
 			$jsonResponse = json_decode($responseBody, true);
 
 			if ($jsonResponse !== null && array_key_exists('code', $jsonResponse) && $this->isUpgradeRequestRequired($jsonResponse)) {
@@ -443,7 +447,7 @@ class Client
 			}
 
 			return is_array($jsonResponse) ? $jsonResponse : $responseBody;
-		} catch (HttpTransferException $e) {
+		} catch (HttpException $e) {
 			$response = $e->getResponse();
 
 			$responseBody = (string) $response->getBody();

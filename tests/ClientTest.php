@@ -1,14 +1,15 @@
 <?php
 
 use Http\Client\Common\HttpMethodsClient;
+use Http\Client\Exception\HttpException;
+use Http\Client\Exception\RequestException;
 use Maclof\Kubernetes\Client;
 use Maclof\Kubernetes\Collections\PodCollection;
+use Maclof\Kubernetes\Exceptions\BadRequestException;
 use Maclof\Kubernetes\Models\Pod;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Nyholm\Psr7\Response;
 use Psr\Http\Client\ClientInterface;
-
-use function method_exists;
 
 class ClientTest extends TestCase
 {
@@ -44,6 +45,72 @@ class ClientTest extends TestCase
 		$this->assertSame([
 			'message' => 'Hello world',
 		], $result);
+	}
+
+	public function testRequestExceptionWithoutResponseIsRethrown(): void
+	{
+		$factory = new Psr17Factory();
+		$request = $factory->createRequest('GET', 'https://api.example.com/api/v1/namespaces/default/pods');
+		$exception = new RequestException('TLS certificate verification failed', $request);
+
+		$httpClient = $this->createMock(ClientInterface::class);
+		$httpClient->expects($this->once())
+			->method('sendRequest')
+			->willThrowException($exception);
+
+		$client = new Client(
+			['master' => 'https://api.example.com'],
+			null,
+			$httpClient
+		);
+
+		$this->expectExceptionObject($exception);
+
+		$client->sendRequest('GET', '/pods');
+	}
+
+	public function testHttpExceptionWithResponseIsConvertedToBadRequestException(): void
+	{
+		$factory = new Psr17Factory();
+		$request = $factory->createRequest('GET', 'https://api.example.com/api/v1/namespaces/default/pods');
+		$responseBody = '{"kind":"Status","apiVersion":"v1","status":"Failure","message":"invalid request","reason":"BadRequest","code":400}';
+		$response = new Response(400, ['Content-Type' => 'application/json'], $responseBody);
+
+		$httpClient = $this->createMock(ClientInterface::class);
+		$httpClient->expects($this->once())
+			->method('sendRequest')
+			->willThrowException(HttpException::create($request, $response));
+
+		$client = new Client(
+			['master' => 'https://api.example.com'],
+			null,
+			$httpClient
+		);
+
+		$this->expectException(BadRequestException::class);
+		$this->expectExceptionMessage($responseBody);
+
+		$client->sendRequest('GET', '/pods');
+	}
+
+	public function testPodLogsPreserveJsonOutputAsText(): void
+	{
+		$factory = new Psr17Factory();
+		$logOutput = '{"name":"job","lines":222,"jobDate":"2023-11-14 07:36:29"}';
+
+		$httpClient = $this->createMock(ClientInterface::class);
+		$httpClient->expects($this->once())
+			->method('sendRequest')
+			->willReturn(new Response(200, ['Content-Type' => 'application/json'], $logOutput));
+
+		$client = new Client(
+			['master' => 'https://api.example.com'],
+			null,
+			$httpClient
+		);
+		$pod = new Pod(['metadata' => ['name' => 'job-pod']]);
+
+		$this->assertSame($logOutput, $client->pods()->logs($pod));
 	}
 
 	/**

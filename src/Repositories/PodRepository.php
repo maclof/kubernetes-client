@@ -17,7 +17,15 @@ class PodRepository extends Repository
 	 */
 	public function logs(Pod $pod, array $queryParams = []): string
 	{
-		$response = $this->client->sendRequest('GET', '/' . $this->uri . '/' . $pod->getMetadata('name') . '/log', $queryParams);
+		$response = $this->client->sendRequest(
+			'GET',
+			'/' . $this->uri . '/' . $pod->getMetadata('name') . '/log',
+			$queryParams,
+			null,
+			true,
+			null,
+			['decode_json' => false]
+		);
 		return $response;
 	}
 	

@@ -155,7 +155,7 @@ abstract class Repository
 	/**
 	 * Delete a model.
 	 */
-	public function delete(Model $model, DeleteOptions $options = null): array
+	public function delete(Model $model, ?DeleteOptions $options = null): array
 	{
 		return $this->deleteByName((string)$model->getMetadata('name'), $options);
 	}
@@ -163,7 +163,7 @@ abstract class Repository
 	/**
 	 * Delete a model by name.
 	 */
-	public function deleteByName(string $name, DeleteOptions $options = null): array
+	public function deleteByName(string $name, ?DeleteOptions $options = null): array
 	{
 		$body = $options ? $options->getSchema() : null;
 
