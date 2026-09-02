@@ -13,10 +13,36 @@ use Psr\Http\Client\ClientInterface;
 
 class ClientTest extends TestCase
 {
+	/**
+	 * @dataProvider healthAndVersionProvider
+	 */
+	public function testRootEndpointUrlHasSingleSlash(string $method, string $path, string $responseBody): void
+	{
+		$httpClient = $this->createMock(ClientInterface::class);
+		$httpClient->expects($this->once())
+			->method('sendRequest')
+			->with($this->callback(function ($request) use ($path): bool {
+				$this->assertSame('https://api.example.com/' . $path, (string) $request->getUri());
+
+				return true;
+			}))
+			->willReturn(new Response(200, [], $responseBody));
+		$client = new Client(['master' => 'https://api.example.com'], null, $httpClient);
+
+		$client->{$method}();
+	}
+
+	public function healthAndVersionProvider(): array
+	{
+		return [
+			['health', 'healthz', 'ok'],
+			['version', 'version', '{}'],
+		];
+	}
+
 	public function testSendRequestJsonParsesResponse(): void
 	{
 		$httpClientProp = new ReflectionProperty(Client::class, 'httpClient');
-		$httpClientProp->setAccessible(true);
 		$client = new Client([
 			'master' => 'https://api.example.com',
 		]);
@@ -93,6 +119,22 @@ class ClientTest extends TestCase
 		$client->sendRequest('GET', '/pods');
 	}
 
+	public function testFourHundredResponseIsConvertedToBadRequestException(): void
+	{
+		$responseBody = '{"kind":"Status","status":"Failure","message":"not found","reason":"NotFound","code":404}';
+		$httpClient = $this->createMock(ClientInterface::class);
+		$httpClient->expects($this->once())
+			->method('sendRequest')
+			->willReturn(new Response(404, ['Content-Type' => 'application/json'], $responseBody));
+
+		$client = new Client(['master' => 'https://api.example.com'], null, $httpClient);
+
+		$this->expectException(BadRequestException::class);
+		$this->expectExceptionMessage($responseBody);
+
+		$client->sendRequest('GET', '/missing');
+	}
+
 	public function testPodLogsPreserveJsonOutputAsText(): void
 	{
 		$factory = new Psr17Factory();
@@ -113,6 +155,31 @@ class ClientTest extends TestCase
 		$this->assertSame($logOutput, $client->pods()->logs($pod));
 	}
 
+	public function testJsonRequestIncludesBodyFramingAndContentType(): void
+	{
+		$payload = ['metadata' => ['name' => 'example']];
+		$encodedPayload = json_encode($payload, JSON_FORCE_OBJECT);
+		$httpClient = $this->createMock(ClientInterface::class);
+		$httpClient->expects($this->once())
+			->method('sendRequest')
+			->with($this->callback(function ($request) use ($encodedPayload): bool {
+				$this->assertSame($encodedPayload, (string) $request->getBody());
+				$this->assertSame('application/json', $request->getHeaderLine('Content-Type'));
+				$this->assertSame((string) strlen($encodedPayload), $request->getHeaderLine('Content-Length'));
+
+				return true;
+			}))
+			->willReturn(new Response(200, [], '{}'));
+
+		$client = new Client(
+			['master' => 'https://api.example.com'],
+			null,
+			$httpClient
+		);
+
+		$client->sendRequest('POST', '/namespaces', [], $payload, false);
+	}
+
 	/**
 	 * Helper function for tests. Pass in a valid Client and have a fake response set on it.
 	 * @param Client $client
@@ -129,7 +196,6 @@ class ClientTest extends TestCase
 		array  $respHeaders = []
 	): void {
 		$httpClientProp = new ReflectionProperty(Client::class, 'httpClient');
-		$httpClientProp->setAccessible(true);
 
 		$mockHttpMethodsClient = $this->getMockBuilder(HttpMethodsMockClient::class)
 			->setMethods(['send'])

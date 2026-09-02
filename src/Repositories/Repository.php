@@ -130,10 +130,13 @@ abstract class Repository
 	public function applyJsonPatch(Model $model, array $patch): array
 	{
 		$patch = json_encode($patch);
-		
-		$this->client->setPatchType('json');
 
-		return $this->sendRequest('PATCH', '/' . $this->uri . '/' . $model->getMetadata('name'), [], $patch, $this->namespace);
+		$this->client->setPatchType('json');
+		try {
+			return $this->sendRequest('PATCH', '/' . $this->uri . '/' . $model->getMetadata('name'), [], $patch, $this->namespace);
+		} finally {
+			$this->client->setPatchType();
+		}
 	}
 
     /**

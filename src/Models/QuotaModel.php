@@ -2,5 +2,5 @@
 
 class QuotaModel extends Model
 {
-
+	protected array $schema = ['kind' => 'ResourceQuota'];
 }

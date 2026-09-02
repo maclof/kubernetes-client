@@ -3,6 +3,6 @@
 class Certificate extends Model
 {
 
-    protected string $apiVersion = 'certmanager.k8s.io/v1alpha1';
+    protected string $apiVersion = 'cert-manager.io/v1';
 
 }

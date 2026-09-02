@@ -1,6 +1,6 @@
 <?php namespace Maclof\Kubernetes\Repositories\Utils;
 
-use GuzzleHttp\Psr7\Stream;
+use Psr\Http\Message\StreamInterface;
 
 class JSONStreamingParser
 {
@@ -37,7 +37,7 @@ class JSONStreamingParser
 	 */
 	private array $stack = [];
 
-	private Stream $stream;
+	private StreamInterface $stream;
 
 	private JSONStreamingListener $listener;
 
@@ -70,7 +70,7 @@ class JSONStreamingParser
 	 * The constructor.
 	 */
 	public function __construct(
-		Stream $stream,
+		StreamInterface $stream,
 		JSONStreamingListener $listener,
 		string $lineEnding = "\n",
 		bool $emitWhitespace = false,

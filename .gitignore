@@ -7,3 +7,4 @@
 /.buildpath
 /.project
 /build
+/.phpunit.result.cache

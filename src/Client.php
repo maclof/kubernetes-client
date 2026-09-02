@@ -390,10 +390,11 @@ class Client
 			$baseUri .= '/namespaces/' . $this->namespace;
 		}
 
+		$master = rtrim((string) $this->master, '/');
 		if ($uri === '/healthz' || $uri === '/version') {
-			$requestUrl = $this->master . '/' . $uri;
+			$requestUrl = $master . $uri;
 		} else {
-			$requestUrl = $this->master . '/' . $baseUri . $uri;
+			$requestUrl = $master . '/' . $baseUri . $uri;
 		}
 
 		if (is_array($query) && !empty($query)) {
@@ -401,9 +402,14 @@ class Client
 		}
 
 		try {
+			if (!is_null($body)) {
+				$body = is_array($body) ? json_encode($body, JSON_FORCE_OBJECT) : $body;
+			}
+
 			$headers = $method === 'PATCH' ? $this->patchHeaders : [];
-			if ('POST' === $method) {
-				$headers['Content-Type'] = 'application/json';
+			if (!is_null($body)) {
+				$headers['Content-Type'] = $headers['Content-Type'] ?? 'application/json';
+				$headers['Content-Length'] = (string) strlen($body);
 			}
 
 			if ($this->token) {
@@ -412,10 +418,6 @@ class Client
 					$token = file_get_contents($token);
 				}
 				$headers['Authorization'] = 'Bearer ' . trim($token);
-			}
-
-			if (!is_null($body)) {
-				$body = is_array($body) ? json_encode($body, JSON_FORCE_OBJECT) : $body;
 			}
 
 			$response = $this->httpClient->send($method, $requestUrl, $headers, $body);
@@ -444,6 +446,10 @@ class Client
 
 			if ($jsonResponse !== null && array_key_exists('code', $jsonResponse) && $this->isUpgradeRequestRequired($jsonResponse)) {
 				return $this->sendUpgradeRequest($requestUrl, $query);
+			}
+
+			if ($response->getStatusCode() >= 400) {
+				throw new BadRequestException($responseBody, $response->getStatusCode());
 			}
 
 			return is_array($jsonResponse) ? $jsonResponse : $responseBody;

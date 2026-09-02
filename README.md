@@ -5,7 +5,7 @@
 
 A PHP client for managing a Kubernetes cluster.
 
-Last tested with v1.9.6 on a production cloud hosted cluster.
+Tested with PHP 7.4 through 8.5 and Kubernetes v1.37.0.
 
 
 ## Installation using [Composer](http://getcomposer.org/)
@@ -15,13 +15,15 @@ $ composer require maclof/kubernetes-client
 ```
 
 ## Supported API Features
+
 ### v1
 * Nodes
 * Namespaces
+* Resource Quotas
 * Pods
-* Replica Sets
 * Replication Controllers
 * Services
+* Service Accounts
 * Secrets
 * Events
 * Config Maps
@@ -31,23 +33,25 @@ $ composer require maclof/kubernetes-client
 
 ### batch/v1
 * Jobs
-
-### batch/v1beta1
 * Cron Jobs
 
 ### apps/v1
+* Replica Sets
 * Deployments
-
-### extensions/v1beta1
 * Daemon Sets
 
 ### networking.k8s.io/v1
 * Network Policies
-
-### networking.k8s.io/v1beta1
 * Ingresses
 
-### certmanager.k8s.io/v1alpha1
+### autoscaling/v2
+* Horizontal Pod Autoscalers
+
+### rbac.authorization.k8s.io/v1
+* Roles
+* Role Bindings
+
+### cert-manager.io/v1
 * Certificates
 * Issuers
 
@@ -108,11 +112,12 @@ $client = new Client([
 ### Secure HTTPS (CA + Client Certificate Validation)
 ```php
 use Maclof\Kubernetes\Client;
-use Http\Adapter\Guzzle6\Client as Guzzle6Client;
-$httpClient = Guzzle6Client::createWithConfig([
+use GuzzleHttp\Client as GuzzleClient;
+$httpClient = new GuzzleClient([
 	'verify' => '/etc/kubernetes/ssl/ca.crt',
 	'cert' => '/etc/kubernetes/ssl/client.crt',
 	'ssl_key' => '/etc/kubernetes/ssl/client.key',
+	'http_errors' => false,
 ]);
 $client = new Client([
 	'master' => 'https://master.mycluster.com',
@@ -122,9 +127,10 @@ $client = new Client([
 ### Insecure HTTPS (CA Certificate Verification Disabled)
 ```php
 use Maclof\Kubernetes\Client;
-use Http\Adapter\Guzzle6\Client as Guzzle6Client;
-$httpClient = Guzzle6Client::createWithConfig([
+use GuzzleHttp\Client as GuzzleClient;
+$httpClient = new GuzzleClient([
 	'verify' => false,
+	'http_errors' => false,
 ]);
 $client = new Client([
 	'master' => 'https://master.mycluster.com',
@@ -144,9 +150,10 @@ $client = new Client([
 ### Using a Service Account
 ```php
 use Maclof\Kubernetes\Client;
-use Http\Adapter\Guzzle6\Client as Guzzle6Client;
-$httpClient = Guzzle6Client::createWithConfig([
+use GuzzleHttp\Client as GuzzleClient;
+$httpClient = new GuzzleClient([
 	'verify' => '/var/run/secrets/kubernetes.io/serviceaccount/ca.crt',
+	'http_errors' => false,
 ]);
 $client = new Client([
 	'master' => 'https://master.mycluster.com',
@@ -173,6 +180,21 @@ $config = [
 	'client_key' => '/temp/path/client.key',
 ];
 ```
+
+## Testing against a real cluster
+
+The smoke test exercises every built-in repository as well as CRUD, selectors,
+watching, pod logs, exec, ephemeral containers, and node proxy operations. It
+uses a temporary namespace and removes its test resources when finished.
+
+```bash
+composer install
+KUBECONFIG=/path/to/kubeconfig php scripts/cluster-smoke-test.php
+```
+
+For a disposable Ubuntu host, `scripts/provision-test-cluster.sh` provisions a
+single-node kubeadm cluster with containerd, Flannel, and cert-manager. Its
+version variables can be overridden in the environment before running it.
 
 ## Extending a library
 
