@@ -1,4 +1,3 @@
-
 # Kubernetes Client
 
 [![Tests](https://github.com/maclof/kubernetes-client/actions/workflows/tests.yml/badge.svg)](https://github.com/maclof/kubernetes-client/actions/workflows/tests.yml)
@@ -8,52 +7,74 @@ A PHP client for managing a Kubernetes cluster.
 Tested with PHP 7.4 through 8.5 and Kubernetes v1.37.0.
 
 
-## Installation using [Composer](http://getcomposer.org/)
+## Installation
 
 ```bash
-$ composer require maclof/kubernetes-client
+composer require maclof/kubernetes-client
 ```
 
 ## Supported API Features
 
-### v1
-* Nodes
-* Namespaces
-* Resource Quotas
-* Pods
-* Replication Controllers
-* Services
-* Service Accounts
-* Secrets
-* Events
-* Config Maps
-* Endpoints
-* Persistent Volume
-* Persistent Volume Claims
+| API version | Kind | Repository | Scope |
+| --- | --- | --- | --- |
+| `v1` | `ConfigMap` | `configMaps()` | Namespaced |
+| `v1` | `Endpoints` | `endpoints()` | Namespaced |
+| `v1` | `Event` | `events()` | Namespaced |
+| `v1` | `Namespace` | `namespaces()` | Cluster |
+| `v1` | `Node` | `nodes()` | Cluster |
+| `v1` | `PersistentVolume` | `persistentVolume()` | Cluster |
+| `v1` | `PersistentVolumeClaim` | `persistentVolumeClaims()` | Namespaced |
+| `v1` | `Pod` | `pods()` | Namespaced |
+| `v1` | `ReplicationController` | `replicationControllers()` | Namespaced |
+| `v1` | `ResourceQuota` | `quotas()` | Namespaced |
+| `v1` | `Secret` | `secrets()` | Namespaced |
+| `v1` | `Service` | `services()` | Namespaced |
+| `v1` | `ServiceAccount` | `serviceAccounts()` | Namespaced |
+| `apps/v1` | `DaemonSet` | `daemonSets()` | Namespaced |
+| `apps/v1` | `Deployment` | `deployments()` | Namespaced |
+| `apps/v1` | `ReplicaSet` | `replicaSets()` | Namespaced |
+| `autoscaling/v2` | `HorizontalPodAutoscaler` | `horizontalPodAutoscalers()` | Namespaced |
+| `batch/v1` | `CronJob` | `cronJobs()` | Namespaced |
+| `batch/v1` | `Job` | `jobs()` | Namespaced |
+| `networking.k8s.io/v1` | `Ingress` | `ingresses()` | Namespaced |
+| `networking.k8s.io/v1` | `NetworkPolicy` | `networkPolicies()` | Namespaced |
+| `rbac.authorization.k8s.io/v1` | `Role` | `roles()` | Namespaced |
+| `rbac.authorization.k8s.io/v1` | `RoleBinding` | `roleBindings()` | Namespaced |
+| `cert-manager.io/v1` | `Certificate` | `certificates()` | Namespaced |
+| `cert-manager.io/v1` | `Issuer` | `issuers()` | Namespaced |
 
-### batch/v1
-* Jobs
-* Cron Jobs
+The cert-manager entries require cert-manager to be installed; they are not
+built-in Kubernetes APIs.
 
-### apps/v1
-* Replica Sets
-* Deployments
-* Daemon Sets
+### Kubernetes v1.37.0 coverage gaps
 
-### networking.k8s.io/v1
-* Network Policies
-* Ingresses
+Live API discovery on a kubeadm v1.37.0 cluster reports 72 top-level built-in
+resource/version pairs. This client supports 23, leaving the 49 pairs below.
+Subresources such as `pods/status` and third-party CRDs are excluded.
 
-### autoscaling/v2
-* Horizontal Pod Autoscalers
-
-### rbac.authorization.k8s.io/v1
-* Roles
-* Role Bindings
-
-### cert-manager.io/v1
-* Certificates
-* Issuers
+| API version | Unsupported kinds |
+| --- | --- |
+| `admissionregistration.k8s.io/v1` | `MutatingAdmissionPolicy`, `MutatingAdmissionPolicyBinding`, `MutatingWebhookConfiguration`, `ValidatingAdmissionPolicy`, `ValidatingAdmissionPolicyBinding`, `ValidatingWebhookConfiguration` |
+| `apiextensions.k8s.io/v1` | `CustomResourceDefinition` |
+| `apiregistration.k8s.io/v1` | `APIService` |
+| `apps/v1` | `ControllerRevision`, `StatefulSet` |
+| `authentication.k8s.io/v1` | `SelfSubjectReview`, `TokenReview` |
+| `authorization.k8s.io/v1` | `LocalSubjectAccessReview`, `SelfSubjectAccessReview`, `SelfSubjectRulesReview`, `SubjectAccessReview` |
+| `autoscaling/v1` | `HorizontalPodAutoscaler` (the client uses `autoscaling/v2`) |
+| `certificates.k8s.io/v1` | `CertificateSigningRequest`, `ClusterTrustBundle`, `PodCertificateRequest` |
+| `coordination.k8s.io/v1` | `Lease` |
+| `v1` | `Binding`, `ComponentStatus`, `LimitRange`, `PodTemplate` |
+| `discovery.k8s.io/v1` | `EndpointSlice` |
+| `events.k8s.io/v1` | `Event` (the client uses core `v1`) |
+| `flowcontrol.apiserver.k8s.io/v1` | `FlowSchema`, `PriorityLevelConfiguration` |
+| `networking.k8s.io/v1` | `IngressClass`, `IPAddress`, `ServiceCIDR` |
+| `node.k8s.io/v1` | `RuntimeClass` |
+| `policy/v1` | `PodDisruptionBudget` |
+| `rbac.authorization.k8s.io/v1` | `ClusterRole`, `ClusterRoleBinding` |
+| `resource.k8s.io/v1` | `DeviceClass`, `DeviceTaintRule`, `ResourceClaim`, `ResourceClaimTemplate`, `ResourceSlice` |
+| `scheduling.k8s.io/v1` | `PriorityClass` |
+| `storage.k8s.io/v1` | `CSIDriver`, `CSINode`, `CSIStorageCapacity`, `StorageClass`, `VolumeAttachment`, `VolumeAttributesClass` |
+| `storagemigration.k8s.io/v1` | `StorageVersionMigration` |
 
 ## Basic Usage
 
@@ -65,7 +86,7 @@ require __DIR__ . '/vendor/autoload.php';
 use Maclof\Kubernetes\Client;
 
 $client = new Client([
-	'master' => 'http://master.mycluster.com',
+	'master' => 'https://api.example.com',
 ]);
 
 // Find pods by label selector
@@ -77,8 +98,9 @@ $pods = $client->pods()->setLabelSelector([
 // Both setLabelSelector and setFieldSelector can take an optional
 // second parameter which lets you define inequality based selectors (ie using the != operator)
 $pods = $client->pods()->setLabelSelector([
-	'name'    => 'test'], 
-	['env'     =>  'staging']
+	'name' => 'test',
+], [
+	'env' => 'staging',
 ])->find();
 
 // Find pods by field selector
@@ -93,83 +115,78 @@ $pod = $client->pods()->setLabelSelector([
 ```
 
 ### Using [JSONPath](https://github.com/FlowCommunications/JSONPath)
-It allows you to query status data.
+
+JSONPath expressions can query model data.
 
 ```php
-$jobStartTime = $client->jobs()->find()->getJsonPath('$.status.startTime')[0];
+$job = $client->jobs()->first();
+$jobStartTime = $job->getJsonPath('$.status.startTime')[0];
 ```
 
 ## Authentication Examples
 
-### Insecure HTTP
-```php
-use Maclof\Kubernetes\Client;
-$client = new Client([
-	'master' => 'http://master.mycluster.com',
-]);
-```
+### Kubeconfig with client certificates
 
-### Secure HTTPS (CA + Client Certificate Validation)
 ```php
 use Maclof\Kubernetes\Client;
 use GuzzleHttp\Client as GuzzleClient;
+
+$config = Client::parseKubeconfigFile('/path/to/kubeconfig');
 $httpClient = new GuzzleClient([
-	'verify' => '/etc/kubernetes/ssl/ca.crt',
-	'cert' => '/etc/kubernetes/ssl/client.crt',
-	'ssl_key' => '/etc/kubernetes/ssl/client.key',
+	'verify' => $config['ca_cert'],
+	'cert' => $config['client_cert'],
+	'ssl_key' => $config['client_key'],
 	'http_errors' => false,
 ]);
-$client = new Client([
-	'master' => 'https://master.mycluster.com',
-], null, $httpClient);
+$client = new Client($config, null, $httpClient);
 ```
 
-### Insecure HTTPS (CA Certificate Verification Disabled)
+Guzzle is one option; any compatible PSR-18 HTTP client can be injected.
+
+### HTTPS with certificate verification disabled
+
 ```php
 use Maclof\Kubernetes\Client;
 use GuzzleHttp\Client as GuzzleClient;
+
 $httpClient = new GuzzleClient([
 	'verify' => false,
 	'http_errors' => false,
 ]);
 $client = new Client([
-	'master' => 'https://master.mycluster.com',
+	'master' => 'https://api.example.com',
+	'verify' => false,
 ], null, $httpClient);
 ```
 
-### Using Basic Auth
-```php
-use Maclof\Kubernetes\Client;
-$client = new Client([
-	'master' => 'https://master.mycluster.com',
-	'username' => 'admin',
-	'password' => 'abc123',
-]);
-```
+Use this only for controlled development clusters.
 
 ### Using a Service Account
+
 ```php
 use Maclof\Kubernetes\Client;
 use GuzzleHttp\Client as GuzzleClient;
+
 $httpClient = new GuzzleClient([
 	'verify' => '/var/run/secrets/kubernetes.io/serviceaccount/ca.crt',
 	'http_errors' => false,
 ]);
 $client = new Client([
-	'master' => 'https://master.mycluster.com',
+	'master' => 'https://kubernetes.default.svc',
 	'token' => '/var/run/secrets/kubernetes.io/serviceaccount/token',
 ], null, $httpClient);
 ```
 
 ### Parsing a kubeconfig file
+
 ```php
 use Maclof\Kubernetes\Client;
 
 // Parsing from the file data directly
-$config = Client::parseKubeConfig('kubeconfig yaml data');
+$config = Client::parseKubeconfig('kubeconfig yaml data');
 
 // Parsing from the file path
-$config = Client::parseKubeConfigFile('~/.kube/config.yml');
+$config = Client::parseKubeconfigFile('/path/to/kubeconfig');
 
 // Example config that may be returned
 // You would then feed these options into the http/kubernetes client constructors.
@@ -183,7 +200,7 @@ $config = [
 
 ## Testing against a real cluster
 
-The smoke test exercises every built-in repository as well as CRUD, selectors,
+The smoke test exercises every bundled repository as well as CRUD, selectors,
 watching, pod logs, exec, ephemeral containers, and node proxy operations. It
 uses a temporary namespace and removes its test resources when finished.
 
@@ -196,11 +213,13 @@ For a disposable Ubuntu host, `scripts/provision-test-cluster.sh` provisions a
 single-node kubeadm cluster with containerd, Flannel, and cert-manager. Its
 version variables can be overridden in the environment before running it.
 
-## Extending a library
+## Extending the library
 
 ### Custom repositories
+
 ```php
 use Maclof\Kubernetes\Client;
+use Maclof\Kubernetes\RepositoryRegistry;
 
 $repositories = new RepositoryRegistry();
 $repositories['things'] = MyApp\Kubernetes\Repository\ThingRepository::class;
@@ -209,30 +228,31 @@ $client = new Client([
 	'master' => 'https://master.mycluster.com',
 ], $repositories);
 
-$client->things(); //ThingRepository
+$client->things(); // MyApp\Kubernetes\Repository\ThingRepository
 ```
 
 ## Usage Examples
 
-### Create/Update a Replication Controller
-The below example uses an array to specify the replication controller's attributes. You can specify the attributes either as an array, JSON encoded string or a YAML encoded string. The second parameter to the model constructor is the data type and defaults to array.
-```php
-use Maclof\Kubernetes\Models\ReplicationController;
+### Create or update a Deployment
 
-$replicationController = new ReplicationController([
+Models accept attributes as an array, a JSON-encoded string, or a YAML-encoded
+string. Arrays are used by default.
+
+```php
+use Maclof\Kubernetes\Models\Deployment;
+
+$deployment = new Deployment([
 	'metadata' => [
 		'name' => 'nginx-test',
-		'labels' => [
-			'name' => 'nginx-test',
-		],
 	],
 	'spec' => [
 		'replicas' => 1,
+		'selector' => [
+			'matchLabels' => ['app' => 'nginx-test'],
+		],
 		'template' => [
 			'metadata' => [
-				'labels' => [
-					'name' => 'nginx-test',
-				],
+				'labels' => ['app' => 'nginx-test'],
 			],
 			'spec' => [
 				'containers' => [
@@ -252,32 +272,25 @@ $replicationController = new ReplicationController([
 	],
 ]);
 
-if ($client->replicationControllers()->exists($replicationController->getMetadata('name'))) {
-	$client->replicationControllers()->update($replicationController);
-} else {
-	$client->replicationControllers()->create($replicationController);
-}
+$client->deployments()->apply($deployment);
 ```
 
-### Delete a Replication Controller
+### Delete a Deployment
+
 ```php
-$replicationController = $client->replicationControllers()->setLabelSelector([
-	'name' => 'nginx-test',
+$deployment = $client->deployments()->setFieldSelector([
+	'metadata.name' => 'nginx-test',
 ])->first();
-$client->replicationControllers()->delete($replicationController);
+$client->deployments()->delete($deployment);
 ```
 
-You can also specify options when performing a deletion, eg. to perform [cascading delete]( https://kubernetes.io/docs/concepts/workloads/controllers/garbage-collection/#setting-the-cascading-deletion-policy)
+Deletion options can set the propagation policy:
 
 ```php
 use Maclof\Kubernetes\Models\DeleteOptions;
 
-$client->replicationControllers()->delete(
-	$replicationController,
+$client->deployments()->delete(
+	$deployment,
 	new DeleteOptions(['propagationPolicy' => 'Background'])
 );
 ```
-
-See the API documentation for an explanation of the options:
-
-https://kubernetes.io/docs/api-reference/v1.6/#deleteoptions-v1-meta
