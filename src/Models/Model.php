@@ -40,9 +40,10 @@ abstract class Model implements Arrayable
 	/**
 	 * The constructor.
 	 *
+	 * @param array|string $attributes
 	 * @throws \InvalidArgumentException
 	 */
-	public function __construct(array $attributes = [], string $attributeType = self::MODEL_FROM_ARRAY)
+	public function __construct($attributes = [], string $attributeType = self::MODEL_FROM_ARRAY)
 	{
 		if ($attributeType == self::MODEL_FROM_ARRAY) {
 			if (is_array($attributes)) {
@@ -51,22 +52,40 @@ abstract class Model implements Arrayable
 				throw new InvalidArgumentException('Attributes are not an array.');
 			}
 		} elseif ($attributeType == self::MODEL_FROM_JSON) {
-			if (!is_string($attributes[self::MODEL_FROM_JSON])) {
+			$encoded = is_string($attributes)
+				? $attributes
+				: ($attributes[self::MODEL_FROM_JSON] ?? null);
+			if (!is_string($encoded)) {
 				throw new InvalidArgumentException('JSON attributes must be provided as a JSON encoded string.');
 			}
 
 			try {
-				$this->attributes[self::MODEL_FROM_JSON] = json_decode($attributes[self::MODEL_FROM_JSON], true, 512, JSON_THROW_ON_ERROR);
+				$decoded = json_decode($encoded, true, 512, JSON_THROW_ON_ERROR);
+				if (!is_array($decoded)) {
+					throw new InvalidArgumentException('JSON attributes must decode to an object or array.');
+				}
+				$this->attributes = is_string($attributes)
+					? $decoded
+					: [self::MODEL_FROM_JSON => $decoded];
 			} catch (JsonException $e) {
 				throw new InvalidArgumentException('Failed to parse JSON encoded attributes: ' . $e->getMessage(), 0, $e);
 			}
 		} elseif ($attributeType == self::MODEL_FROM_YAML) {
-			if (!is_string($attributes[self::MODEL_FROM_YAML])) {
+			$encoded = is_string($attributes)
+				? $attributes
+				: ($attributes[self::MODEL_FROM_YAML] ?? null);
+			if (!is_string($encoded)) {
 				throw new InvalidArgumentException('YAML attributes must be provided as a YAML encoded string.');
 			}
 
 			try {
-				$this->attributes[self::MODEL_FROM_YAML] = Yaml::parse($attributes[self::MODEL_FROM_YAML]);
+				$decoded = Yaml::parse($encoded);
+				if (!is_array($decoded)) {
+					throw new InvalidArgumentException('YAML attributes must decode to an object or array.');
+				}
+				$this->attributes = is_string($attributes)
+					? $decoded
+					: [self::MODEL_FROM_YAML => $decoded];
 			} catch (YamlParseException $e) {
 				throw new InvalidArgumentException('Failed to parse YAML encoded attributes: ' . $e->getMessage(), 0, $e);
 			}

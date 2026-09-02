@@ -75,6 +75,20 @@ class ModelTest extends TestCase
 
     }
 
+	public function testCanCreateModelFromJsonString(): void
+	{
+		$model = new ConcreteModel('{"metadata":{"name":"json-example"}}', Model::MODEL_FROM_JSON);
+
+		$this->assertSame('json-example', $model->getMetadata('name'));
+	}
+
+	public function testCanCreateModelFromYamlString(): void
+	{
+		$model = new ConcreteModel("metadata:\n  name: yaml-example\n", Model::MODEL_FROM_YAML);
+
+		$this->assertSame('yaml-example', $model->getMetadata('name'));
+	}
+
     public function testIsReturningSchemaOnToStringCall(): void
     {
         $model = new ConcreteModel();

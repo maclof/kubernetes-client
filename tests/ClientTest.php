@@ -13,6 +13,36 @@ use Psr\Http\Client\ClientInterface;
 
 class ClientTest extends TestCase
 {
+	public function testKubeconfigWithoutCaKeepsTlsVerificationEnabled(): void
+	{
+		$options = Client::parseKubeconfig([
+			'current-context' => 'test',
+			'contexts' => [['name' => 'test', 'context' => ['cluster' => 'test', 'user' => 'test']]],
+			'clusters' => [['name' => 'test', 'cluster' => ['server' => 'https://api.example.com']]],
+			'users' => [['name' => 'test', 'user' => []]],
+		], 'array');
+
+		$this->assertTrue($options['verify']);
+	}
+
+	public function testKubeconfigCanExplicitlyDisableTlsVerification(): void
+	{
+		$options = Client::parseKubeconfig([
+			'current-context' => 'test',
+			'contexts' => [['name' => 'test', 'context' => ['cluster' => 'test', 'user' => 'test']]],
+			'clusters' => [[
+				'name' => 'test',
+				'cluster' => [
+					'server' => 'https://api.example.com',
+					'insecure-skip-tls-verify' => true,
+				],
+			]],
+			'users' => [['name' => 'test', 'user' => []]],
+		], 'array');
+
+		$this->assertFalse($options['verify']);
+	}
+
 	/**
 	 * @dataProvider healthAndVersionProvider
 	 */

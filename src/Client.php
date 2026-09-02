@@ -295,8 +295,10 @@ class Client
 
 		if (isset($cluster['certificate-authority-data'])) {
 			$options['ca_cert'] = self::getTempFilePath('ca-cert.pem', base64_decode($cluster['certificate-authority-data'], true));
-		} elseif (strpos($options['master'], 'https://') !== false) {
+		} elseif (($cluster['insecure-skip-tls-verify'] ?? false) === true) {
 			$options['verify'] = false;
+		} elseif (strpos($options['master'], 'https://') !== false) {
+			$options['verify'] = true;
 		}
 
 		if (isset($user['client-certificate-data'])) {

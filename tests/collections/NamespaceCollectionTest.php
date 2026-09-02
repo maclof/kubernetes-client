@@ -25,4 +25,19 @@ class NamespaceCollectionTest extends TestCase
 		$this->assertTrue(is_array($items));
 		$this->assertEquals(3, count($items));
 	}
+
+	public function test_map_can_change_the_item_type(): void
+	{
+		$collection = new NamespaceCollection([
+			['metadata' => ['name' => 'first']],
+			['metadata' => ['name' => 'second']],
+		]);
+
+		$this->assertSame(
+			['first', 'second'],
+			$collection->map(function ($namespace) {
+				return $namespace->getMetadata('name');
+			})->all()
+		);
+	}
 }
