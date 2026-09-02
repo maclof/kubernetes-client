@@ -43,6 +43,9 @@ class ClientTest extends TestCase
 	public function testSendRequestJsonParsesResponse(): void
 	{
 		$httpClientProp = new ReflectionProperty(Client::class, 'httpClient');
+		if (PHP_VERSION_ID < 80100) {
+			$httpClientProp->setAccessible(true);
+		}
 		$client = new Client([
 			'master' => 'https://api.example.com',
 		]);
@@ -196,6 +199,9 @@ class ClientTest extends TestCase
 		array  $respHeaders = []
 	): void {
 		$httpClientProp = new ReflectionProperty(Client::class, 'httpClient');
+		if (PHP_VERSION_ID < 80100) {
+			$httpClientProp->setAccessible(true);
+		}
 
 		$mockHttpMethodsClient = $this->getMockBuilder(HttpMethodsMockClient::class)
 			->setMethods(['send'])
