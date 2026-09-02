@@ -10,10 +10,21 @@ Tested with PHP 7.4 through 8.5 and Kubernetes v1.37.0.
 ## Installation
 
 ```bash
-composer require maclof/kubernetes-client
+composer require maclof/kubernetes-client guzzlehttp/guzzle
 ```
 
+Guzzle is used in the examples. You can instead inject any compatible PSR-18
+HTTP client.
+
 ## Supported API Features
+
+All API resources advertised by Kubernetes discovery are supported, including
+built-in resources, alternate API versions, installed third-party CRDs, and
+named subresources. A single universal repository supplies CRUD, selectors,
+watch, and subresource operations for every kind, including logs, exec, debug,
+and proxy wherever the API server exposes those capabilities.
+
+### Backward-compatible aliases
 
 | API version | Kind | Repository | Scope |
 | --- | --- | --- | --- |
@@ -43,16 +54,17 @@ composer require maclof/kubernetes-client
 | `cert-manager.io/v1` | `Certificate` | `certificates()` | Namespaced |
 | `cert-manager.io/v1` | `Issuer` | `issuers()` | Namespaced |
 
-The cert-manager entries require cert-manager to be installed; they are not
-built-in Kubernetes APIs.
+These method names and their typed model collections are retained for backward
+compatibility, but they use the same universal repository as discovered APIs.
+The cert-manager entries require cert-manager to be installed.
 
-### Kubernetes v1.37.0 coverage gaps
+### Discovery-backed repositories
 
 Live API discovery on a kubeadm v1.37.0 cluster reports 72 top-level built-in
-resource/version pairs. This client supports 23, leaving the 49 pairs below.
-Subresources such as `pods/status` and third-party CRDs are excluded.
+resource/version pairs. Twenty-three have the aliases above; the remaining 49
+are resolved automatically with the same repository and operations.
 
-| API version | Unsupported kinds |
+| API version | Dynamically supported kinds |
 | --- | --- |
 | `admissionregistration.k8s.io/v1` | `MutatingAdmissionPolicy`, `MutatingAdmissionPolicyBinding`, `MutatingWebhookConfiguration`, `ValidatingAdmissionPolicy`, `ValidatingAdmissionPolicyBinding`, `ValidatingWebhookConfiguration` |
 | `apiextensions.k8s.io/v1` | `CustomResourceDefinition` |
@@ -75,6 +87,57 @@ Subresources such as `pods/status` and third-party CRDs are excluded.
 | `scheduling.k8s.io/v1` | `PriorityClass` |
 | `storage.k8s.io/v1` | `CSIDriver`, `CSINode`, `CSIStorageCapacity`, `StorageClass`, `VolumeAttachment`, `VolumeAttributesClass` |
 | `storagemigration.k8s.io/v1` | `StorageVersionMigration` |
+
+Unknown client methods are matched to discovered plural resource names. This
+works for Kubernetes APIs and installed CRDs:
+
+```php
+// Built-in kind without a predefined alias
+$statefulSets = $client->statefulSets()->find();
+
+// A third-party Widget CRD discovered as example.io/v1/widgets
+$widgets = $client->widgets()->find();
+
+$widget = new Maclof\Kubernetes\Models\DynamicResource([
+	'apiVersion' => 'example.io/v1',
+	'kind' => 'Widget',
+	'metadata' => ['name' => 'example'],
+	'spec' => ['size' => 3],
+]);
+$client->widgets()->create($widget);
+```
+
+See [the discovered-resource example](examples/discovered-resources.php) and
+[the complete CRD lifecycle example](examples/custom-resources.php) for
+runnable versions.
+
+Pass an API version when a resource name is ambiguous or a non-preferred
+version is required. The explicit form also supports CRD plural names that
+cannot be represented as PHP method names:
+
+```php
+$events = $client->events('events.k8s.io/v1')->find();
+$widgets = $client->resources('example.io/v1', 'widgets')->find();
+$storageClasses = $client->resourceByKind(
+	'storage.k8s.io/v1',
+	'StorageClass'
+)->find();
+```
+
+Every repository can request, update, or patch named subresources:
+
+```php
+$status = $client->pods()->subresource('example', 'status');
+$scale = $client->deployments()->subresource('example', 'scale');
+$client->widgets()->patchSubresource(
+	'example',
+	'status',
+	['status' => ['ready' => true]]
+);
+```
+
+Logs, exec, scale, status, and proxy calls are demonstrated in
+[the subresource example](examples/subresources.php).
 
 ## Basic Usage
 
@@ -123,6 +186,27 @@ $job = $client->jobs()->first();
 $jobStartTime = $job->getJsonPath('$.status.startTime')[0];
 ```
 
+## Runnable examples
+
+Set `KUBECONFIG` to a readable kubeconfig, install dependencies, and run an
+example from the project root:
+
+```bash
+composer install
+export KUBECONFIG=/path/to/kubeconfig
+php examples/discovery.php
+```
+
+| Example | Demonstrates |
+| --- | --- |
+| [`legacy-aliases.php`](examples/legacy-aliases.php) | Existing aliases, typed collections, selectors, and ConfigMap CRUD |
+| [`discovered-resources.php`](examples/discovered-resources.php) | Auto-discovered built-ins, explicit versions, exact resources, and Kind lookup |
+| [`custom-resources.php`](examples/custom-resources.php) | Third-party CRD create, get, update, patch, watch, and delete |
+| [`subresources.php`](examples/subresources.php) | Status, logs, exec, scale, and proxy subresources |
+| [`discovery.php`](examples/discovery.php) | Every resource, scope, and verb advertised by the API server |
+
+See [examples/README.md](examples/README.md) for prerequisites and safety notes.
+
 ## Authentication Examples
 
 ### Kubeconfig with client certificates
@@ -140,8 +224,6 @@ $httpClient = new GuzzleClient([
 ]);
 $client = new Client($config, null, $httpClient);
 ```
-
-Guzzle is one option; any compatible PSR-18 HTTP client can be injected.
 
 ### HTTPS with certificate verification disabled
 
@@ -231,7 +313,7 @@ $client = new Client([
 $client->things(); // MyApp\Kubernetes\Repository\ThingRepository
 ```
 
-## Usage Examples
+## Deployment example
 
 ### Create or update a Deployment
 

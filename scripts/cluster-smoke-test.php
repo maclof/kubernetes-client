@@ -9,6 +9,7 @@ use Maclof\Kubernetes\Models\ConfigMap;
 use Maclof\Kubernetes\Models\CronJob;
 use Maclof\Kubernetes\Models\DaemonSet;
 use Maclof\Kubernetes\Models\Deployment;
+use Maclof\Kubernetes\Models\DynamicResource;
 use Maclof\Kubernetes\Models\Endpoint;
 use Maclof\Kubernetes\Models\Event;
 use Maclof\Kubernetes\Models\HorizontalPodAutoscaler;
@@ -507,6 +508,85 @@ try {
             'lastTimestamp' => gmdate('Y-m-d\TH:i:s\Z'),
             'count' => 1,
         ]), 'Event');
+    });
+    $run('dynamic API discovery', function () use ($client): void {
+        $resources = $client->discoverApiResources();
+        $topLevel = array_filter($resources, static function (array $resource): bool {
+            return strpos($resource['name'], '/') === false;
+        });
+        if (count($topLevel) < 72) {
+            throw new RuntimeException('Expected at least 72 top-level discovered resources.');
+        }
+    });
+    $run('dynamic repositories list every listable API', function () use ($client): void {
+        $failures = [];
+        foreach ($client->discoverApiResources() as $resource) {
+            if (
+                strpos($resource['name'], '/') !== false
+                || !in_array('list', $resource['verbs'], true)
+            ) {
+                continue;
+            }
+
+            try {
+                $method = $resource['name'];
+                $client->{$method}($resource['groupVersion'])->find();
+            } catch (Throwable $exception) {
+                $failures[] = $resource['groupVersion'] . '/' . $resource['name']
+                    . ': ' . $exception->getMessage();
+            }
+        }
+
+        if ($failures) {
+            throw new RuntimeException(implode('; ', $failures));
+        }
+    });
+    $run('dynamic third-party CRD repository', function () use ($client, $suffix): void {
+        $issuer = $client->resourceByKind('cert-manager.io/v1', 'Issuer')
+            ->get('issuer-' . $suffix);
+        if (($issuer->toArray()['kind'] ?? null) !== 'Issuer') {
+            throw new RuntimeException('Dynamic CRD lookup did not return an Issuer.');
+        }
+    });
+    $run('automatic built-in repository', function () use ($client): void {
+        $client->statefulSets()->find();
+    });
+    $run('automatic third-party CRD repository', function () use ($client, $suffix): void {
+        $name = 'cluster-issuer-' . $suffix;
+        $repository = $client->clusterIssuers();
+        $created = false;
+        try {
+            $response = $repository->create(new DynamicResource([
+                'apiVersion' => 'cert-manager.io/v1',
+                'kind' => 'ClusterIssuer',
+                'metadata' => ['name' => $name],
+                'spec' => ['selfSigned' => new stdClass()],
+            ]));
+            $created = true;
+            if (($response['kind'] ?? null) !== 'ClusterIssuer') {
+                throw new RuntimeException('Automatic CRD repository returned the wrong kind.');
+            }
+        } finally {
+            if ($created) {
+                $repository->deleteByName($name);
+            }
+        }
+    });
+    $run('explicit alternate API version', function () use ($client): void {
+        $client->events('events.k8s.io/v1')->find();
+    });
+    $run('typed repository pod status subresource', function () use ($client, $podName): void {
+        $response = $client->pods()->subresource($podName, 'status');
+        if (($response['kind'] ?? null) !== 'Pod') {
+            throw new RuntimeException('Pod status subresource did not return a Pod.');
+        }
+    });
+    $run('dynamic deployment scale subresource', function () use ($client, $deploymentName): void {
+        $response = $client->resources('apps/v1', 'deployments', true)
+            ->subresource($deploymentName, 'scale');
+        if (($response['kind'] ?? null) !== 'Scale') {
+            throw new RuntimeException('Deployment scale subresource did not return a Scale.');
+        }
     });
     $run('node repository', function () use ($client): void {
         $nodes = $client->nodes()->find();

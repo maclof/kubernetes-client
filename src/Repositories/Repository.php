@@ -1,6 +1,7 @@
 <?php namespace Maclof\Kubernetes\Repositories;
 
 use Closure;
+use InvalidArgumentException;
 use Maclof\Kubernetes\Client;
 use Maclof\Kubernetes\Collections\Collection;
 use Maclof\Kubernetes\Models\Model;
@@ -109,6 +110,26 @@ abstract class Repository
 	}
 
 	/**
+	 * Get a model directly by name.
+	 */
+	public function get(string $name): Model
+	{
+		$response = $this->sendRequest(
+			'GET',
+			'/' . $this->uri . '/' . rawurlencode($name),
+			[],
+			null,
+			$this->namespace
+		);
+		$model = $this->createCollection(['items' => [$response]])->first();
+		if (!$model) {
+			throw new \UnexpectedValueException('The API response did not contain a resource.');
+		}
+
+		return $model;
+	}
+
+	/**
 	 * Update a model.
 	 */
 	public function update(Model $model): array
@@ -171,6 +192,155 @@ abstract class Repository
 		$body = $options ? $options->getSchema() : null;
 
 		return $this->sendRequest('DELETE', '/' . $this->uri . '/' . $name, [], $body, $this->namespace);
+	}
+
+	/**
+	 * Delete every resource matching the optional selectors/query.
+	 */
+	public function deleteCollection(array $query = [], ?DeleteOptions $options = null): array
+	{
+		$body = $options ? $options->getSchema() : null;
+
+		return $this->sendRequest('DELETE', '/' . $this->uri, $query, $body, $this->namespace);
+	}
+
+	/**
+	 * Request any named subresource, including CRD status/scale and proxy paths.
+	 *
+	 * @param mixed $body
+	 * @return mixed
+	 */
+	public function subresource(
+		string $name,
+		string $subresource,
+		string $method = 'GET',
+		$body = null,
+		array $query = [],
+		array $requestOptions = []
+	) {
+		$uri = '/' . $this->uri . '/' . rawurlencode($name) . '/' . ltrim($subresource, '/');
+
+		return $this->sendRequest(
+			strtoupper($method),
+			$uri,
+			$query,
+			$body,
+			$this->namespace,
+			$requestOptions
+		);
+	}
+
+	/**
+	 * Patch a named subresource with the requested patch media type.
+	 *
+	 * @param mixed $body
+	 * @return mixed
+	 */
+	public function patchSubresource(
+		string $name,
+		string $subresource,
+		$body,
+		string $patchType = 'merge',
+		array $query = []
+	) {
+		$this->client->setPatchType($patchType);
+		try {
+			return $this->subresource($name, $subresource, 'PATCH', $body, $query);
+		} finally {
+			$this->client->setPatchType();
+		}
+	}
+
+	/**
+	 * Get logs from a resource exposing a log subresource.
+	 *
+	 * @param Model|string $resource
+	 */
+	public function logs($resource, array $query = []): string
+	{
+		return $this->subresource(
+			$this->resolveResourceName($resource),
+			'log',
+			'GET',
+			null,
+			$query,
+			['decode_json' => false]
+		);
+	}
+
+	/**
+	 * Execute a command through a resource's exec subresource.
+	 *
+	 * @param Model|string $resource
+	 * @return mixed
+	 */
+	#[\ReturnTypeWillChange]
+	public function exec($resource, array $query = [])
+	{
+		return $this->subresource(
+			$this->resolveResourceName($resource),
+			'exec',
+			'POST',
+			null,
+			$query
+		);
+	}
+
+	/**
+	 * Attach an ephemeral container through the ephemeralcontainers subresource.
+	 *
+	 * @param Model|string $resource
+	 */
+	public function debug($resource, array $spec): array
+	{
+		$this->client->setPatchType('strategic');
+		try {
+			return $this->subresource(
+				$this->resolveResourceName($resource),
+				'ephemeralcontainers',
+				'PATCH',
+				json_encode($spec)
+			);
+		} finally {
+			$this->client->setPatchType();
+		}
+	}
+
+	/**
+	 * Request a path through a resource's proxy subresource.
+	 *
+	 * @param Model|string $resource
+	 * @return mixed
+	 */
+	public function proxy($resource, string $method, string $path, array $query = [])
+	{
+		return $this->subresource(
+			$this->resolveResourceName($resource),
+			'proxy/' . ltrim($path, '/'),
+			$method,
+			null,
+			$query
+		);
+	}
+
+	/**
+	 * @param Model|string $resource
+	 */
+	protected function resolveResourceName($resource): string
+	{
+		if ($resource instanceof Model) {
+			$name = $resource->getMetadata('name');
+		} elseif (is_string($resource)) {
+			$name = $resource;
+		} else {
+			throw new InvalidArgumentException('Resource must be a model or resource name.');
+		}
+
+		if (!is_string($name) || $name === '') {
+			throw new InvalidArgumentException('Resource name is missing.');
+		}
+
+		return $name;
 	}
 
 	/**

@@ -6,9 +6,8 @@ use Http\Discovery\Psr18ClientDiscovery;
 use InvalidArgumentException;
 use BadMethodCallException;
 use Maclof\Kubernetes\Exceptions\ApiServerException;
-use Maclof\Kubernetes\Repositories\RoleBindingRepository;
-use Maclof\Kubernetes\Repositories\RoleRepository;
-use Maclof\Kubernetes\Repositories\ServiceAccountRepository;
+use Maclof\Kubernetes\Exceptions\BadRequestException;
+use Maclof\Kubernetes\Repositories\DynamicRepository;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Symfony\Component\Yaml\Yaml;
@@ -22,54 +21,33 @@ use Http\Message\RequestFactory as HttpRequestFactory;
 use React\EventLoop\Factory as ReactFactory;
 use React\Socket\Connector as ReactSocketConnector;
 use Ratchet\Client\Connector as WebSocketConnector;
-use Maclof\Kubernetes\Repositories\CertificateRepository;
-use Maclof\Kubernetes\Exceptions\BadRequestException;
-use Maclof\Kubernetes\Repositories\ConfigMapRepository;
-use Maclof\Kubernetes\Repositories\CronJobRepository;
-use Maclof\Kubernetes\Repositories\DaemonSetRepository;
-use Maclof\Kubernetes\Repositories\DeploymentRepository;
-use Maclof\Kubernetes\Repositories\EndpointRepository;
-use Maclof\Kubernetes\Repositories\EventRepository;
-use Maclof\Kubernetes\Repositories\IngressRepository;
-use Maclof\Kubernetes\Repositories\JobRepository;
-use Maclof\Kubernetes\Repositories\NetworkPolicyRepository;
-use Maclof\Kubernetes\Repositories\NodeRepository;
-use Maclof\Kubernetes\Repositories\PersistentVolumeRepository;
-use Maclof\Kubernetes\Repositories\PersistentVolumeClaimRepository;
-use Maclof\Kubernetes\Repositories\PodRepository;
-use Maclof\Kubernetes\Repositories\QuotaRepository;
-use Maclof\Kubernetes\Repositories\ReplicaSetRepository;
-use Maclof\Kubernetes\Repositories\ReplicationControllerRepository;
-use Maclof\Kubernetes\Repositories\SecretRepository;
-use Maclof\Kubernetes\Repositories\ServiceRepository;
-use Maclof\Kubernetes\Repositories\NamespaceRepository;
 
 /**
- * @method NodeRepository nodes()
- * @method QuotaRepository quotas()
- * @method PodRepository pods()
- * @method ReplicaSetRepository replicaSets()
- * @method ReplicationControllerRepository replicationControllers()
- * @method ServiceRepository services()
- * @method SecretRepository secrets()
- * @method EventRepository events()
- * @method ConfigMapRepository configMaps()
- * @method EndpointRepository endpoints()
- * @method PersistentVolumeClaimRepository persistentVolumeClaims()
- * @method PersistentVolumeRepository persistentVolume()
- * @method JobRepository jobs()
- * @method CronJobRepository cronJobs()
- * @method DaemonSetRepository daemonSets()
- * @method DeploymentRepository deployments()
- * @method IngressRepository ingresses()
- * @method NamespaceRepository namespaces()
- * @method NetworkPolicyRepository networkPolicies()
- * @method HorizontalPodAutoscalerRepository horizontalPodAutoscalers()
- * @method CertificateRepository certificates()
- * @method IssuersRepository issuers()
- * @method ServiceAccountRepository serviceAccounts()
- * @method RoleRepository roles()
- * @method RoleBindingRepository roleBindings()
+ * @method DynamicRepository nodes(?string $apiVersion = null)
+ * @method DynamicRepository quotas(?string $apiVersion = null)
+ * @method DynamicRepository pods(?string $apiVersion = null)
+ * @method DynamicRepository replicaSets(?string $apiVersion = null)
+ * @method DynamicRepository replicationControllers(?string $apiVersion = null)
+ * @method DynamicRepository services(?string $apiVersion = null)
+ * @method DynamicRepository secrets(?string $apiVersion = null)
+ * @method DynamicRepository events(?string $apiVersion = null)
+ * @method DynamicRepository configMaps(?string $apiVersion = null)
+ * @method DynamicRepository endpoints(?string $apiVersion = null)
+ * @method DynamicRepository persistentVolumeClaims(?string $apiVersion = null)
+ * @method DynamicRepository persistentVolume(?string $apiVersion = null)
+ * @method DynamicRepository jobs(?string $apiVersion = null)
+ * @method DynamicRepository cronJobs(?string $apiVersion = null)
+ * @method DynamicRepository daemonSets(?string $apiVersion = null)
+ * @method DynamicRepository deployments(?string $apiVersion = null)
+ * @method DynamicRepository ingresses(?string $apiVersion = null)
+ * @method DynamicRepository namespaces(?string $apiVersion = null)
+ * @method DynamicRepository networkPolicies(?string $apiVersion = null)
+ * @method DynamicRepository horizontalPodAutoscalers(?string $apiVersion = null)
+ * @method DynamicRepository certificates(?string $apiVersion = null)
+ * @method DynamicRepository issuers(?string $apiVersion = null)
+ * @method DynamicRepository serviceAccounts(?string $apiVersion = null)
+ * @method DynamicRepository roles(?string $apiVersion = null)
+ * @method DynamicRepository roleBindings(?string $apiVersion = null)
  */
 class Client
 {
@@ -130,6 +108,11 @@ class Client
 	protected array $classInstances = [];
 
 	/**
+	 * Discovered API resources, keyed by group/version.
+	 */
+	protected array $apiResourceCache = [];
+
+	/**
 	 * header for patch.
 	 */
 	protected array $patchHeaders = ['Content-Type' => 'application/strategic-merge-patch+json'];
@@ -171,9 +154,13 @@ class Client
 			$this->username = null;
 			$this->password = null;
 			$this->namespace = 'default';
+			$this->apiResourceCache = [];
 		}
 
 		if (isset($options['master'])) {
+			if ($this->master !== $options['master']) {
+				$this->apiResourceCache = [];
+			}
 			$this->master = $options['master'];
 		}
 		if (isset($options['verify'])) {
@@ -391,7 +378,7 @@ class Client
 		}
 
 		$master = rtrim((string) $this->master, '/');
-		if ($uri === '/healthz' || $uri === '/version') {
+		if (in_array($uri, ['/healthz', '/version', '/api', '/apis'], true)) {
 			$requestUrl = $master . $uri;
 		} else {
 			$requestUrl = $master . '/' . $baseUri . $uri;
@@ -600,17 +587,180 @@ class Client
 	}
 
 	/**
-	 * Magic call method to grab a class instance.
+	 * Discover top-level resources and subresources served by the API server.
 	 *
-	 * @return \stdClass
+	 * @return array<int, array>
+	 */
+	public function discoverApiResources(?string $apiVersion = null): array
+	{
+		if ($apiVersion !== null) {
+			return $this->discoverApiVersion($apiVersion);
+		}
+
+		if (isset($this->apiResourceCache['*'])) {
+			return $this->apiResourceCache['*'];
+		}
+
+		$core = $this->sendRequest('GET', '/api', [], null, false);
+		$groups = $this->sendRequest('GET', '/apis', [], null, false);
+		$versions = isset($core['versions']) && is_array($core['versions'])
+			? $core['versions']
+			: [];
+
+		foreach ($groups['groups'] ?? [] as $group) {
+			if (isset($group['preferredVersion']['groupVersion'])) {
+				$versions[] = $group['preferredVersion']['groupVersion'];
+			}
+			foreach ($group['versions'] ?? [] as $version) {
+				if (isset($version['groupVersion'])) {
+					$versions[] = $version['groupVersion'];
+				}
+			}
+		}
+
+		$resources = [];
+		foreach (array_values(array_unique($versions)) as $version) {
+			$resources = array_merge($resources, $this->discoverApiVersion($version));
+		}
+
+		return $this->apiResourceCache['*'] = $resources;
+	}
+
+	/**
+	 * Create a repository for any built-in or third-party API resource.
+	 */
+	public function resources(
+		string $apiVersion,
+		string $resource,
+		?bool $namespaced = null
+	): DynamicRepository {
+		$definition = [];
+		if ($namespaced === null) {
+			foreach ($this->discoverApiVersion($apiVersion) as $candidate) {
+				if ($candidate['name'] === $resource) {
+					$definition = $candidate;
+					$namespaced = $candidate['namespaced'];
+					break;
+				}
+			}
+
+			if ($namespaced === null) {
+				throw new InvalidArgumentException(sprintf(
+					'Resource "%s" is not served by API version "%s".',
+					$resource,
+					$apiVersion
+				));
+			}
+		}
+
+		return new DynamicRepository($this, $apiVersion, $resource, $namespaced, $definition);
+	}
+
+	/**
+	 * Resolve a repository from a Kubernetes kind in a specific API version.
+	 */
+	public function resourceByKind(string $apiVersion, string $kind): DynamicRepository
+	{
+		foreach ($this->discoverApiVersion($apiVersion) as $resource) {
+			if (strpos($resource['name'], '/') === false && $resource['kind'] === $kind) {
+				return new DynamicRepository(
+					$this,
+					$apiVersion,
+					$resource['name'],
+					$resource['namespaced'],
+					$resource
+				);
+			}
+		}
+
+		throw new InvalidArgumentException(sprintf(
+			'Kind "%s" is not served by API version "%s".',
+			$kind,
+			$apiVersion
+		));
+	}
+
+	/**
+	 * @return array<int, array>
+	 */
+	protected function discoverApiVersion(string $apiVersion): array
+	{
+		if (isset($this->apiResourceCache[$apiVersion])) {
+			return $this->apiResourceCache[$apiVersion];
+		}
+
+		$isCore = strpos($apiVersion, '/') === false;
+		$response = $this->sendRequest(
+			'GET',
+			'',
+			[],
+			null,
+			false,
+			$isCore ? null : $apiVersion
+		);
+
+		$resources = [];
+		foreach ($response['resources'] ?? [] as $resource) {
+			if (!isset($resource['name'], $resource['kind'])) {
+				continue;
+			}
+
+			$resource['groupVersion'] = $apiVersion;
+			$resource['namespaced'] = (bool) ($resource['namespaced'] ?? false);
+			$resource['verbs'] = array_values($resource['verbs'] ?? []);
+			$resources[] = $resource;
+		}
+
+		return $this->apiResourceCache[$apiVersion] = $resources;
+	}
+
+	/**
+	 * Resolve a predefined alias or a discovered resource by method name.
+	 *
+	 * @return \Maclof\Kubernetes\Repositories\Repository
 	 * @throws \BadMethodCallException
 	 */
 	public function __call(string $name, array $args)
 	{
-		if (isset($this->classRegistry[$name])) {
-			$class = $this->classRegistry[$name];
+		$registration = isset($this->classRegistry[$name])
+			? $this->classRegistry[$name]
+			: null;
+		$resourceName = is_array($registration)
+			? $registration['resource']
+			: strtolower($name);
+		if (isset($args[0]) && is_string($args[0])) {
+			return $this->resources($args[0], $resourceName);
+		}
 
-			return $this->classInstances[$name] ?? new $class($this);
+		if (is_array($registration)) {
+			$registration['patchType'] = $registration['patchType'] ?? 'strategic';
+
+			return new DynamicRepository(
+				$this,
+				$registration['apiVersion'],
+				$registration['resource'],
+				$registration['namespaced'],
+				$registration
+			);
+		}
+
+		if (is_string($registration)) {
+			return $this->classInstances[$name] ?? new $registration($this);
+		}
+
+		foreach ($this->discoverApiResources() as $resource) {
+			if (
+				strpos($resource['name'], '/') === false
+				&& $resource['name'] === $resourceName
+			) {
+				return new DynamicRepository(
+					$this,
+					$resource['groupVersion'],
+					$resource['name'],
+					$resource['namespaced'],
+					$resource
+				);
+			}
 		}
 
 		throw new BadMethodCallException('No client methods exist with the name: ' . $name);

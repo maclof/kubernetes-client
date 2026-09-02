@@ -10,6 +10,10 @@ class RepositoryRegistryTest extends TestCase
         $registry = new RepositoryRegistry();
 
         $this->assertCount(25, $registry);
+        $this->assertIsArray($registry['pods']);
+        $this->assertSame('v1', $registry['pods']['apiVersion']);
+        $this->assertSame('pods', $registry['pods']['resource']);
+        $this->assertTrue($registry['pods']['namespaced']);
     }
 
     public function test_add_repository(): void
