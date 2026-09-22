@@ -6,6 +6,10 @@ A PHP client for managing a Kubernetes cluster.
 
 Tested with PHP 7.4 through 8.5 and Kubernetes v1.37.0.
 
+Compatible with Laravel / Illuminate 5 through 13, subject to each version's
+PHP requirements. Laravel 13 requires PHP 8.3 or newer. CI tests every supported
+Illuminate major across PHP 7.4 through 8.5.
+
 
 ## Installation
 
