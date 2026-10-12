@@ -15,7 +15,7 @@
 		"php-http/discovery"    : "^1.0",
 		"illuminate/support"    : "^5.0|^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0|^13.0",
 		"ratchet/pawl"          : "^0.4.3",
-		"symfony/yaml"          : "^5.4.52|^6.4.40|^7.4.12",
+		"symfony/yaml"          : "^5.4.52|^6.4.40|^7.4.12|^8.0",
 		"softcreatr/jsonpath"   : "^0.5 || ^0.7 || ^0.8"
 	},
 	"require-dev": {

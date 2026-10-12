@@ -15,7 +15,7 @@ concurrency:
 
 jobs:
   tests:
-    name: PHP ${{ matrix.php }} / Illuminate ${{ matrix.illuminate }}
+    name: PHP ${{ matrix.php }} / Illuminate ${{ matrix.illuminate }} / Symfony YAML ${{ matrix.symfony }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -23,40 +23,64 @@ jobs:
         include:
           - php: '7.4'
             illuminate: '^5.0'
+            symfony: '^5.4|^6.4|^7.4'
           - php: '7.4'
             illuminate: '^6.0'
+            symfony: '^5.4|^6.4|^7.4'
           - php: '7.4'
             illuminate: '^7.0'
+            symfony: '^5.4|^6.4|^7.4'
           - php: '7.4'
             illuminate: '^8.0'
+            symfony: '^5.4|^6.4|^7.4'
           - php: '8.0'
             illuminate: '^8.0'
+            symfony: '^5.4|^6.4|^7.4'
           - php: '8.0'
             illuminate: '^9.0'
+            symfony: '^5.4|^6.4|^7.4'
           - php: '8.1'
             illuminate: '^9.0'
+            symfony: '^5.4|^6.4|^7.4'
           - php: '8.1'
             illuminate: '^10.0'
+            symfony: '^5.4|^6.4|^7.4'
           - php: '8.2'
             illuminate: '^10.0'
+            symfony: '^5.4|^6.4|^7.4'
           - php: '8.2'
             illuminate: '^11.0'
+            symfony: '^5.4|^6.4|^7.4'
           - php: '8.2'
             illuminate: '^12.0'
+            symfony: '^5.4|^6.4|^7.4'
           - php: '8.3'
             illuminate: '^11.0'
+            symfony: '^5.4|^6.4|^7.4'
           - php: '8.3'
             illuminate: '^12.0'
+            symfony: '^5.4|^6.4|^7.4'
           - php: '8.3'
             illuminate: '^13.0'
+            symfony: '^5.4|^6.4|^7.4'
           - php: '8.4'
             illuminate: '^12.0'
+            symfony: '^8.0'
           - php: '8.4'
             illuminate: '^13.0'
+            symfony: '^8.0'
           - php: '8.5'
             illuminate: '^12.0'
+            symfony: '^8.0'
           - php: '8.5'
             illuminate: '^13.0'
+            symfony: '^8.0'
+          - php: '8.4'
+            illuminate: '^12.0'
+            symfony: '^7.4'
+          - php: '8.4'
+            illuminate: '^13.0'
+            symfony: '^7.4'
 
     steps:
       - name: Checkout
@@ -73,7 +97,7 @@ jobs:
         run: composer validate --strict
 
       - name: Install dependencies
-        run: composer update --with="illuminate/support:${{ matrix.illuminate }}" --prefer-dist --no-interaction --no-progress
+        run: composer update --with="illuminate/support:${{ matrix.illuminate }}" --with="symfony/yaml:${{ matrix.symfony }}" --prefer-dist --no-interaction --no-progress
 
       - name: Run tests
         run: vendor/bin/phpunit --configuration phpunit.xml --no-coverage
